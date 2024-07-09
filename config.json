@@ -1,0 +1,41 @@
+[
+  {
+    "Namespace": "aws:autoscaling:launchconfiguration",
+    "OptionName": "IamInstanceProfile",
+    "Value": "aws-elasticbeanstalk-ec2-role"
+  },
+  {
+    "Namespace": "aws:elbv2:listener:443",
+    "OptionName": "ListenerEnabled",
+    "Value": "true"
+  },
+  {
+    "Namespace": "aws:elbv2:listener:443",
+    "OptionName": "Protocol",
+    "Value": "HTTPS"
+  },
+  {
+    "Namespace": "aws:elbv2:listener:443",
+    "OptionName": "SSLCertificateArns",
+    "Value": "arn:aws:acm:us-west-2:730335402099:certificate/d7fbbe48-94d3-40f5-a0c8-b74d924c59f2"
+  },
+  {
+    "Namespace": "aws:elbv2:listener:443",
+    "OptionName": "DefaultProcess",
+    "Value": "default"
+  },
+  {
+    "Namespace": "aws:elasticbeanstalk:environment",
+    "OptionName": "LoadBalancerType",
+    "Value": "application"
+  },
+  {
+    "Namespace": "aws:autoscaling:launchconfiguration",
+    "OptionName": "InstanceType",
+    "Value": "t3a.medium"
+  },{
+    "Namespace": "aws:elasticbeanstalk:application:environment",
+    "OptionName": "REACT_APP_API_BASE_URL",
+    "Value": "https://api.edukona.com"
+  }
+]

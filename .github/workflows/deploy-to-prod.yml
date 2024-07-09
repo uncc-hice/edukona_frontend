@@ -1,0 +1,59 @@
+name: Deploy to production on PR merge with main
+
+on:
+  pull_request:
+    types: [ closed ]
+
+
+jobs:
+  deploy:
+    # Only deploy to production on merge with main and not when the PR is closed without merging
+    if: github.event.pull_request.merged == true
+    runs-on: ubuntu-latest
+
+    env:
+      APP_NAME: ${{ secrets.EBS_APP_NAME }}
+      PRODUCTION_ENV_NAME: ${{secrets.EBS_ENV_BASE }}-prod
+      AWS_DEFAULT_REGION: ${{ secrets.AWS_REGION }}
+
+    steps:
+      - name: Checkout source code
+        uses: actions/checkout@v2
+
+      - name: Set up Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: 18
+
+      - name: Install dependencies
+        env:
+          CI: false
+          # This tells build to bake in the production environment variables
+          # from the .env.production file. This is necessary in order to
+          # access the process.env.VARIABLES at runtime in the production build.
+          NODE_ENV: production
+        run: |
+          npm ci
+
+      - name: Create production build
+        env:
+          CI: false
+        run: |
+          npm run build
+
+      - name: Set up AWS CLI
+        run: |
+          sudo apt-get update
+          sudo apt-get install python3-pip
+          pip install awscli==1.30.6
+          pip install awsebcli --upgrade
+
+          aws configure set aws_access_key_id ${{ secrets.AWS_ACCESS_KEY_ID }}
+          aws configure set aws_secret_access_key ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+          aws configure set region ${{ secrets.AWS_REGION }} 
+
+      - name: Deploy to Elastic Beanstalk Production
+        run: |
+          DEPLOY_LABEL="0.1.${{ github.event.pull_request.number }}-prod"
+          eb use hice-frontend-prod
+          eb deploy ${{ env.EBS_ENV_NAME }} --label $DEPLOY_LABEL

@@ -1,0 +1,144 @@
+name: Deploy Front-end to EB
+
+on:
+  pull_request:
+    types: [ labeled ]
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+    env:
+      EBS_APP_NAME: ${{ secrets.EBS_APP_NAME }}
+      EBS_PREV_DOMAIN: pr${{ github.event.pull_request.number }}.edukona.com
+      EBS_ENV_NAME: ${{ secrets.EBS_ENV_BASE}}-${{ github.event.pull_request.number }}
+      EBS_ENV_EXISTS: false
+      EBS_ENV_CNAME_PREFIX: ${{secrets.ENV_CNAME_PREFIX}}${{ github.event.pull_request.number }}
+      DEPLOYMENTS_CHANNEL_WEBHOOK_FRONTEND: ${{ secrets.DEPLOYMENTS_CHANNEL_WEBHOOK_FRONTEND }}
+    steps:
+      - name: Checkout source code
+        uses: actions/checkout@v2
+
+      - name: Set up Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: 18
+
+      - name: Install dependencies
+        env:
+          CI: false
+        run: |
+          npm ci
+
+      - name: Create production build
+        env:
+          CI: false
+        run: |
+          npm run build
+
+      - name: Set up AWS CLI
+        run: |
+          sudo apt-get update
+          sudo apt-get install python3-pip
+          pip install awscli==1.30.6
+          pip install awsebcli --upgrade
+
+          aws configure set aws_access_key_id ${{ secrets.AWS_ACCESS_KEY_ID }}
+          aws configure set aws_secret_access_key ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+          aws configure set region us-west-2
+
+      - name: Check if EBS environment already exists
+        run: |
+          ebs_status=$(aws elasticbeanstalk describe-environments \
+                      --environment-names ${{ env.EBS_ENV_NAME }} \
+                      --query "Environments[0].Status" \
+                      --output text)
+          if [ "$ebs_status" = "Ready" ]; then
+              echo "Environment already exists"
+              echo "Setting EBS_ENV_EXISTS to true"
+              echo "EBS_ENV_EXISTS=true" >> $GITHUB_ENV
+          else
+              echo "Environment does not exist"
+          fi
+
+      - name: Create a preview environment in EBS if EBS_ENV_EXISTS is not true
+        if: ${{ env.EBS_ENV_EXISTS != 'true' }}
+        run: |
+          aws elasticbeanstalk create-environment \
+            --application-name ${{ env.EBS_APP_NAME }} \
+            --environment-name ${{ env.EBS_ENV_NAME }} \
+            --cname-prefix ${{ env.EBS_ENV_CNAME_PREFIX }} \
+            --solution-stack-name "64bit Amazon Linux 2023 v6.1.2 running Node.js 18" \
+            --option-settings file://config.json
+
+      - name: Create a DNS entry for the preview environment if EBS_ENV_EXISTS is not true
+        if: ${{ env.EBS_ENV_EXISTS != 'true' }}
+        run: |
+          aws route53 change-resource-record-sets \
+            --hosted-zone-id Z01753533QVX4IC2AQ784 \
+            --change-batch '{
+              "Changes": [
+                {
+                  "Action": "UPSERT",
+                  "ResourceRecordSet": {
+                    "Name": "'${{ env.EBS_PREV_DOMAIN }}'",
+                    "Type": "CNAME",
+                    "TTL": 300,
+                    "ResourceRecords": [
+                      {
+                        "Value": "'${{ env.EBS_ENV_CNAME_PREFIX }}'.us-west-2.elasticbeanstalk.com"
+                      }
+                    ]
+                  }
+                }
+              ]
+            }'
+
+      - name: Wait for environment to be ready (after environment creation) if EBS_ENV_EXISTS is not true
+        if: ${{ env.EBS_ENV_EXISTS != 'true' }}
+        run: |
+          max_retries=30 # Maximum number of retries
+          delay=10 # Delay in seconds between each check
+          for (( i=0; i<max_retries; i++ )); do
+            echo "Checking if the environment is ready (attempt $((i+1))/$max_retries)..."
+            status=$(aws elasticbeanstalk describe-environments \
+                      --environment-names ${{ env.EBS_ENV_NAME }} \
+                      --query 'Environments[0].Status' \
+                      --output text)
+            if [ "$status" = "Ready" ]; then
+              echo "Environment is ready."
+              break
+            fi
+            if [ $i -eq $((max_retries-1)) ]; then
+              echo "Environment did not become ready in time."
+              exit 1
+            fi
+            echo "Environment is in '$status' state. Waiting for $delay seconds..."
+            sleep $delay
+          done      
+
+
+      - name: Deploy to Elastic Beanstalk
+        run: |
+          eb deploy ${{ env.EBS_ENV_NAME }} --label ${{ github.event.label.name }}
+
+      - name: Notify Slack preview-deployments channel
+        if: ${{ success() }}
+        uses: slackapi/slack-github-action@v1.24.0
+        with:
+          # For posting a rich message using Block Kit
+          payload: |
+            {
+              "text": "Preview Env Deployed: <https://${{env.EBS_PREV_DOMAIN}}|${{env.EBS_PREV_DOMAIN}}> (PR ${{github.event.pull_request.number}} opened by ${{github.event.pull_request.user.login}}) :computer: :smile:",
+              "blocks": [
+                {
+                  "type": "section",
+                  "text": {
+                    "type": "mrkdwn",
+                    "text": "Preview Env Deployed: <https://${{env.EBS_PREV_DOMAIN}}|${{env.EBS_PREV_DOMAIN}}> (PR ${{github.event.pull_request.number}} opened by ${{github.event.pull_request.user.login}}) :computer: :smile:"
+                  }
+                }
+              ]
+            }
+        env:
+          SLACK_WEBHOOK_URL: ${{ env.DEPLOYMENTS_CHANNEL_WEBHOOK_FRONTEND }}
+          SLACK_WEBHOOK_TYPE: INCOMING_WEBHOOK
