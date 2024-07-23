@@ -5,7 +5,6 @@ import Paper from '@mui/material/Paper';
 import CssBaseline from '@mui/material/CssBaseline';
 import getTheme from '../theme';
 import AOS from 'aos';
-
 export const useDarkMode = () => {
     const [themeMode, setTheme] = useState('light');
     const [mountedComponent, setMountedComponent] = useState(false);
