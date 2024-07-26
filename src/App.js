@@ -49,6 +49,14 @@ function App() {
   }, []);
 
   ReactGA.initialize(process.env.GAID);
+
+  ReactGA.send({
+    hitType: 'event',
+    eventCategory: 'User',
+    eventAction: 'Visit',
+    eventLabel: 'User has visited'
+  })
+
   return (
       <Page>
         <Router>
