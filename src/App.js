@@ -48,14 +48,21 @@ function App() {
     };
   }, []);
 
-  ReactGA.initialize(process.env.GAID);
-
-  ReactGA.send({
-    hitType: 'event',
-    eventCategory: 'User',
-    eventAction: 'Visit',
-    eventLabel: 'User has visited'
-  })
+  useEffect(() => {
+    const gaMeasurementId = process.env.REACT_APP_GA_MEASUREMENT_ID;
+    console.log('GA_MEASUREMENT_ID', gaMeasurementId);
+    if (gaMeasurementId) {
+      ReactGA.initialize(gaMeasurementId);
+      // ReactGA.send({
+      //   hitType: 'event',
+      //   eventCategory: 'User',
+      //   eventAction: 'Visit',
+      //   eventLabel: 'User has visited'
+      // });
+    } else {
+      console.error('GA_MEASUREMENT_ID is not set');
+    }
+  }, []);
 
   return (
       <Page>
