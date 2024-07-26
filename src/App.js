@@ -3,6 +3,7 @@ import React, { useState, useEffect } from 'react';
 import { BrowserRouter as Router, Route, Routes, Navigate } from 'react-router-dom';
 import { ReactNotifications } from 'react-notifications-component';
 import 'react-notifications-component/dist/theme.css';
+import ReactGA from 'react-ga4';
 
 import LoginForm from './blocks/LoginForm';
 import SignUpForm from './blocks/SignUpForm';
@@ -47,6 +48,7 @@ function App() {
     };
   }, []);
 
+  ReactGA.initialize(process.env.GAID);
   return (
       <Page>
         <Router>
