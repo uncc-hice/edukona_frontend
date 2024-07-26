@@ -37,5 +37,9 @@
     "Namespace": "aws:elasticbeanstalk:application:environment",
     "OptionName": "REACT_APP_API_BASE_URL",
     "Value": "https://api.edukona.com"
+  },{
+    "Namespace": "aws:elasticbeanstalk:application:environment",
+    "OptionName": "REACT_APP_GA_MEASUREMENT_ID",
+    "Value": "G-VJV3XKFBC3"
   }
 ]
