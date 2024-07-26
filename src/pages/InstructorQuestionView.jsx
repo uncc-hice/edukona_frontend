@@ -14,6 +14,7 @@ const InstructorQuestionView = () => {
     const [resetTimer, setResetTimer] = useState(false);
     const [responseData, setResponseData] = useState({});
     const [settings, setSettings] = useState({});
+    const [userCount, setUserCount] = useState(0);
 
     const handleIncomingMessage = (event) => {
         const data = JSON.parse(event.data);
@@ -26,15 +27,15 @@ const InstructorQuestionView = () => {
             setCurrentQuestion(null);
         } else if (data.type === 'user_response') {
             console.log('Response data:', data.response);
-            // Update the responseData state correctly
             setResponseData(prevData => {
                 const updatedData = { ...prevData };
-                const response = data.response; // Assuming 'response' contains the answer key
-                updatedData[response] = (updatedData[response] || 0) + 1;  // Increment if exists, else initialize to 1
+                const response = data.response;
+                updatedData[response] = (updatedData[response] || 0) + 1;
                 return updatedData;
             });
         } else if (data.type === 'settings') {
             setSettings(data.settings);
+            setUserCount(data.user_count);
         }
     };
 
@@ -58,6 +59,10 @@ const InstructorQuestionView = () => {
         handleNextQuestion();
     },[]);
 
+    const getTotalResponses = () => {
+        return Object.values(responseData).reduce((total, count) => total + count, 0);
+    };
+
     return (
         <Box display="flex" flexDirection="column" height="100vh">
             <Navbar />
@@ -69,7 +74,7 @@ const InstructorQuestionView = () => {
                     <QuizEndView />
                 ) : currentQuestion ? (
                     <>
-                        <QuizComponent liveBarChart={settings['live_bar_chart']} question={currentQuestion} code={code} responseData={responseData} sendMessage={sendMessage} />
+                        <QuizComponent userCount={userCount} liveBarChart={settings['live_bar_chart']} question={currentQuestion} code={code} responseData={responseData} sendMessage={sendMessage} />
                         {/*<BarGraphContainer code={code} currentQuestion={currentQuestion} />*/}
                     </>
                 ) : (

@@ -1,9 +1,9 @@
 import React, { useState, useEffect } from 'react';
 import { useTheme } from '@mui/system';
 import { Grid, Typography } from '@mui/material';
-import AnswersGrid from './AnswersGrid'; // Import the new component
+import AnswersGrid from './AnswersGrid';
 
-const QuizComponent = ({liveBarChart, question, code, sendMessage, responseData }) => {
+const QuizComponent = ({ userCount, liveBarChart, question, code, sendMessage, responseData }) => {
     const theme = useTheme();
     const [shuffledAnswers, setShuffledAnswers] = useState([]);
 
@@ -16,14 +16,26 @@ const QuizComponent = ({liveBarChart, question, code, sendMessage, responseData 
         }
     }, [question]); // Dependency on question ensures this runs only when question changes
 
+    // Function to calculate total responses
+    const getTotalResponses = () => {
+        return Object.values(responseData).reduce((total, count) => total + count, 0);
+    };
+
     return (
         <Grid container spacing={3} direction="column" alignItems="center" justifyContent="center" style={{ padding: theme.spacing(3) }}>
+            <Grid item xs={12}>
+                <Typography variant="h6" gutterBottom component="div" textAlign="center">
+                    Total Responses: {getTotalResponses()}
+                </Typography>
+                <Typography variant="h6" gutterBottom component="div" textAlign="center">
+                    Total Students: {userCount}
+                </Typography>
+            </Grid>
             <Grid item xs={12}>
                 <Typography variant="h2" gutterBottom component="div" textAlign="center">
                     {question['question_text']}
                 </Typography>
             </Grid>
-            {/* Ensure the Grid item that nests AnswersGrid takes full width and centers its content */}
             <Grid item xs={12} container justifyContent="center" alignItems="center">
                 <AnswersGrid liveBarChart={liveBarChart} answers={shuffledAnswers} code={code} qid={question['id']} responseData={responseData} sendMessage={sendMessage} />
             </Grid>
