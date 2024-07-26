@@ -39,7 +39,7 @@
     "Value": "https://api.edukona.com"
   },{
     "Namespace": "aws:elasticbeanstalk:application:environment",
-    "OptionName": "GAID",
+    "OptionName": "REACT_APP_GA_MEASUREMENT_ID",
     "Value": "G-VJV3XKFBC3"
   }
 ]
