@@ -1,0 +1,25 @@
+name: PR Template
+
+on:
+  pull_request:
+    types: [opened, edited]
+
+jobs:
+  apply-pr-template:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v2
+
+      - name: Set PR template
+        run: |
+          if [ -f .github/PULL_REQUEST_TEMPLATE/pull_request_template.md ]; then
+            echo "Applying PR template"
+            PR_BODY=$(cat .github/PULL_REQUEST_TEMPLATE/pull_request_template.md)
+            gh pr edit ${{ github.event.pull_request.number }} --body "$PR_BODY"
+          else
+            echo "PR template not found"
+          fi
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
