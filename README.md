@@ -17,7 +17,7 @@ EduKona is an innovative educational platform that is free and open-source, desi
 
 ## Getting Started
 
-Visit [EduKona Live](https://pr21.edukona.com/) to experience the platform live!
+Visit [EduKona Live](https://edukona.com/) to experience the platform live!
 
 ### Steps to Use
 1. Sign up as an instructor.
