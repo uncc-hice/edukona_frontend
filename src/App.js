@@ -50,7 +50,7 @@ function App() {
 
   useEffect(() => {
     const gaMeasurementId = process.env.REACT_APP_GA_MEASUREMENT_ID;
-    console.log('GA_MEASUREMENT_ID', gaMeasurementId);
+    //console.log('GA_MEASUREMENT_ID', gaMeasurementId);
     if (gaMeasurementId) {
       ReactGA.initialize(gaMeasurementId);
       // ReactGA.send({
