@@ -71,7 +71,7 @@ function App() {
           <Routes>
             <Route path="/student-dashboard" element={isLoggedIn ? <StudentDashboard /> : <Navigate to="/login" />} />
             <Route path="/join" element={<JoinQuiz />} />
-            <Route path="/" element={isLoggedIn ? <Navigate to="/dashboard" /> : <LoginForm toggleForm={toggleForm}/>} />
+            <Route path="/" element={isLoggedIn ? <Navigate to="/dashboard" /> : <Landing/>} />
             <Route path="/login" element={isLoggedIn ? <Navigate to="/dashboard" /> : <LoginForm toggleForm={toggleForm} />} />
             <Route path="/signup" element={isLoggedIn ? <Navigate to="/dashboard" /> : <SignUpForm toggleForm={toggleForm} />} />
             <Route path="/dashboard" element={isLoggedIn ? <InstructorDashboard /> : <Navigate to="/" />} />
@@ -83,7 +83,7 @@ function App() {
             <Route path="/quiz/:quizId/edit" element={isLoggedIn ? <EditQuizView /> : <Navigate to="/" />} />
             <Route path="/quiz/:code" element={isLoggedIn ? <InstructorQuestionView /> : <Navigate to="/" />} />
             <Route path="/quiz/:id/settings" element={isLoggedIn ? <SettingsPage /> : <Navigate to="/" />} />
-            <Route path="/create-landing" element={<DevRoute element={<Landing />} />} />
+            {/*<Route path="/create-landing" element={<DevRoute element={<Landing />} />} />*/}
             <Route path="/unauthorized" element={<Unauthorized/> } />
           </Routes>
         </Router>
