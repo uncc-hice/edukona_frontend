@@ -4,7 +4,6 @@ import { BrowserRouter as Router, Route, Routes, Navigate } from 'react-router-d
 import { ReactNotifications } from 'react-notifications-component';
 import 'react-notifications-component/dist/theme.css';
 import ReactGA from 'react-ga4';
-
 import LoginForm from './blocks/LoginForm';
 import SignUpForm from './blocks/SignUpForm';
 import QuizSession from './pages/QuizSession';
