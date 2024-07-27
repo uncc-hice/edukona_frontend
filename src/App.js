@@ -20,7 +20,6 @@ import SettingsPage from './pages/SettingsPage/Settings';
 import Landing from './pages/Landing';
 import Page from './components/Page';
 import Unauthorized from './pages/Unauthorized';
-
 import 'slick-carousel/slick/slick.css';
 import 'slick-carousel/slick/slick-theme.css';
 import 'aos/dist/aos.css';
