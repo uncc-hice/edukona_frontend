@@ -1,27 +1,37 @@
 [
-  {
-    "Namespace": "aws:elasticbeanstalk:environment",
-    "OptionName": "EnvironmentType",
-    "Value": "SingleInstance"
-  },
-  {
-    "Namespace": "aws:autoscaling:launchconfiguration",
-    "OptionName": "IamInstanceProfile",
-    "Value": "aws-elasticbeanstalk-ec2-role"
-  },
-  {
-    "Namespace": "aws:autoscaling:launchconfiguration",
-    "OptionName": "InstanceType",
-    "Value": "t3a.medium"
-  },
-  {
-    "Namespace": "aws:elasticbeanstalk:application:environment",
-    "OptionName": "REACT_APP_API_BASE_URL",
-    "Value": "https://api.edukona.com"
-  },
-  {
-    "Namespace": "aws:elasticbeanstalk:application:environment",
-    "OptionName": "REACT_APP_GA_MEASUREMENT_ID",
-    "Value": "G-VJV3XKFBC3"
-  }
+    {
+        "Namespace": "aws:elasticbeanstalk:environment",
+        "OptionName": "EnvironmentType",
+        "Value": "SingleInstance"
+    },
+    {
+        "Namespace": "aws:autoscaling:launchconfiguration",
+        "OptionName": "IamInstanceProfile",
+        "Value": "aws-elasticbeanstalk-ec2-role"
+    },
+    {
+        "Namespace": "aws:autoscaling:launchconfiguration",
+        "OptionName": "InstanceType",
+        "Value": "t4g.small"
+    },
+    {
+        "Namespace": "aws:elasticbeanstalk:application:environment",
+        "OptionName": "REACT_APP_API_BASE_URL",
+        "Value": "https://api.edukona.com"
+    },
+    {
+        "Namespace": "aws:elasticbeanstalk:application:environment",
+        "OptionName": "REACT_APP_GA_MEASUREMENT_ID",
+        "Value": "G-VJV3XKFBC3"
+    },
+    {
+        "Namespace": "aws:elasticbeanstalk:command",
+        "OptionName": "Timeout",
+        "Value": "600"
+    },
+    {
+        "Namespace": "aws:elasticbeanstalk:environment",
+        "OptionName": "HealthCheckInterval",
+        "Value": "60"
+    }
 ]
