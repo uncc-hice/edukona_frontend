@@ -28,10 +28,5 @@
         "Namespace": "aws:elasticbeanstalk:command",
         "OptionName": "Timeout",
         "Value": "600"
-    },
-    {
-        "Namespace": "aws:elasticbeanstalk:environment",
-        "OptionName": "HealthCheckInterval",
-        "Value": "60"
     }
 ]
