@@ -34,7 +34,7 @@ jobs:
           # Loop through each changed file
           for file in $files; do
             # Count lines added and removed for each file
-            lines_changed=$(git diff origin/${{ github.event.pull_request.base.ref }} ${{ github.sha }} -- "$file" | grep '^[+-]' | grep -Ev '^(--- a/|\+\+\+ b/)' | wc -l)
+            lines_changed=$(git diff --ignore-all-space origin/${{ github.event.pull_request.base.ref }} ${{ github.sha }} -- "$file" | grep '^[+-]' | grep -Ev '^(--- a/|\+\+\+ b/)' | wc -l)
           
             # Add to total counter
             total_lines_changed=$((total_lines_changed + lines_changed))
