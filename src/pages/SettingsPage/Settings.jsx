@@ -1,20 +1,12 @@
 import React, { useEffect, useState } from 'react';
-import { Switch, TextField, FormControlLabel, Button, Select, MenuItem, FormControl, InputLabel } from '@mui/material';
+import { Switch, TextField, FormControlLabel, Button, Select, MenuItem, FormControl, InputLabel, CircularProgress } from '@mui/material';
 import './SettingsPage.css';
 import { useNavigate, useParams } from 'react-router-dom';
 import axios from 'axios';
 import Navbar from '../../blocks/Navbar';
 
 const SettingsPage = () => {
-    const [settings, setSettings] = useState({
-        live_bar_chart: true,
-        timer: false,
-        timer_duration: 60,
-        skip_question: false,
-        skip_count_per_student: 0,
-        skip_question_logic: 'disabled',
-        skip_question_streak_count: 0,
-    });
+    const [settings, setSettings] = useState(null);
 
     const { id } = useParams();
     const token = localStorage.getItem('token');
@@ -67,7 +59,7 @@ const SettingsPage = () => {
         const { name, value } = event.target;
         const newSettings = {
             ...settings,
-            [name]: value,
+            [name]: name === 'skip_question_percentage' ? parseFloat(value) : value,
         };
 
         console.log(newSettings);
@@ -92,6 +84,17 @@ const SettingsPage = () => {
     const handleBackButton = () => {
         navigate(`/`);
     };
+
+    if (!settings) {
+        return (
+            <>
+                <Navbar />
+                <div className="settings-container">
+                    <CircularProgress />
+                </div>
+            </>
+        );
+    }
 
     return (
         <>
@@ -142,15 +145,27 @@ const SettingsPage = () => {
                                     <MenuItem value="random">Random</MenuItem>
                                 </Select>
                             </FormControl>
-                            <TextField
-                                label="Skip Question Streak Count"
-                                type="number"
-                                name="skip_question_streak_count"
-                                value={settings.skip_question_streak_count}
-                                onChange={handleChange}
-                                variant="outlined"
-                                size="small"
-                            />
+                            {settings.skip_question_logic === 'streak' ? (
+                                <TextField
+                                    label="Skip Question Streak Count"
+                                    type="number"
+                                    name="skip_question_streak_count"
+                                    value={settings.skip_question_streak_count}
+                                    onChange={handleChange}
+                                    variant="outlined"
+                                    size="small"
+                                />
+                            ) : (
+                                <TextField
+                                    label="Skip Question Random Percentage"
+                                    type="number"
+                                    name="skip_question_percentage"
+                                    value={settings.skip_question_percentage || 0}
+                                    onChange={handleChange}
+                                    variant="outlined"
+                                    size="small"
+                                />
+                            )}
                         </>
                     )}
                 </div>
