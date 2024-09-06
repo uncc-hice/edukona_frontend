@@ -1,5 +1,15 @@
 import React, { useEffect, useState } from 'react';
-import { Table, TableBody, TableCell, TableContainer, TableRow, Paper, Button } from '@mui/material';
+import {
+  Table,
+  TableBody,
+  TableCell,
+  TableContainer,
+  TableRow,
+  Paper,
+  Button,
+  DialogActions,
+  DialogContent, DialogContentText, DialogTitle, Dialog
+} from '@mui/material';
 import { useNavigate } from "react-router-dom";
 import axios from "axios";
 
@@ -7,6 +17,8 @@ import axios from "axios";
 const QuizList = () => {
 
   const [quizzes, setQuizzes] = useState([]);
+  const [open, setOpen] = useState(false);
+  const [selectedQuizId, setSelectedQuizId] = useState(null);
 
   const navigate = useNavigate(); // Initialize useNavigate
 
@@ -16,13 +28,16 @@ const QuizList = () => {
     fetchQuizzes();
   }, []);
 
-  const fetchQuizzes = async () => {
-    const token = localStorage.getItem('token');
-    if (!token) {
-      console.log("No token found");
-      return;
-    }
+  const handleOpen = (quizId) => {
+    setSelectedQuizId(quizId);
+    setOpen(true);
+  };
 
+  const handleClose = () => {
+    setOpen(false);
+  };
+
+  const fetchQuizzes = async () => {
     try {
       const response = await axios.get('https://api.edukona.com/quiz/', {
         headers: {
@@ -36,6 +51,23 @@ const QuizList = () => {
       console.error('An error occurred while fetching the quizzes:', error.message);
     }
   };
+
+  const deleteQuiz = async () => {
+    handleClose();
+    try {
+      const response = await axios.delete(`https://api.edukona.com/quiz/${selectedQuizId}`, {
+        headers: {
+          'Content-Type': 'application/json', 'Authorization': `Token ${token}`,
+        },
+      });
+
+      if (response.status === 200) {
+        fetchQuizzes();
+      }
+    } catch (error) {
+      console.error('An error occurred while deleting the quiz:', error.message);
+    }
+  }
 
   const startQuiz = async (quizId) => {
     const token = localStorage.getItem('token');
@@ -76,22 +108,6 @@ const QuizList = () => {
     navigate(`/quiz/${quizId}/settings`)
   }
 
-  const deleteQuiz = async (quizId) => {
-    try {
-      const response = await axios.delete(`https://api.edukona.com/quiz/${quizId}`, {
-        headers: {
-          'Content-Type': 'application/json', 'Authorization': `Token ${token}`,
-        },
-      });
-
-      if (response.status === 200) {
-        fetchQuizzes();
-      }
-    } catch (error) {
-      console.error('An error occurred while deleting the quiz:', error.message);
-    }
-  }
-
   return (<TableContainer component={Paper}>
     <Table>
       <TableBody>
@@ -127,9 +143,9 @@ const QuizList = () => {
 
           <TableCell>
             <Button
-              variant="contained"
-              color="warning"
-              onClick={() => deleteQuiz(quiz.id)}
+                variant="contained"
+                color="warning"
+                onClick={() => handleOpen(quiz.id)}
             >
               Delete Quiz
             </Button>
@@ -137,6 +153,27 @@ const QuizList = () => {
         </TableRow>))}
       </TableBody>
     </Table>
+    <Dialog
+        open={open}
+        onClose={handleClose}
+        aria-labelledby="alert-dialog-title"
+        aria-describedby="alert-dialog-description"
+    >
+      <DialogTitle id="alert-dialog-title">{"Confirm Deletion"}</DialogTitle>
+      <DialogContent>
+        <DialogContentText id="alert-dialog-description">
+          Are you sure you want to delete this quiz?
+        </DialogContentText>
+      </DialogContent>
+      <DialogActions>
+        <Button onClick={handleClose} color="primary">
+          Cancel
+        </Button>
+        <Button onClick={deleteQuiz} color="primary" autoFocus>
+          Confirm
+        </Button>
+      </DialogActions>
+    </Dialog>
   </TableContainer>);
 };
 
