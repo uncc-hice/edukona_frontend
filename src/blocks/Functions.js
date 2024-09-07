@@ -6,10 +6,23 @@
 import axios from "axios";
 import {useState} from "react";
 
+// Helper function for adding creating flash messages
+function makeFlash(type, message) {
+	return `{"type": "${type}", "message": "${message}"}`
+}
+
+// function for consuming flash messages
+export function consumeFlash(flashName) {
+	let flash = localStorage.getItem(flashName);
+	if (!flash) {
+		return null;
+	}
+	localStorage.removeItem(flashName);
+	return JSON.parse(flash);
+}
+
 //Login function for app
 export function login(username, password,navigate ){
-
-
      const axiosUrl = 'https://api.edukona.com/login/';
 
     //declares user data (password and username)
@@ -32,11 +45,16 @@ export function login(username, password,navigate ){
             } else if (response.data['student']) {
                 navigate('/student-dashboard');
             }
-
             window.location.reload();
         })
         .catch(error => {
-            console.error('Error: ', error);
+            console.error('Error: ', error.response.status);
+			if (error.response.status == 400 || error.response.status == 401) { 
+				localStorage.setItem('loginFlash', makeFlash("error", "Invalid username or password."));
+			} else {
+				localStorage.setItem('loginFlash', makeFlash("info", "Sorry, we couldn't log you in due to an internal server error."));
+			}
+			window.location.reload();
         });
 }
 

@@ -1,8 +1,9 @@
 import axios from 'axios';
 import { useState } from "react";
 import { TextField, Button, Typography, Container, Grid } from '@mui/material';
-import { login } from './Functions'
+import { login, consumeFlash } from './Functions'
 import { useNavigate } from 'react-router-dom';
+import FlashMessageText from './FlashMessageText';
 
 
 const LoginForm = ({ toggleForm }) => {
@@ -14,10 +15,7 @@ const LoginForm = ({ toggleForm }) => {
   const handleSubmit = async (e) => {
     e.preventDefault();
 
-
     login(username, password, navigate);
-
-
   };
 
   return (
@@ -58,6 +56,7 @@ const LoginForm = ({ toggleForm }) => {
                   value={password}
                   onChange={(e) => setPassword(e.target.value)}
               />
+			<FlashMessageText flashName="loginFlash" />
               <Button
                   type="submit"
                   fullWidth
