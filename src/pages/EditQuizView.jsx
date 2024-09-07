@@ -2,7 +2,7 @@ import React, { useState, useEffect } from 'react';
 import axios from 'axios';
 import { useParams } from 'react-router-dom';
 import Navbar from '../blocks/Navbar';
-import { Button, Dialog, DialogActions, DialogContent, DialogTitle, Grid, TextField } from '@mui/material';
+import { Button, Dialog, DialogActions, DialogContent, DialogContentText, DialogTitle, Grid, TextField } from '@mui/material';
 
 function EditQuizView() {
     const { quizId } = useParams();
@@ -355,7 +355,9 @@ function EditQuizView() {
 					>
 					<DialogTitle id="alert-dialog-title">{"Confirm Deletion"}</DialogTitle>
 					<DialogContent>
-						Are you sure you want to delete this question?
+						<DialogContentText id="alert-dialog-description">
+							Are you sure you want to delete this question?
+						</DialogContentText>
 					</DialogContent>
 					<DialogActions>
 						<Button onClick={handleClose} color="primary">
