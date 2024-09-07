@@ -36,7 +36,9 @@ const InstructorDashBoard = () => {
         Create New Quiz
       </Button>
       <Button startIcon={<RecordVoiceOverIcon />} variant="outlined" color="primary" size="large"
-              onClick={handleNavigateToRecordings}>
+              onClick={handleNavigateToRecordings}
+              style={{ marginBottom: '10px' }}
+      >
         Go to Recordings
       </Button>
     </Box>
