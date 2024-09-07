@@ -23,68 +23,69 @@ export function consumeFlash(flashName) {
 
 //Login function for app
 export function login(username, password,navigate ){
-     const axiosUrl = 'https://api.edukona.com/login/';
+	const axiosUrl = 'https://api.edukona.com/login/';
 
-    //declares user data (password and username)
-    const data = {
-        username: username,
-        password: password
-    };
+	//declares user data (password and username)
+	const data = {
+		username: username,
+		password: password
+	};
 
-    //uses the axios.post function to send the data to backend
-    axios.post(axiosUrl, data)
-        .then(response => {
-            //creates a response in console to ensure that the data sent was correct
-            console.log('Response: ', response.data);
-            //sets token data
-            localStorage.setItem('token', response.data['token']);
-            //sets user data
-            localStorage.setItem('user', response.data['user']);
-           if (response.data['instructor']) {
-                navigate('/dashboard');
-            } else if (response.data['student']) {
-                navigate('/student-dashboard');
-            }
-            window.location.reload();
-        })
-        .catch(error => {
-            console.error('Error: ', error.response.status);
-			if (error.response.status == 400 || error.response.status == 401) { 
-				localStorage.setItem('loginFlash', makeFlash("error", "Invalid username or password."));
-			} else {
-				localStorage.setItem('loginFlash', makeFlash("info", "Sorry, we couldn't log you in due to an internal server error."));
+	//uses the axios.post function to send the data to backend
+	axios.post(axiosUrl, data)
+		.then(response => {
+			//creates a response in console to ensure that the data sent was correct
+			console.log('Response: ', response.data);
+			//sets token data
+			localStorage.setItem('token', response.data['token']);
+			//sets user data
+			localStorage.setItem('user', response.data['user']);
+
+			if (response.data['instructor']) {
+				navigate('/dashboard');
+			} else if (response.data['student']) {
+				navigate('/student-dashboard');
 			}
 			window.location.reload();
-        });
+		})
+		.catch(error => {
+			console.error('Error: ', error.response.status);
+			if (error.response.status === 400 || error.response.status === 401) { 
+				localStorage.setItem('loginFlash', makeFlash("error", "Invalid username or password."));
+			} else {
+				localStorage.setItem('loginFlash', makeFlash("error", "Sorry, we couldn't log you in due to an internal server error."));
+			}
+			window.location.reload();
+		});
 }
 
 
 export function signUp(username, password, email, role){
 
-    //TODO: Eventually we will need to update instructor to ${role} when we are accepting students
-    const endpoint = role === 'instructor' ? 'sign-up-instructor/' : 'sign-up-student/';
-    const axiosUrl = `https://api.edukona.com/${endpoint}`;
+	//TODO: Eventually we will need to update instructor to ${role} when we are accepting students
+	const endpoint = role === 'instructor' ? 'sign-up-instructor/' : 'sign-up-student/';
+	const axiosUrl = `https://api.edukona.com/${endpoint}`;
 
-    //defines data to be sent back in API request
-    const data = {
-        user: {
-            username: username,
-            password: password,
-            email: email
-        }
-    }
-    //API request using instructor URL and data from SignUpForm.js
-    axios.post(axiosUrl, data)
-        .then(response => {
-            //shows response in console
-            console.log('Response: ', response.data);
-            localStorage.setItem('token', response.data['token']);
-            window.location.reload();
-        })
-        //catches error and displays in console
-        .catch(error => {
-            console.error('Error: ', error);
-        })
+	//defines data to be sent back in API request
+	const data = {
+		user: {
+			username: username,
+			password: password,
+			email: email
+		}
+	}
+	//API request using instructor URL and data from SignUpForm.js
+	axios.post(axiosUrl, data)
+		.then(response => {
+			//shows response in console
+			console.log('Response: ', response.data);
+			localStorage.setItem('token', response.data['token']);
+			window.location.reload();
+		})
+		//catches error and displays in console
+		.catch(error => {
+			console.error('Error: ', error);
+		})
 }
 
 // function getQuizzes(token){
