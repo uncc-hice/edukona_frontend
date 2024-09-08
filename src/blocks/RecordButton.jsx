@@ -18,7 +18,11 @@ const RecordButton = ({onUpdate}) => {
 		setIsUploading(true);
 		setButtonText("Uploading Audio")
 		const formData = new FormData();
-		formData.append('file', audioBlob.current, `${localStorage.getItem('user')}-audio-${new Date()}`);
+		const date = new Date();
+		const dateString = `${date.getFullYear()}-${date.getMonth() <= 10 ? '0' + date.getMonth().toString() : date.getMonth()}-${date.getDate()}`;
+		const timeString = `${date.getHours()}-${date.getMinutes()}-${date.getSeconds()}`;
+		const filename = `${dateString}-${timeString}.webm`;
+		formData.append('file', audioBlob.current, filename);
 		formData.append('type', mimetype);
 		axios.post(uploadEndPoint, formData, {
 			headers: {
