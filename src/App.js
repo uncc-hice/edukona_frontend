@@ -24,6 +24,7 @@ import 'slick-carousel/slick/slick.css';
 import 'slick-carousel/slick/slick-theme.css';
 import 'aos/dist/aos.css';
 import DevRoute from "./blocks/DevRoute";
+import InstructorRecordings from "./pages/InstructorRecordings/InstructorRecordings";
 
 function App() {
   const [isLoggedIn, setIsLoggedIn] = useState(!!localStorage.getItem('token'));
@@ -83,6 +84,7 @@ function App() {
             <Route path="/quiz/:id/settings" element={isLoggedIn ? <SettingsPage /> : <Navigate to="/" />} />
             {/*<Route path="/create-landing" element={<DevRoute element={<Landing />} />} />*/}
             <Route path="/unauthorized" element={<Unauthorized/> } />
+            <Route path="/recordings" element={isLoggedIn ? <InstructorRecordings /> : <Navigate to="/" />} />
           </Routes>
         </Router>
       </Page>
