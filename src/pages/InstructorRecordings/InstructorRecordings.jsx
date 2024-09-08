@@ -15,9 +15,14 @@ import {
 } from '@mui/material';
 import axios from "axios";
 import Navbar from "../../blocks/Navbar";
+import RecordButton from '../../blocks/RecordButton';
 
 const InstructorRecordings = () => {
     const [recordings, setRecordings] = useState([]);
+
+	const onUpdate = (newRecording) => {
+		setRecordings([newRecording, ...recordings]);
+	}
 
     const token = localStorage.getItem('token');
     useEffect(() => {
@@ -28,7 +33,6 @@ const InstructorRecordings = () => {
                         Authorization: `Token ${token}`
                     }
                 });
-                console.log(response.data);
                 setRecordings(response.data.recordings);
             } catch (error) {
                 console.error('Failed to fetch recordings:', error);
@@ -43,6 +47,7 @@ const InstructorRecordings = () => {
         <div>
             <Navbar/>
             <Container sx={{ padding: '40px' }}>
+				<RecordButton onUpdate={onUpdate} />
                 <TableContainer component={Paper}>
                     <Table>
                         <TableHead>
@@ -66,7 +71,7 @@ const InstructorRecordings = () => {
                                         {new Date(recording.uploaded_at)
                                             .toLocaleDateString(
                                                 undefined,
-                                                { year: 'numeric', month: 'long', day: 'numeric'}
+                                                { year: 'numeric', month: 'long', day: 'numeric', hour: 'numeric', minute: 'numeric'}
                                             )}
                                     </TableCell>
                                     <TableCell align={"center"}>
