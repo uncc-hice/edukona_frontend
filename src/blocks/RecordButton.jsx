@@ -5,6 +5,15 @@ import { useRef, useState } from "react"
 const mimetype = "audio/webm";
 const uploadEndPoint = "https://api.edukona.com/upload-audio/";
 
+// Creates the filename for new audio files
+const createFileName = () => {
+	const padNumber = (number) => number <= 10 ? '0' + number: number;
+	const date = new Date();
+	const dateString = `${date.getFullYear()}${padNumber(date.getMonth() + 1)}${padNumber(date.getDate())}`;
+	const timeString = `${padNumber(date.getHours())}-${padNumber(date.getMinutes())}-${padNumber(date.getSeconds())}`;
+	return `${dateString}-${timeString}.webm`;
+}
+
 const RecordButton = ({onUpdate}) => {
 	const [isRecording, setIsRecording] = useState(false);
 	const [isUploading, setIsUploading] = useState(false);
@@ -13,16 +22,11 @@ const RecordButton = ({onUpdate}) => {
 	const stream = useRef(null);
 	const recorder = useRef(null);
 	const chunks = useRef([]);
-
 	const handleUpload = () => {
 		setIsUploading(true);
 		setButtonText("Uploading Audio")
 		const formData = new FormData();
-		const date = new Date();
-		const dateString = `${date.getFullYear()}-${date.getMonth() <= 10 ? '0' + date.getMonth().toString() : date.getMonth()}-${date.getDate()}`;
-		const timeString = `${date.getHours()}-${date.getMinutes()}-${date.getSeconds()}`;
-		const filename = `${dateString}-${timeString}.webm`;
-		formData.append('file', audioBlob.current, filename);
+		formData.append('file', audioBlob.current, createFileName());
 		formData.append('type', mimetype);
 		axios.post(uploadEndPoint, formData, {
 			headers: {
