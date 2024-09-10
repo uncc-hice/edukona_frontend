@@ -6,6 +6,7 @@ import { useParams } from "react-router-dom";
 import Timer from "../blocks/timer";
 import QuizEndView from "./QuizEndView";
 import useWebSocket from "react-use-websocket";
+import AudioToggle from "../blocks/AudioToggle";
 
 const InstructorQuestionView = () => {
     const [currentQuestion, setCurrentQuestion] = useState(undefined);
@@ -66,6 +67,9 @@ const InstructorQuestionView = () => {
     return (
         <Box display="flex" flexDirection="column" height="100vh">
             <Navbar />
+			<Box display="flex" flexDirection="row">
+				<AudioToggle />
+			</Box>
             {!quizEnded && settings['timer'] && (
                 <Timer initialTime={settings['timer_duration']} onTimerEnd={onTimerEnd} resetTrigger={resetTimer} />
             )}
