@@ -68,7 +68,7 @@ const InstructorQuestionView = () => {
         <Box display="flex" flexDirection="column" height="100vh">
             <Navbar />
 			<Box display="flex" flexDirection="row">
-				<AudioToggle />
+				<AudioToggle src="/marimba.mp3"/>
 			</Box>
             {!quizEnded && settings['timer'] && (
                 <Timer initialTime={settings['timer_duration']} onTimerEnd={onTimerEnd} resetTrigger={resetTimer} />

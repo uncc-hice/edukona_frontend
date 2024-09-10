@@ -2,13 +2,12 @@ import { MusicNote, MusicOff } from "@mui/icons-material";
 import { Button } from "@mui/material";
 import { useEffect, useRef, useState } from "react"
 
-const AudioToggle = () => {
+const AudioToggle = ({src}) => {
 	const [isEnabled, setIsEnabled] = useState(false);
 	const audio = useRef(null);
 
 	useEffect(() => {
-		const audioUrl = "/marimba.mp3"
-		audio.current = new Audio(audioUrl);
+		audio.current = new Audio(src);
 		audio.current.loop = true;
 	},[]);
 
