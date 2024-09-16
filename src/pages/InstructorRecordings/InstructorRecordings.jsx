@@ -132,7 +132,7 @@ const InstructorRecordings = () => {
                                                 display: 'inline-block',
                                                 borderRadius: '50%',
                                                 bgcolor:
-                                                    recording.transcript === 'completed' ? 'green' : 'red',
+                                                    recording.transcript.toLowerCase() === 'completed' ? 'green' : 'red',
                                                 marginRight: 1,
                                             }}
                                         />
