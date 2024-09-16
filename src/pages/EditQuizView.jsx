@@ -3,6 +3,7 @@ import axios from 'axios';
 import { useParams } from 'react-router-dom';
 import Navbar from '../blocks/Navbar';
 import { Button, Dialog, DialogActions, DialogContent, DialogContentText, DialogTitle, Grid, TextField } from '@mui/material';
+import {toast} from "react-toastify";
 
 function EditQuizView() {
     const { quizId } = useParams();
@@ -88,6 +89,9 @@ function EditQuizView() {
                 headers: {
                     'Authorization': `Token ${token}`,
                 }
+            });
+            toast.success('Question successfully deleted!', {
+                icon: '🗑️',
             });
             await fetchQuestions();
         } catch (error) {
