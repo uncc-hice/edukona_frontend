@@ -22,9 +22,7 @@ const InstructorRecordings = () => {
     if (receivedData.type === 'transcript_completed') {
       // Update the specific recording by mapping over the recordings
       setRecordings((prevRecordings) => prevRecordings.map((recording) => recording.id === receivedData.recording_id ? {
-        ...recording,
-        transcript: receivedData.transcript_status,
-        transcript_url: receivedData.transcript_url
+        ...recording, transcript: receivedData.transcript_status, transcript_url: receivedData.transcript_url
       } : recording));
     }
   };
@@ -72,58 +70,66 @@ const InstructorRecordings = () => {
   }, [token]);
 
   return (<div>
-      <Navbar/>
-      <Container sx={{ padding: '40px' }}>
-        <Snackbar open={open} autoHideDuration={6000} onClose={handleClose}>
-          <Alert onClose={handleClose} severity="error" sx={{ width: '100%' }}>
-            Unable to establish WebSocket connection
-          </Alert>
-        </Snackbar>
-        <RecordButton onUpdate={onUpdate}/>
-        <TableContainer component={Paper}>
-          <Table>
-            <TableHead>
-              <TableRow>
-                <TableCell>
-                  <Typography variant="h6" align="center">
-                    Uploaded At
-                  </Typography>
-                </TableCell>
-                <TableCell>
-                  <Typography variant="h6" align="center">
-                    Transcript Status
-                  </Typography>
-                </TableCell>
-              </TableRow>
-            </TableHead>
-            <TableBody>
-              {recordings.map((recording) => (<TableRow key={recording.id}>
-                  <TableCell align="center">
-                    {new Date(recording.uploaded_at).toLocaleDateString(undefined, {
-                      year: 'numeric', month: 'long', day: 'numeric', hour: 'numeric', minute: 'numeric',
-                    })}
-                  </TableCell>
-                  <TableCell align="center">
-                    <Box
-                      component="span"
-                      sx={{
-                        width: 16,
-                        height: 16,
-                        display: 'inline-block',
-                        borderRadius: '50%',
-                        bgcolor: recording.transcript.toLowerCase() === 'completed' ? 'green' : 'red',
-                        marginRight: 1,
-                      }}
-                    />
+    <Navbar/>
+    <Container sx={{ padding: '40px' }}>
+      <Snackbar open={open} autoHideDuration={6000} onClose={handleClose}>
+        <Alert onClose={handleClose} severity="error" sx={{ width: '100%' }}>
+          Unable to establish WebSocket connection
+        </Alert>
+      </Snackbar>
+      <RecordButton onUpdate={onUpdate}/>
+      <TableContainer component={Paper}>
+        <Table>
+          <TableHead>
+            <TableRow>
+              <TableCell>
+                <Typography variant="h6" align="center">
+                  Recording ID
+                </Typography>
+              </TableCell>
+              <TableCell>
+                <Typography variant="h6" align="center">
+                  Uploaded At
+                </Typography>
+              </TableCell>
+              <TableCell>
+                <Typography variant="h6" align="center">
+                  Transcript Status
+                </Typography>
+              </TableCell>
+            </TableRow>
+          </TableHead>
+          <TableBody>
+            {recordings.map((recording) => (<TableRow key={recording.id}>
+              <TableCell align="center">
+                {recording.id}
+              </TableCell>
+              <TableCell align="center">
+                {new Date(recording.uploaded_at).toLocaleDateString(undefined, {
+                  year: 'numeric', month: 'long', day: 'numeric', hour: 'numeric', minute: 'numeric',
+                })}
+              </TableCell>
+              <TableCell align="center">
+                <Box
+                  component="span"
+                  sx={{
+                    width: 16,
+                    height: 16,
+                    display: 'inline-block',
+                    borderRadius: '50%',
+                    bgcolor: recording.transcript.toLowerCase() === 'completed' ? 'green' : 'red',
+                    marginRight: 1,
+                  }}
+                />
 
-                    {recording.transcript.charAt(0).toUpperCase() + recording.transcript.slice(1)}
-                  </TableCell>
-                </TableRow>))}
-            </TableBody>
-          </Table>
-        </TableContainer>
-      </Container>
-    </div>);
+                {recording.transcript.charAt(0).toUpperCase() + recording.transcript.slice(1)}
+              </TableCell>
+            </TableRow>))}
+          </TableBody>
+        </Table>
+      </TableContainer>
+    </Container>
+  </div>);
 };
 
 export default InstructorRecordings;
