@@ -1,10 +1,6 @@
 branch-defaults:
-  create-preview:
-    environment: hice-frontend-pr18
-environment-defaults:
-  hice-frontend-pr18:
-    branch: null
-    repository: null
+  main:
+    environment: hice-frontend-production
 global:
   application_name: hice_frontend
   default_ec2_keyname: null
