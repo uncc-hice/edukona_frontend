@@ -1,7 +1,5 @@
-import React, {useEffect, useState} from 'react';
-import { useNavigate } from 'react-router-dom';
+import React, { useEffect, useState } from 'react';
 import {
-    Button,
     Container,
     Table,
     TableBody,
@@ -20,11 +18,12 @@ import RecordButton from '../../blocks/RecordButton';
 const InstructorRecordings = () => {
     const [recordings, setRecordings] = useState([]);
 
-	const onUpdate = (newRecording) => {
-		setRecordings([newRecording, ...recordings]);
-	}
+    const onUpdate = (newRecording) => {
+        setRecordings([newRecording, ...recordings]);
+    };
 
     const token = localStorage.getItem('token');
+
     useEffect(() => {
         const fetchRecordings = async () => {
             try {
@@ -40,25 +39,30 @@ const InstructorRecordings = () => {
         };
 
         fetchRecordings();
-    }, []);
-
+    }, [token]);
 
     return (
         <div>
-            <Navbar/>
+            <Navbar />
             <Container sx={{ padding: '40px' }}>
-				<RecordButton onUpdate={onUpdate} />
+                <RecordButton onUpdate={onUpdate} />
                 <TableContainer component={Paper}>
                     <Table>
                         <TableHead>
                             <TableRow>
+                                {/* Add new column for Recording ID */}
                                 <TableCell>
-                                    <Typography variant="h6" align={"center"}>
+                                    <Typography variant="h6" align="center">
+                                        Recording ID
+                                    </Typography>
+                                </TableCell>
+                                <TableCell>
+                                    <Typography variant="h6" align="center">
                                         Uploaded At
                                     </Typography>
                                 </TableCell>
                                 <TableCell>
-                                    <Typography variant="h6" align={"center"}>
+                                    <Typography variant="h6" align="center">
                                         Transcript Status
                                     </Typography>
                                 </TableCell>
@@ -67,14 +71,17 @@ const InstructorRecordings = () => {
                         <TableBody>
                             {recordings.map((recording) => (
                                 <TableRow key={recording.id}>
-                                    <TableCell align={"center"}>
-                                        {new Date(recording.uploaded_at)
-                                            .toLocaleDateString(
-                                                undefined,
-                                                { year: 'numeric', month: 'long', day: 'numeric', hour: 'numeric', minute: 'numeric'}
-                                            )}
+                                    {/* Display Recording ID */}
+                                    <TableCell align="center">
+                                        {recording.id}
                                     </TableCell>
-                                    <TableCell align={"center"}>
+                                    <TableCell align="center">
+                                        {new Date(recording.uploaded_at).toLocaleDateString(
+                                            undefined,
+                                            { year: 'numeric', month: 'long', day: 'numeric', hour: 'numeric', minute: 'numeric' }
+                                        )}
+                                    </TableCell>
+                                    <TableCell align="center">
                                         <Box component="span" sx={{ width: 16, height: 16, display: 'inline-block', borderRadius: '50%', bgcolor: recording.transcript === 'completed' ? 'green' : 'red', marginRight: 1 }} />
                                         {recording.transcript}
                                     </TableCell>
@@ -86,6 +93,6 @@ const InstructorRecordings = () => {
             </Container>
         </div>
     );
-}
+};
 
 export default InstructorRecordings;
