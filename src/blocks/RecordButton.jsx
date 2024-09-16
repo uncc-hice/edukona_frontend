@@ -1,6 +1,7 @@
 import { Button } from "@mui/material";
 import axios from "axios";
 import { useRef, useState } from "react"
+import {toast} from "react-toastify";
 
 const mimetype = "audio/webm";
 const uploadEndPoint = "https://api.edukona.com/upload-audio/";
@@ -38,6 +39,9 @@ const RecordButton = ({onUpdate}) => {
 				setIsUploading(false);
 				setButtonText("Start Recording");
 				if (res.status === 201) {
+					toast.success('Recording successfully uploaded!', {
+						icon: '🎉',
+					});
 					if (res.data.transcript === '') {
 						res.data.transcript = 'pending';
 					}
