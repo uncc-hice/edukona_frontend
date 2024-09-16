@@ -52,7 +52,7 @@ const InstructorRecordings = () => {
 				Authorization: `Token ${token.current}`,
 			}
 			})
-			.then(res => res.status === 200 ? toast.success('Quiz successfully deleted!', {icon: '🗑️',}) : toast.error('Could not delete quiz.', {}))
+			.then(res => res.status === 200 ? toast.success('Recording successfully deleted!', {icon: '🗑️',}) : toast.error('Could not delete recording.', {}))
 			.then(() => fetchRecordings())
 			.catch(error => console.error(error));
 		setOpenDialogue(false);
