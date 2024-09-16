@@ -13,7 +13,7 @@ jobs:
 
     env:
       APP_NAME: ${{ secrets.EBS_APP_NAME }}
-      PRODUCTION_ENV_NAME: ${{secrets.EBS_ENV_BASE }}-prod
+      PRODUCTION_ENV_NAME: ${{secrets.EBS_ENV_BASE }}-production
       AWS_DEFAULT_REGION: ${{ secrets.AWS_REGION }}
 
     steps:
@@ -54,6 +54,6 @@ jobs:
 
       - name: Deploy to Elastic Beanstalk Production
         run: |
-          DEPLOY_LABEL="0.1.${{ github.event.pull_request.number }}-prod"
-          eb use hice-frontend-prod
+          DEPLOY_LABEL="0.1.${{ github.event.pull_request.number }}-production"
+          eb use hice-frontend-production
           eb deploy ${{ env.EBS_ENV_NAME }} --label $DEPLOY_LABEL

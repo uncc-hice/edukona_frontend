@@ -68,7 +68,7 @@ jobs:
             --environment-name ${{ env.EBS_ENV_NAME }} \
             --cname-prefix ${{ env.EBS_ENV_CNAME_PREFIX }} \
             --solution-stack-name "64bit Amazon Linux 2023 v6.1.2 running Node.js 18" \
-            --option-settings file://config.json
+            --option-settings file://ebsconfig.json
 
       - name: Create a DNS entry for the preview environment if EBS_ENV_EXISTS is not true
         if: ${{ env.EBS_ENV_EXISTS != 'true' }}
