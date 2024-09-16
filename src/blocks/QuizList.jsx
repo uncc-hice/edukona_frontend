@@ -12,6 +12,7 @@ import {
 } from '@mui/material';
 import { useNavigate } from "react-router-dom";
 import axios from "axios";
+import { toast } from 'react-toastify';
 
 
 const QuizList = () => {
@@ -62,6 +63,9 @@ const QuizList = () => {
       });
 
       if (response.status === 200) {
+        toast.success('Quiz successfully deleted!', {
+          icon: '🗑️',
+        });
         fetchQuizzes();
       }
     } catch (error) {
