@@ -1,19 +1,62 @@
-import React, { useEffect, useState } from 'react';
-import { useNavigate } from 'react-router-dom';
+import React, { useEffect, useRef, useState } from 'react';
 import {
-  Button, Container, Table, TableBody, TableCell, TableContainer, TableHead, TableRow, Paper, Typography, Box, Snackbar, Alert
+	Container,
+	Table,
+	TableBody,
+	TableCell,
+	TableContainer,
+	TableHead,
+	TableRow,
+	Paper,
+	Typography,
+	Box,
+	Button,
+    Dialog,
+    DialogContent,
+    DialogTitle,
+    DialogContentText,
+    DialogActions,
+    Snackbar,
+    Alert
 } from '@mui/material';
 import axios from "axios";
-import Navbar from "../../blocks/Navbar";
 import RecordButton from '../../blocks/RecordButton';
 import useWebSocket from "react-use-websocket";
+import { toast } from 'react-toastify';
+import Navbar from '../../blocks/Navbar';
+import { Delete } from '@mui/icons-material';
 
 const InstructorRecordings = () => {
   const [recordings, setRecordings] = useState([]);
   const [open, setOpen] = useState(false);
+	const [selectedRecording, setSelectedRecording] = useState(null);
+	const [openDialogue, setOpenDialogue] = useState(false);
+	const token = useRef(localStorage.getItem('token'));
 
-  // Get the token from localStorage
-  const token = localStorage.getItem('token');
+	const fetchRecordings = () => axios.get(`https://api.edukona.com/instructor-recordings/`, {
+		headers: {
+			Authorization: `Token ${token.current}`
+		}
+	})
+	.then(res => setRecordings(res.data.recordings))
+	.catch(error => console.error(error));
+
+	const handleOpenDialogue = (recordingId) => {
+		setSelectedRecording(recordingId);
+		setOpenDialogue(true);
+	}
+
+	const handleDeleteRecording = () => {
+		axios.delete(`https://api.edukona.com/instructor-recordings/${selectedRecording}/delete-recording`, {
+			headers: { 
+				Authorization: `Token ${token.current}`,
+			}
+			})
+			.then(res => res.status === 200 ? toast.success('Recording successfully deleted!', {icon: '🗑️',}) : toast.error('Could not delete recording.', {}))
+			.then(() => fetchRecordings())
+			.catch(error => console.error(error));
+		setOpenDialogue(false);
+	}
 
   const handleIncomingMessage = (event) => {
     const receivedData = JSON.parse(event.data);
@@ -40,7 +83,7 @@ const InstructorRecordings = () => {
   };
 
   // Establish WebSocket connection with the token
-  const {} = useWebSocket(`wss://api.edukona.com/ws/recordings/?token=${token}`, {
+  const {} = useWebSocket(`wss://api.edukona.com/ws/recordings/?token=${token.current}`, {
     onOpen: () => console.log("WebSocket connected"),
     onClose: () => console.log("WebSocket disconnected"),
     onError: websocketError,
@@ -53,19 +96,6 @@ const InstructorRecordings = () => {
   };
 
   useEffect(() => {
-    const fetchRecordings = async () => {
-      try {
-        const response = await axios.get(`https://api.edukona.com/instructor-recordings/`, {
-          headers: {
-            Authorization: `Token ${token}`
-          }
-        });
-        setRecordings(response.data.recordings);
-      } catch (error) {
-        console.error('Failed to fetch recordings:', error);
-      }
-    };
-
     fetchRecordings();
   }, [token]);
 
@@ -124,10 +154,35 @@ const InstructorRecordings = () => {
 
                 {recording.transcript.charAt(0).toUpperCase() + recording.transcript.slice(1)}
               </TableCell>
+
+									<TableCell>
+										<Button onClick={() => handleOpenDialogue(recording.id)}><Delete color='action' /></Button>
+									</TableCell>
             </TableRow>))}
           </TableBody>
         </Table>
       </TableContainer>
+			<Dialog
+				open={openDialogue}
+				onClose={handleClose}
+				aria-labelledby="alert-dialog-title"
+				aria-describedby="alert-dialog-description"
+				>
+				<DialogTitle id="alert-dialog-title">{"Confirm Deletion"}</DialogTitle>
+				<DialogContent>
+					<DialogContentText id="alert-dialog-description">
+						Are you sure you want to delete this recording?
+					</DialogContentText>
+				</DialogContent>
+					<DialogActions>
+						<Button onClick={() => setOpenDialogue(false)} color="primary">
+						Cancel
+						</Button>
+						<Button onClick={handleDeleteRecording} color="primary" autoFocus>
+						Confirm
+						</Button>
+					</DialogActions>
+			</Dialog>
     </Container>
   </div>);
 };
