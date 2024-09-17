@@ -32,7 +32,7 @@ const RecordButton = ({onUpdate}) => {
 		axios.post(uploadEndPoint, formData, {
 			headers: {
 				'Content-Type': 'multipart/form',
-				'Authorization': `Token ${localStorage.getItem('token') || ''}`,
+				'Authorization': `Token ${localStorage.getItem('token')}`,
 			}}
 			)
 			.then(res => {
@@ -42,10 +42,7 @@ const RecordButton = ({onUpdate}) => {
 					toast.success('Recording successfully uploaded!', {
 						icon: '🎉',
 					});
-					if (res.data.transcript === '') {
-						res.data.transcript = 'pending';
-					}
-					onUpdate(res.data);
+					onUpdate();
 				}
 			})
 			.catch(error => console.log(error));
