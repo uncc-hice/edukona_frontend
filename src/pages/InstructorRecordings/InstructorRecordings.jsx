@@ -61,7 +61,7 @@ const InstructorRecordings = () => {
 	const handleCreateQuiz = (recordingId) => {
 		toast.promise(
 			axios.post(
-				"https://p4vum8whi1.execute-api.us-west-2.amazonaws.com/Prod/create_quiz_from_transcript", 
+				"https://jtsw0t0x32.execute-api.us-west-2.amazonaws.com/Prod/create_quiz_from_transcript", 
 				JSON.stringify({"recording_id": recordingId}),
 				{
 				headers: {
