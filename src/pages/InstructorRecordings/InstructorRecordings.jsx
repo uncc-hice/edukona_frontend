@@ -89,11 +89,6 @@ const InstructorRecordings = () => {
 				...recording, transcript: receivedData.transcript_status, transcript_url: receivedData.transcript_url
 				} : recording));
 		}
-
-		if (receivedData.type === 'quiz_creation_completed') {
-			console.log(receivedData);
-			toast.success(`Successfully created quiz`);
-		}
 	};
 
 	const handleClose = (event, reason) => {
