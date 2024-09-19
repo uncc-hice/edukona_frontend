@@ -35,7 +35,7 @@ const InstructorRecordings = () => {
 
 	const fetchRecordings = () => axios.get(`https://api.edukona.com/instructor-recordings/`, {
 		headers: {
-			Authorization: `Token ${token.current}`
+			Authorization: `Token ${token.current}`,
 		}
 		})
 		.then(res => setRecordings(res.data.recordings))
@@ -58,6 +58,28 @@ const InstructorRecordings = () => {
 		setOpenDialogue(false);
 	}
 
+	const handleCreateQuiz = (recordingId) => {
+		toast.promise(
+			axios.post(
+				"https://jtsw0t0x32.execute-api.us-west-2.amazonaws.com/Prod/create_quiz_from_transcript", 
+				JSON.stringify({"recording_id": recordingId}),
+				{
+				headers: {
+					Authorization: `Token ${token.current}`,
+					"Content-Type": 'application/json',
+				},
+			}),
+			{
+				pending: "Creating quiz",
+				success: "Succesfully created quiz!",
+				error: "Failed to create quiz!",
+			})
+			.then(res => {
+				console.log(res.data);
+			})
+			.catch(error => console.error(error));
+	}
+
 	const handleIncomingMessage = (event) => {
 		const receivedData = JSON.parse(event.data);
 		console.log('Received data:', receivedData);
@@ -66,7 +88,7 @@ const InstructorRecordings = () => {
 			// Update the specific recording by mapping over the recordings
 			setRecordings((prevRecordings) => prevRecordings.map((recording) => recording.id === receivedData.recording_id ? {
 				...recording, transcript: receivedData.transcript_status, transcript_url: receivedData.transcript_url
-			} : recording));
+				} : recording));
 		}
 	};
 
@@ -93,7 +115,7 @@ const InstructorRecordings = () => {
 
 	useEffect(() => {
 		fetchRecordings();
-	}, [token]);
+		}, [token]);
 
 	return (<div>
 		<Navbar/>
@@ -123,6 +145,11 @@ const InstructorRecordings = () => {
 									Transcript Status
 								</Typography>
 							</TableCell>
+							<TableCell>
+								<Typography varient="h6" align="center">
+									Actions
+								</Typography>
+							</TableCell>
 						</TableRow>
 					</TableHead>
 					<TableBody>
@@ -147,11 +174,11 @@ const InstructorRecordings = () => {
 										marginRight: 1,
 									}}
 								/>
-
 								{recording.transcript.charAt(0).toUpperCase() + recording.transcript.slice(1)}
 							</TableCell>
 							<TableCell>
 								<Button onClick={() => handleOpenDialogue(recording.id)}><Delete color='action' /></Button>
+								<Button onClick={() => handleCreateQuiz(recording.id)}>Create Quiz</Button>
 							</TableCell>
 						</TableRow>))}
 					</TableBody>
@@ -170,7 +197,7 @@ const InstructorRecordings = () => {
 					</DialogContentText>
 				</DialogContent>
 				<DialogActions>
-				<Button onClick={() => setOpenDialogue(false)} color="primary">
+					<Button onClick={() => setOpenDialogue(false)} color="primary">
 						Cancel
 					</Button>
 					<Button onClick={handleDeleteRecording} color="primary" autoFocus>
