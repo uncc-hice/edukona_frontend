@@ -35,7 +35,7 @@ const InstructorRecordings = () => {
 
 	const fetchRecordings = () => axios.get(`https://api.edukona.com/instructor-recordings/`, {
 		headers: {
-			Authorization: `Token ${token.current}`
+			Authorization: `Token ${token.current}`,
 		}
 		})
 		.then(res => setRecordings(res.data.recordings))
@@ -60,18 +60,19 @@ const InstructorRecordings = () => {
 
 	const handleCreateQuiz = (recordingId) => {
 		toast.promise(
-			axios.post("https://p4vum8whi1.execute-api.us-west-2.amazonaws.com/Prod/create_quiz_from_transcript", {
+			axios.post(
+				"https://p4vum8whi1.execute-api.us-west-2.amazonaws.com/Prod/create_quiz_from_transcript", 
+				JSON.stringify({"recording_id": recordingId}),
+				{
 				headers: {
 					Authorization: `Token ${token.current}`,
+					"Content-Type": 'application/json',
 				},
-				data: {
-					"recording_id": recordingId,
-				}
 			}),
 			{
 				pending: "Creating quiz",
-				success: "Succesfully created quiz",
-				error: "Failed to create quiz",
+				success: "Succesfully created quiz!",
+				error: "Failed to create quiz!",
 			})
 			.then(res => {
 				console.log(res.data);
