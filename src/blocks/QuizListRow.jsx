@@ -78,7 +78,7 @@ const QuizListRow = ({quiz, onUpdate}) => {
 		try {
 			const response = await axios.delete(`https://api.edukona.com/quiz/${quiz.id}`, {
 				headers: {
-					'Content-Type': 'application/json', 'Authorization': `Token ${token}`,
+					'Content-Type': 'application/json', 'Authorization': `Token ${token.current}`,
 				},
 			});
 
