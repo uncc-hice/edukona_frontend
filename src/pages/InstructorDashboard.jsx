@@ -8,6 +8,7 @@ import Box from '@mui/material/Box';
 import QuizIcon from '@mui/icons-material/Quiz';
 import MeetingRoomIcon from '@mui/icons-material/MeetingRoom';
 import RecordVoiceOverIcon from '@mui/icons-material/RecordVoiceOver';
+import { Typography } from '@mui/material';
 
 const InstructorDashBoard = () => {
 
@@ -23,8 +24,6 @@ const InstructorDashBoard = () => {
 
   return (<div>
     <Navbar/>
-    <h1 style={{ textAlign: 'Left', margin: '20px' }}>Your Quizzes</h1>
-    <QuizList/>
     <Box sx={{ display: 'flex', justifyContent: 'space-around', flexWrap: 'wrap', marginTop: '20px' }}>
       <Link to="/your-sessions">
         <Button startIcon={<MeetingRoomIcon />} variant="outlined" color="primary" size="large" style={{ marginBottom: '10px' }}>
@@ -42,6 +41,8 @@ const InstructorDashBoard = () => {
         Go to Recordings
       </Button>
     </Box>
+	<Typography variant='h4' style={{margin: "20px"}}>Your Quizzes</Typography>
+    <QuizList/>
   </div>);
 };
 
