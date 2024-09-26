@@ -11,13 +11,7 @@ const LoginForm = ({ toggleForm }) => {
   const [password, setPassword] = useState('');
   const [error, setError] = useState('');
   const navigate = useNavigate();
-  const { user, login, setIsLoggedIn, setToken } = useContext(UserContext);
-
-  useEffect(() => {
-    if (user) {
-      navigate('/dashboard');
-    }
-  }, [user, navigate]);
+  const { login, setIsLoggedIn, setToken } = useContext(UserContext);
 
   const styles = {
     error: {
