@@ -1,49 +1,39 @@
+// InstructorDashBoard.js
 import React from 'react';
-import Navbar from '../blocks/Navbar';
 import QuizList from "../blocks/QuizList";
-import Button from '@mui/material/Button'
-import { Link } from 'react-router-dom';
-import { useNavigate } from "react-router-dom";
+import Button from '@mui/material/Button';
+import { Link, useNavigate } from 'react-router-dom';
 import Box from '@mui/material/Box';
 import QuizIcon from '@mui/icons-material/Quiz';
 import MeetingRoomIcon from '@mui/icons-material/MeetingRoom';
 import RecordVoiceOverIcon from '@mui/icons-material/RecordVoiceOver';
-import { Typography } from '@mui/material';
+import { Typography, useTheme } from '@mui/material';
+import Dashboard from "../layouts/Dashboard/Dashboard";
+import Container from "../components/Container";
 
 const InstructorDashBoard = () => {
-
-  let navigate = useNavigate();
+  const navigate = useNavigate();
+  const theme = useTheme();
 
   const handleCreateQuiz = () => {
-    navigate('/create-quiz')
+    navigate('/create-quiz');
   };
 
   const handleNavigateToRecordings = () => {
-    navigate('/recordings')
+    navigate('/recordings');
   };
 
-  return (<div>
-    <Navbar/>
-    <Box sx={{ display: 'flex', justifyContent: 'space-around', flexWrap: 'wrap', marginTop: '20px' }}>
-      <Link to="/your-sessions">
-        <Button startIcon={<MeetingRoomIcon />} variant="outlined" color="primary" size="large" style={{ marginBottom: '10px' }}>
-          Your Sessions
-        </Button>
-      </Link>
-      <Button startIcon={<QuizIcon />} variant="outlined" color="primary" size="large" style={{ marginBottom: '10px' }}
-              onClick={handleCreateQuiz}>
-        Create New Quiz
-      </Button>
-      <Button startIcon={<RecordVoiceOverIcon />} variant="outlined" color="primary" size="large"
-              onClick={handleNavigateToRecordings}
-              style={{ marginBottom: '10px' }}
-      >
-        Go to Recordings
-      </Button>
-    </Box>
-	<Typography variant='h4' style={{margin: "20px"}}>Your Quizzes</Typography>
-    <QuizList/>
-  </div>);
+  return (
+      <Dashboard>
+        <Box sx={{ flexGrow: 1, padding: '25px' }}>
+          <Typography variant="h4" sx={{ marginBottom: '20px' }}>
+            Your Quizzes
+          </Typography>
+          <QuizList />
+        </Box>
+      </Dashboard>
+
+  );
 };
 
 export default InstructorDashBoard;

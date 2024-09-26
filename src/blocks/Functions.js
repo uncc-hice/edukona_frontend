@@ -5,41 +5,7 @@
 
 import axios from "axios";
 //Login function for app
-export function login(username, password, navigate, setError){
-	const axiosUrl = 'https://api.edukona.com/login/';
 
-	//declares user data (password and username)
-	const data = {
-		username: username,
-		password: password
-	};
-
-	//uses the axios.post function to send the data to backend
-	axios.post(axiosUrl, data)
-		.then(response => {
-			//creates a response in console to ensure that the data sent was correct
-			console.log('Response: ', response.data);
-			//sets token data
-			localStorage.setItem('token', response.data['token']);
-			//sets user data
-			localStorage.setItem('user', response.data['user']);
-
-			if (response.data['instructor']) {
-				navigate('/dashboard');
-			} else if (response.data['student']) {
-				navigate('/student-dashboard');
-			}
-			window.location.reload();
-		})
-		.catch(error => {
-			console.error('Error: ', error.response.status);
-			if (error.response.status === 400 || error.response.status === 401) { 
-				setError( "Invalid username or password.");
-			} else {
-				setError("Sorry, we couldn't log you in due to an internal server error.");
-			}
-		});
-}
 
 
 export function signUp(username, password, email, role){

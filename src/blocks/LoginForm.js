@@ -1,7 +1,7 @@
-import { useState } from "react";
+import {useContext, useState} from "react";
 import { TextField, Button, Typography, Container, Grid } from '@mui/material';
 import { useNavigate } from 'react-router-dom';
-import { login } from './Functions';
+import {UserContext} from "../UserContext";
 
 
 const LoginForm = ({ toggleForm }) => {
@@ -9,6 +9,7 @@ const LoginForm = ({ toggleForm }) => {
 	const [password, setPassword] = useState('');
 	const [error, setError] = useState('');
 	const navigate = useNavigate();
+	const {login} = useContext(UserContext);
 
 	const styles = {
 		error: {

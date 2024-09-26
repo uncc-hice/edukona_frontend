@@ -43,7 +43,7 @@ const Footer = () => {
               <Link
                 underline="none"
                 component="a"
-                href="/public"
+                href="/"
                 color="text.primary"
                 variant={'subtitle2'}
               >
