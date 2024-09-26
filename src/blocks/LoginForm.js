@@ -26,7 +26,7 @@ const LoginForm = ({ toggleForm }) => {
   }
 
   const handleGoogleSuccess = async (response) => {
-    const axiosUrl = 'https://api.edukona.com/auth/google/'; // Update to your actual backend endpoint
+    const axiosUrl = 'https://api.edukona.com/auth/google/';
     console.log('Google Login success:', response);
     const { credential } = response;
     try {
