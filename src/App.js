@@ -1,5 +1,5 @@
 import './App.css';
-import React, { useState, useEffect } from 'react';
+import React, {useState, useEffect, useContext} from 'react';
 import { BrowserRouter as Router, Route, Routes, Navigate } from 'react-router-dom';
 import { ReactNotifications } from 'react-notifications-component';
 import 'react-notifications-component/dist/theme.css';
@@ -27,27 +27,17 @@ import DevRoute from "./blocks/DevRoute";
 import InstructorRecordings from "./pages/InstructorRecordings/InstructorRecordings";
 import { ToastContainer } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
+import {UserContext, UserProvider} from "./UserContext";
+import Team from "./pages/Team/Team";
 
 function App() {
-  const [isLoggedIn, setIsLoggedIn] = useState(!!localStorage.getItem('token'));
   const [showLogin, setShowLogin] = useState(true);
+  const { isLoggedIn, token, login, logout } = useContext(UserContext);
 
   const toggleForm = () => {
     setShowLogin(!showLogin);
   };
 
-  useEffect(() => {
-    const checkAuthStatus = () => {
-      const loggedIn = !!localStorage.getItem('token');
-      setIsLoggedIn(loggedIn);
-    };
-
-    window.addEventListener('storage', checkAuthStatus);
-
-    return () => {
-      window.removeEventListener('storage', checkAuthStatus);
-    };
-  }, []);
 
   useEffect(() => {
     const gaMeasurementId = process.env.REACT_APP_GA_MEASUREMENT_ID;
@@ -66,41 +56,44 @@ function App() {
   }, []);
 
   return (
-      <Page>
-        <Router>
-          <ReactNotifications />
-          <Routes>
-            <Route path="/student-dashboard" element={isLoggedIn ? <StudentDashboard /> : <Navigate to="/login" />} />
-            <Route path="/join" element={<JoinQuiz />} />
-            <Route path="/" element={isLoggedIn ? <Navigate to="/dashboard" /> : <Landing/>} />
-            <Route path="/login" element={isLoggedIn ? <Navigate to="/dashboard" /> : <LoginForm toggleForm={toggleForm} />} />
-            <Route path="/signup" element={isLoggedIn ? <Navigate to="/dashboard" /> : <SignUpForm toggleForm={toggleForm} />} />
-            <Route path="/dashboard" element={isLoggedIn ? <InstructorDashboard /> : <Navigate to="/" />} />
-            <Route path="/session/:code" element={isLoggedIn ? <QuizSession /> : <Navigate to="/" />} />
-            <Route path="/results/:code" element={isLoggedIn ? <QuizSessionResults /> : <Navigate to="/" />} />
-            <Route path="/your-sessions" element={isLoggedIn ? <YourSessions /> : <Navigate to="/" />} />
-            <Route path="/create-quiz" element={isLoggedIn ? <CreateQuiz /> : <Navigate to="/" />} />
-            <Route path="/student/:code" element={<StudentAnswerView />} />
-            <Route path="/quiz/:quizId/edit" element={isLoggedIn ? <EditQuizView /> : <Navigate to="/" />} />
-            <Route path="/quiz/:code" element={isLoggedIn ? <InstructorQuestionView /> : <Navigate to="/" />} />
-            <Route path="/quiz/:id/settings" element={isLoggedIn ? <SettingsPage /> : <Navigate to="/" />} />
-            {/*<Route path="/create-landing" element={<DevRoute element={<Landing />} />} />*/}
-            <Route path="/unauthorized" element={<Unauthorized/> } />
-            <Route path="/recordings" element={isLoggedIn ? <InstructorRecordings /> : <Navigate to="/" />} />
-          </Routes>
-        </Router>
-        <ToastContainer
-            position="top-center"
-            autoClose={5000}
-            hideProgressBar={false}
-            newestOnTop={false}
-            closeOnClick
-            rtl={false}
-            pauseOnFocusLoss
-            draggable
-            pauseOnHover
-        />
-      </Page>
+        <Page>
+          <Router>
+            <ReactNotifications />
+            <Routes>
+              <Route path="/student-dashboard" element={isLoggedIn ? <StudentDashboard /> : <Navigate to="/login" />} />
+              <Route path="/join" element={<JoinQuiz />} />
+              <Route path="/" element={<Landing/>} />
+              <Route path="/login" element={isLoggedIn ? <Navigate to="/dashboard" /> : <LoginForm toggleForm={toggleForm} />} />
+              <Route path="/signup" element={isLoggedIn ? <Navigate to="/dashboard" /> : <SignUpForm toggleForm={toggleForm} />} />
+              <Route path="/dashboard" element={isLoggedIn ? <InstructorDashboard /> : <Navigate to="/" />} />
+              <Route path="/session/:code" element={isLoggedIn ? <QuizSession /> : <Navigate to="/" />} />
+              <Route path="/results/:code" element={isLoggedIn ? <QuizSessionResults /> : <Navigate to="/" />} />
+              <Route path="/your-sessions" element={isLoggedIn ? <YourSessions /> : <Navigate to="/" />} />
+              <Route path="/create-quiz" element={isLoggedIn ? <CreateQuiz /> : <Navigate to="/" />} />
+              <Route path="/student/:code" element={<StudentAnswerView />} />
+              <Route path="/quiz/:quizId/edit" element={isLoggedIn ? <EditQuizView /> : <Navigate to="/" />} />
+              <Route path="/quiz/:code" element={isLoggedIn ? <InstructorQuestionView /> : <Navigate to="/" />} />
+              <Route path="/quiz/:id/settings" element={isLoggedIn ? <SettingsPage /> : <Navigate to="/" />} />
+              <Route path={'/team'} element={<Team/>}/>
+              {/*<Route path="/create-landing" element={<DevRoute element={<Landing />} />} />*/}
+              <Route path="/unauthorized" element={<Unauthorized/> } />
+              <Route path="/recordings" element={isLoggedIn ? <InstructorRecordings /> : <Navigate to="/" />} />
+            </Routes>
+          </Router>
+          <ToastContainer
+              position="top-center"
+              autoClose={5000}
+              hideProgressBar={false}
+              newestOnTop={false}
+              closeOnClick
+              rtl={false}
+              pauseOnFocusLoss
+              draggable
+              pauseOnHover
+          />
+        </Page>
+
+
   );
 }
 
