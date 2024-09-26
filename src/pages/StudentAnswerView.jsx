@@ -104,8 +104,9 @@ const StudentAnswerView = () => {
     return (
         <div>
             {loading ? (
-                <Box display="flex" justifyContent="center" alignItems="center" height="100vh">
-                    <CircularProgress />
+                <Box display="flex" flexDirection={"column"} justifyContent="center" alignItems="center" height="100vh">
+					<CircularProgress />
+                    <Typography variant='h6'>Waiting for instructor to start the quiz.</Typography>
                 </Box>
             ) : quizEnded ? (
                 <QuizEndView />
@@ -126,9 +127,6 @@ const StudentAnswerView = () => {
                                 Skip Question
                             </Button>
                         )}
-                        <Button variant="contained" color="primary" onClick={() => sendMessage(JSON.stringify({ type: 'next_question' }))}>
-                            Next Question
-                        </Button>
                     </Box>
                 </>
             ) : (
