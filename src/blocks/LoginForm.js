@@ -37,7 +37,12 @@ const LoginForm = ({ toggleForm }) => {
 
     } catch (error) {
       console.error('Google Login error:', error);
-      setError('Google Login failed. Please try again.');
+      // Extract and set the specific error message from the backend
+      if (error.response && error.response.data && error.response.data.message) {
+        setError(error.response.data.message);
+      } else {
+        setError('Google Login failed. Please try again.');
+      }
     }
   };
 
