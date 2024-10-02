@@ -6,6 +6,7 @@ on:
 
 jobs:
   deploy:
+    if: ${{ github.event.label.name != 'pr-description' }}
     runs-on: ubuntu-latest
     env:
       EBS_APP_NAME: ${{ secrets.EBS_APP_NAME }}
