@@ -13,6 +13,8 @@ const QuizListRow = ({quiz, onUpdate}) => {
 	const [loading, setLoading] = useState(false);
 	const sessionsCache = useRef(null);
 	const [sessions, setSessions] = useState(null);
+	const [selectedSession, setSelectedSession] = useState(null);
+	const [sessionModalOpen, setSessionModalOpen] = useState(null);
 	const [error, setError] = useState(null);
 
 	const navigate = useNavigate();
@@ -45,6 +47,11 @@ const QuizListRow = ({quiz, onUpdate}) => {
 		}
 	}
 
+	const handleSessionModalOpen = (sessionCode) => {
+		setSelectedSession(sessionCode);
+		setSessionModalOpen(true);
+	}
+
 	const deleteSession = (sessionCode) => {
 		toast.promise(
 			axios.delete(
@@ -58,6 +65,7 @@ const QuizListRow = ({quiz, onUpdate}) => {
 				error: "Failed to delete session",
 			})
 			.then(() => fetchSessions());
+		setSessionModalOpen(false);
 	}
 
 	const startQuiz = async (quizId) => {
@@ -200,7 +208,7 @@ const QuizListRow = ({quiz, onUpdate}) => {
 																	</Button>
 																</Link>
 															<Button variant="text" sx={{'marginLeft': '5px'}}>
-																	<Delete color="action" onClick={() => deleteSession(session.code, quiz.id)} />
+																	<Delete color="action" onClick={() => handleSessionModalOpen(session.code)} />
 																</Button>
 															</Box>
 														</TableCell>
@@ -219,7 +227,7 @@ const QuizListRow = ({quiz, onUpdate}) => {
 				aria-labelledby="alert-dialog-title"
 				aria-describedby="alert-dialog-description"
 				>
-				<DialogTitle id="alert-dialog-title">{"Confirm Deletion"}</DialogTitle>
+				<DialogTitle id="alert-dialog-title">{"Confirm Quiz Deletion"}</DialogTitle>
 				<DialogContent>
 					<DialogContentText id="alert-dialog-description">
 						{`Are you sure you want to delete ${quiz.title}?`}
@@ -230,6 +238,27 @@ const QuizListRow = ({quiz, onUpdate}) => {
 						Cancel
 					</Button>
 					<Button onClick={deleteQuiz} color="primary" autoFocus>
+						Confirm
+					</Button>
+				</DialogActions>
+			</Dialog>
+			<Dialog
+				open={sessionModalOpen}
+				onClose={() => setSessionModalOpen(false)}
+				aria-labelledby="alert-dialog-title"
+				aria-describedby="alert-dialog-description"
+				>
+				<DialogTitle id="alert-dialog-title">{"Confirm Session Deletion"}</DialogTitle>
+				<DialogContent>
+					<DialogContentText id="alert-dialog-description">
+						{`Are you sure you want the session? This will also delete all associated student submissions.`}
+					</DialogContentText>
+				</DialogContent>
+				<DialogActions>
+					<Button onClick={() => setSessionModalOpen(false)} color="primary">
+						Cancel
+					</Button>
+					<Button onClick={() => deleteSession(selectedSession)} color="primary" autoFocus>
 						Confirm
 					</Button>
 				</DialogActions>
