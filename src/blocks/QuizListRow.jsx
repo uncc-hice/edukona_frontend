@@ -1,6 +1,5 @@
 import { Delete } from "@mui/icons-material"
 import { Box, Button, CircularProgress, Collapse, Dialog, DialogActions, DialogContent, DialogContentText, DialogTitle, Table, TableCell, TableHead, TableRow, Typography } from "@mui/material"
-import { textAlign } from "@mui/system"
 import axios from "axios"
 import React, { useRef, useState } from "react"
 import { Link, useNavigate } from "react-router-dom"
@@ -16,8 +15,14 @@ const QuizListRow = ({quiz, onUpdate}) => {
 	const [selectedSession, setSelectedSession] = useState(null);
 	const [sessionModalOpen, setSessionModalOpen] = useState(null);
 	const [error, setError] = useState(null);
-
 	const navigate = useNavigate();
+	const createdAt = useRef(new Date(quiz.created_at).toLocaleString('en-us', {
+		month: 'long',
+		day: 'numeric',
+		year: 'numeric',
+		hour: 'numeric',
+		minute: 'numeric'
+	}));
 
 
 	const fetchSessions = () => axios.get(`https://api.edukona.com/quiz/${quiz.id}/sessions`, {
@@ -126,10 +131,12 @@ const QuizListRow = ({quiz, onUpdate}) => {
 		}
 	}
 
+	console.log(quiz);
 	return (
 		<React.Fragment>
 			<TableRow key={quiz.id}>
 				<TableCell>{quiz.title}</TableCell>
+				<TableCell>{createdAt.current}</TableCell>
 				<TableCell>
 					<Button
 						variant="contained"
@@ -168,11 +175,10 @@ const QuizListRow = ({quiz, onUpdate}) => {
 				</TableCell>
 				<TableCell>
 					<Button
-						variant="contained"
-						color="warning"
+						variant="Text"
 						onClick={() => setOpen(true)}
 						>
-						Delete Quiz
+						<Delete color={"action"} />
 					</Button>
 				</TableCell>
 			</TableRow>
