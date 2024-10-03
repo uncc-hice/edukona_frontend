@@ -54,12 +54,14 @@ const RecordButton = ({ onUpdate }) => {
 				}
 			})
 			.catch(error => console.log(error));
+		setTitle(null);
 	}
 
 	const handleCancelUpload = () => {
 		setButtonText("Start Recording");
 		setTitleOpen(false);
 		setCancelOpen(false);
+		setTitle(null);
 	}
 
 	useEffect(() => {
@@ -175,7 +177,7 @@ const RecordButton = ({ onUpdate }) => {
 					onChange={(e) => setTitle(e.target.value)}
 				/>
 				<Button onClick={() => setCancelOpen(true)}>Cancel</Button>
-				<Button disabled={title === null} onClick={handleUpload}>Upload Recording</Button>
+				<Button disabled={title === null } onClick={handleUpload}>Upload Recording</Button>
 			</DialogContent>
 		</Dialog>
 		<Dialog
