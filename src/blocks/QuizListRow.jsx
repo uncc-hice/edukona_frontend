@@ -1,3 +1,4 @@
+import { Delete } from "@mui/icons-material"
 import { Box, Button, CircularProgress, Collapse, Dialog, DialogActions, DialogContent, DialogContentText, DialogTitle, Table, TableCell, TableHead, TableRow, Typography } from "@mui/material"
 import { textAlign } from "@mui/system"
 import axios from "axios"
@@ -10,10 +11,24 @@ const QuizListRow = ({quiz, onUpdate}) => {
 	const [sessionsOpen, setSessionsOpen] = useState(false);
 	const [open, setOpen] = useState(false);
 	const [loading, setLoading] = useState(false);
-	const sessions = useRef(null);
+	const sessionsCache = useRef(null);
+	const [sessions, setSessions] = useState(null);
 	const [error, setError] = useState(null);
 
 	const navigate = useNavigate();
+
+
+	const fetchSessions = () => axios.get(`https://api.edukona.com/quiz/${quiz.id}/sessions`, {
+		headers: {
+			Authorization: `Token ${token.current}`,
+		}
+		})
+		.then(res => {
+			sessionsCache.current = res.data.quiz_sessions;
+			setSessions(res.data.quiz_sessions);
+		})
+		.catch(error => setError(error))
+		.finally(() => setLoading(false));
 
 	const handleViewSessions = () => {
 		if (sessionsOpen === true) {
@@ -22,17 +37,27 @@ const QuizListRow = ({quiz, onUpdate}) => {
 		}
 
 		setSessionsOpen(true);
-		if (!sessions.current) {
+		if (!sessionsCache.current) {
 			setLoading(true);
-		axios.get(`https://api.edukona.com/quiz/${quiz.id}/sessions`, {
-				headers: {
-					Authorization: `Token ${token.current}`,
-				}
-				})
-				.then(res => sessions.current = res.data.quiz_sessions)
-				.catch(error => setError(error))
-				.finally(() => setLoading(false));
+			fetchSessions();
+		} else {
+			setSessions(sessionsCache.current);
 		}
+	}
+
+	const deleteSession = (sessionCode) => {
+		toast.promise(
+			axios.delete(
+				`https://api.edukona.com/quiz-session-delete/${sessionCode}`, {
+					headers: {
+						Authorization: `Token ${token.current}`,
+					},
+			}), { 
+				pending: "Deleting session",
+				success: "Succesfully deleted session",
+				error: "Failed to delete session",
+			})
+			.then(() => fetchSessions());
 	}
 
 	const startQuiz = async (quizId) => {
@@ -143,13 +168,13 @@ const QuizListRow = ({quiz, onUpdate}) => {
 					</Button>
 				</TableCell>
 			</TableRow>
-		<TableRow>
+			<TableRow>
 				<TableCell style={{paddingTop: 0, paddingBottom: 0}} colSpan={6}>
 					<Collapse in={sessionsOpen} timeout="auto" unmountOnExit>
 						<Box sx={{ margin: 1 }}>
 							{loading ?  <Box sx={{display: "flex", justifyContent: "center"}}><CircularProgress /></Box> :
-								error ?  <Typography variant="h6" color={"error"} textAlign="center">`{error}`</Typography>:
-									(!sessions.current || sessions.current.length <= 0) ? <Typography variant="h6" textAlign="center">No Sessions for {quiz.title}</Typography> :
+								error ?  <Typography variant="h6" color={"error"} textAlign="center">`{error.toString()}`</Typography>:
+									(!sessions || sessions.length <= 0) ? <Typography variant="h6" textAlign="center">No Sessions for {quiz.title}</Typography> :
 										<React.Fragment>
 											<Table size={"small"} aria-label={"sessions"}>
 												<TableHead>
@@ -159,20 +184,25 @@ const QuizListRow = ({quiz, onUpdate}) => {
 														<TableCell style={{textAlign: "center"}}>Actions</TableCell>
 													</TableRow>
 												</TableHead>
-												{sessions.current  && sessions.current.map((session) => (
+												{sessions  && sessions.map((session) => (
 													<TableRow>
 														<TableCell style={{textAlign: "center"}}>
-															{new Date(session.start_time).toLocaleString()}
+														{new Date(session.start_time).toLocaleString()}
 														</TableCell>
 														<TableCell style={{textAlign: "center"}}>
 															{new Date(session.end_time).toLocaleString()}
 														</TableCell>
 														<TableCell style={{textAlign: "center"}}>
-															<Link to={`/results/${session.code}`}>
-																<Button variant="contained" color="primary">
-																	View Results
+															<Box flex flexDirection={'row'}>
+																<Link to={`/results/${session.code}`}>
+																	<Button variant="contained" color="primary">
+																		View Results
+																	</Button>
+																</Link>
+															<Button variant="text" sx={{'marginLeft': '5px'}}>
+																	<Delete color="action" onClick={() => deleteSession(session.code, quiz.id)} />
 																</Button>
-															</Link>
+															</Box>
 														</TableCell>
 													</TableRow>
 												))}
