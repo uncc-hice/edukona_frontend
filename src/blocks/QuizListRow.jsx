@@ -1,3 +1,4 @@
+import { Delete } from "@mui/icons-material"
 import { Box, Button, CircularProgress, Collapse, Dialog, DialogActions, DialogContent, DialogContentText, DialogTitle, Table, TableCell, TableHead, TableRow, Typography } from "@mui/material"
 import { textAlign } from "@mui/system"
 import axios from "axios"
@@ -12,8 +13,14 @@ const QuizListRow = ({quiz, onUpdate}) => {
 	const [loading, setLoading] = useState(false);
 	const sessions = useRef(null);
 	const [error, setError] = useState(null);
-
 	const navigate = useNavigate();
+	const createdAt = useRef(new Date(quiz.created_at).toLocaleString('en-us', {
+		month: 'long',
+		day: 'numeric',
+		year: 'numeric',
+		hour: 'numeric',
+		minute: 'numeric'
+	}));
 
 	const handleViewSessions = () => {
 		if (sessionsOpen === true) {
@@ -93,10 +100,12 @@ const QuizListRow = ({quiz, onUpdate}) => {
 		}
 	}
 
+	console.log(quiz);
 	return (
 		<React.Fragment>
 			<TableRow key={quiz.id}>
 				<TableCell>{quiz.title}</TableCell>
+				<TableCell>{createdAt.current}</TableCell>
 				<TableCell>
 					<Button
 						variant="contained"
@@ -135,11 +144,10 @@ const QuizListRow = ({quiz, onUpdate}) => {
 				</TableCell>
 				<TableCell>
 					<Button
-						variant="contained"
-						color="warning"
+						variant="Text"
 						onClick={() => setOpen(true)}
 						>
-						Delete Quiz
+						<Delete color={"action"} />
 					</Button>
 				</TableCell>
 			</TableRow>
