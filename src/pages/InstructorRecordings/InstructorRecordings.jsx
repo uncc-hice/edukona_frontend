@@ -25,6 +25,7 @@ import useWebSocket from "react-use-websocket";
 import { toast } from 'react-toastify';
 import { Delete } from '@mui/icons-material';
 import Dashboard from '../../layouts/Dashboard/Dashboard';
+import RecordingTitle from '../../blocks/RecordingTitle';
 
 const InstructorRecordings = () => {
 	const [recordings, setRecordings] = useState([]);
@@ -132,7 +133,7 @@ const InstructorRecordings = () => {
 						<TableRow>
 							<TableCell>
 								<Typography variant="h6" align="center">
-									Recording ID
+									Title
 								</Typography>
 							</TableCell>
 							<TableCell>
@@ -155,7 +156,7 @@ const InstructorRecordings = () => {
 					<TableBody>
 						{recordings.map((recording) => (<TableRow key={recording.id}>
 							<TableCell align="center">
-								{recording.id}
+								<RecordingTitle id={recording.id} title={recording.title} />
 							</TableCell>
 							<TableCell align="center">
 								{new Date(recording.uploaded_at).toLocaleDateString(undefined, {
