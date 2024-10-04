@@ -117,7 +117,8 @@ const InstructorRecordings = () => {
 		fetchRecordings();
 		}, [token]);
 
-	return (<Dashboard>
+	return (
+		<Dashboard>
 		<Container sx={{ padding: '40px' }}>
 			<Snackbar open={open} autoHideDuration={6000} onClose={handleClose}>
 				<Alert onClose={handleClose} severity="error" sx={{ width: '100%' }}>
@@ -205,7 +206,8 @@ const InstructorRecordings = () => {
 				</DialogActions>
 			</Dialog>
 		</Container>
-	</Dashboard>);
+	</Dashboard>
+	);
 };
 
 export default InstructorRecordings;
