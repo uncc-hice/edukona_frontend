@@ -61,35 +61,35 @@ const InstructorQuestionView = () => {
   }, [handleNextQuestion]);
 
   return (<Box display="flex" flexDirection="column" height="100vh">
-      <Navbar/>
-      <Box display="flex" flexDirection="row">
-        <AudioToggle src="/marimba.mp3"/>
-      </Box>
-      {/* Remove Timer from here */}
-      <Box flexGrow={1} display="flex" alignItems="center" justifyContent="center">
-        {quizEnded ? (<QuizEndView/>) : currentQuestion ? (<>
-            <QuizComponent
-              userCount={userCount}
-              liveBarChart={settings["live_bar_chart"]}
-              question={currentQuestion}
-              code={code}
-              responseData={responseData}
-              sendMessage={sendMessage}
-              // Pass timer-related props
-              quizEnded={quizEnded}
-              timerEnabled={settings["timer"]}
-              timerDuration={settings["timer_duration"]}
-              resetTimer={resetTimer}
-              onTimerEnd={onTimerEnd}
-            />
-          </>) : (<Typography>Loading question...</Typography>)}
-      </Box>
-      {!quizEnded && currentQuestion && (<Box textAlign="right" p={2}>
-          <Button variant="contained" color="primary" onClick={handleNextQuestion}>
-            Next Question
-          </Button>
-        </Box>)}
-    </Box>);
+    <Navbar/>
+    <Box display="flex" flexDirection="row">
+      <AudioToggle src="/marimba.mp3"/>
+    </Box>
+    {/* Remove Timer from here */}
+    <Box flexGrow={1} display="flex" alignItems="center" justifyContent="center">
+      {quizEnded ? (<QuizEndView/>) : currentQuestion ? (<>
+        <QuizComponent
+          userCount={userCount}
+          liveBarChart={settings["live_bar_chart"]}
+          question={currentQuestion}
+          code={code}
+          responseData={responseData}
+          sendMessage={sendMessage}
+          // Pass timer-related props
+          quizEnded={quizEnded}
+          timerEnabled={settings["timer"]}
+          timerDuration={settings["timer_duration"]}
+          resetTimer={resetTimer}
+          onTimerEnd={onTimerEnd}
+        />
+      </>) : (<Typography>Loading question...</Typography>)}
+    </Box>
+    {!quizEnded && currentQuestion && (<Box textAlign="right" p={2}>
+      <Button variant="contained" color="primary" onClick={handleNextQuestion}>
+        Next Question
+      </Button>
+    </Box>)}
+  </Box>);
 };
 
 export default InstructorQuestionView;
