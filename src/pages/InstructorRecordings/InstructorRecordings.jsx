@@ -23,8 +23,8 @@ import axios from "axios";
 import RecordButton from '../../blocks/RecordButton';
 import useWebSocket from "react-use-websocket";
 import { toast } from 'react-toastify';
-import Navbar from '../../blocks/Navbar';
 import { Delete } from '@mui/icons-material';
+import Dashboard from '../../layouts/Dashboard/Dashboard';
 import RecordingTitle from '../../blocks/RecordingTitle';
 
 const InstructorRecordings = () => {
@@ -118,8 +118,8 @@ const InstructorRecordings = () => {
 		fetchRecordings();
 		}, [token]);
 
-	return (<div>
-		<Navbar/>
+	return (
+		<Dashboard>
 		<Container sx={{ padding: '40px' }}>
 			<Snackbar open={open} autoHideDuration={6000} onClose={handleClose}>
 				<Alert onClose={handleClose} severity="error" sx={{ width: '100%' }}>
@@ -207,7 +207,8 @@ const InstructorRecordings = () => {
 				</DialogActions>
 			</Dialog>
 		</Container>
-	</div>);
+	</Dashboard>
+	);
 };
 
 export default InstructorRecordings;
