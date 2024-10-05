@@ -38,8 +38,7 @@ const mock = [
   },
   {
     title: 'Designed to be modern',
-    subtitle:
-      'Designed with the latest design trends in mind. EduKona feels modern, minimal, and beautiful.',
+    subtitle: 'Designed with the latest design trends in mind. EduKona feels modern, minimal, and beautiful.',
     icon: (
       <svg
         height={24}
@@ -61,7 +60,7 @@ const mock = [
   {
     title: 'Documentation for everything',
     subtitle:
-      'We\'ve written extensive documentation for features and settings, so you never have to look anything up or worry about how to customize quizzes.',
+      "We've written extensive documentation for features and settings, so you never have to look anything up or worry about how to customize quizzes.",
     icon: (
       <svg
         height={24}
@@ -157,8 +156,7 @@ const ForInstructor = () => {
                 height={1}
                 sx={{
                   objectFit: 'cover',
-                  filter:
-                    theme.palette.mode === 'dark' ? 'brightness(0.7)' : 'none',
+                  filter: theme.palette.mode === 'dark' ? 'brightness(0.7)' : 'none',
                 }}
               />
             </Box>
@@ -177,12 +175,11 @@ const ForInstructor = () => {
           </Typography>
         </Box>
         <Typography variant="h6" component="p" align={'center'}>
-            Creating and customizing quizzes can be highly complex,
+          Creating and customizing quizzes can be highly complex,
         </Typography>
         <Typography variant="h6" component="p" align={'center'}>
-            but our app simplifies this process, making it fully customizable and easy to use.
+          but our app simplifies this process, making it fully customizable and easy to use.
         </Typography>
-
       </Box>
       <Grid container spacing={4}>
         <Grid item container alignItems={'center'} xs={12} md={6}>

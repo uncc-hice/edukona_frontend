@@ -21,11 +21,7 @@ const NavItem = ({ title, items }) => {
 
   return (
     <Box>
-      <Accordion
-        disableGutters
-        elevation={0}
-        sx={{ backgroundColor: 'transparent' }}
-      >
+      <Accordion disableGutters elevation={0} sx={{ backgroundColor: 'transparent' }}>
         <AccordionSummary
           expandIcon={<ExpandMoreIcon />}
           aria-controls="panel1a-content"
@@ -50,14 +46,9 @@ const NavItem = ({ title, items }) => {
                   fullWidth
                   sx={{
                     justifyContent: 'flex-start',
-                    color:
-                      activeLink === p.href
-                        ? theme.palette.primary.main
-                        : theme.palette.text.primary,
+                    color: activeLink === p.href ? theme.palette.primary.main : theme.palette.text.primary,
                     backgroundColor:
-                      activeLink === p.href
-                        ? alpha(theme.palette.primary.main, 0.1)
-                        : 'transparent',
+                      activeLink === p.href ? alpha(theme.palette.primary.main, 0.1) : 'transparent',
                     fontWeight: activeLink === p.href ? 600 : 400,
                   }}
                 >
@@ -70,10 +61,7 @@ const NavItem = ({ title, items }) => {
                       bgcolor={'primary.main'}
                       marginLeft={2}
                     >
-                      <Typography
-                        variant={'caption'}
-                        sx={{ color: 'common.white', lineHeight: 1 }}
-                      >
+                      <Typography variant={'caption'} sx={{ color: 'common.white', lineHeight: 1 }}>
                         new
                       </Typography>
                     </Box>

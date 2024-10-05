@@ -33,8 +33,7 @@ const ResizableFrame = ({ src, title, path, iframeStyles = {}, ...rest }) => {
       iframeEl.current.contentWindow.document.documentElement
     ) {
       const height =
-        iframeEl.current.contentWindow.document.documentElement.offsetHeight ||
-        viewportInitialHeight;
+        iframeEl.current.contentWindow.document.documentElement.offsetHeight || viewportInitialHeight;
       setViewportHeight(height);
     }
   };
@@ -84,20 +83,12 @@ const ResizableFrame = ({ src, title, path, iframeStyles = {}, ...rest }) => {
                 d="M3 7v10a2 2 0 002 2h14a2 2 0 002-2V9a2 2 0 00-2-2h-6l-2-2H5a2 2 0 00-2 2z"
               />
             </Box>
-            <Typography
-              variant={'caption'}
-              color={'text.secondary'}
-              marginLeft={1}
-            >
+            <Typography variant={'caption'} color={'text.secondary'} marginLeft={1}>
               {path}
             </Typography>
           </Box>
         </Box>
-        <Box
-          width={1}
-          border={`1px solid ${theme.palette.divider}`}
-          borderRadius={2}
-        >
+        <Box width={1} border={`1px solid ${theme.palette.divider}`} borderRadius={2}>
           <Box
             display={'flex'}
             alignItems={'center'}
@@ -107,9 +98,7 @@ const ResizableFrame = ({ src, title, path, iframeStyles = {}, ...rest }) => {
           >
             <Button
               component={'a'}
-              href={
-                'https://material-ui.com/store/items/the-front-landing-page/'
-              }
+              href={'https://material-ui.com/store/items/the-front-landing-page/'}
               target={'_blank'}
               variant={'contained'}
               size="large"
@@ -143,9 +132,7 @@ const ResizableFrame = ({ src, title, path, iframeStyles = {}, ...rest }) => {
                 }}
               >
                 <Button
-                  variant={
-                    viewportWidth === 'mobile' ? 'contained' : 'outlined'
-                  }
+                  variant={viewportWidth === 'mobile' ? 'contained' : 'outlined'}
                   title={'Mobile view'}
                   onClick={() => handleResizeBtnClick('mobile')}
                 >
@@ -167,9 +154,7 @@ const ResizableFrame = ({ src, title, path, iframeStyles = {}, ...rest }) => {
                   </Box>
                 </Button>
                 <Button
-                  variant={
-                    viewportWidth === 'tablet' ? 'contained' : 'outlined'
-                  }
+                  variant={viewportWidth === 'tablet' ? 'contained' : 'outlined'}
                   title={'Tablet view'}
                   onClick={() => handleResizeBtnClick('tablet')}
                 >
@@ -191,9 +176,7 @@ const ResizableFrame = ({ src, title, path, iframeStyles = {}, ...rest }) => {
                   </Box>
                 </Button>
                 <Button
-                  variant={
-                    viewportWidth === 'desktop' ? 'contained' : 'outlined'
-                  }
+                  variant={viewportWidth === 'desktop' ? 'contained' : 'outlined'}
                   title={'Desktop view'}
                   onClick={() => handleResizeBtnClick('desktop')}
                 >
@@ -243,11 +226,7 @@ const ResizableFrame = ({ src, title, path, iframeStyles = {}, ...rest }) => {
           </Box>
           <Box bgcolor={'alternate.dark'}>
             <NoSsr>
-              <Box
-                maxWidth={viewportWidthMap[viewportWidth]}
-                width={1}
-                display={'flex'}
-              >
+              <Box maxWidth={viewportWidthMap[viewportWidth]} width={1} display={'flex'}>
                 <iframe
                   ref={iframeEl}
                   key={random}

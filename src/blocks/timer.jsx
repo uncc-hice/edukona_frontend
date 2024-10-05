@@ -57,9 +57,7 @@ const Timer = ({ initialTime, onTimerEnd, resetTrigger }) => {
     };
   };
 
-  return (<div style={getTimerStyle()}>
-      {formatTime()}
-    </div>);
+  return <div style={getTimerStyle()}>{formatTime()}</div>;
 };
 
 export default Timer;

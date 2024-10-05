@@ -31,14 +31,7 @@ const Unauthorized = () => {
       >
         <Container>
           <Grid container>
-            <Grid
-              item
-              container
-              alignItems={'center'}
-              justifyContent={'center'}
-              xs={12}
-              md={6}
-            >
+            <Grid item container alignItems={'center'} justifyContent={'center'} xs={12} md={6}>
               <Box>
                 <Typography
                   variant="h1"
@@ -48,33 +41,23 @@ const Unauthorized = () => {
                 >
                   401
                 </Typography>
-                  <Typography
-                      variant="h6"
-                      component="p"
-                      color="text.secondary"
-                      align={isMd ? 'left' : 'center'}
-                  >
-                      Unauthorized Access
-                      <br />
-                      You do not have permission to view this page.
-                      <br />
-                      If you believe this is a mistake, please{' '}
-                      <Link href={''} underline="none">
-                          contact us
-                      </Link>
-                  </Typography>
-                <Box
-                  marginTop={4}
-                  display={'flex'}
-                  justifyContent={{ xs: 'center', md: 'flex-start' }}
+                <Typography
+                  variant="h6"
+                  component="p"
+                  color="text.secondary"
+                  align={isMd ? 'left' : 'center'}
                 >
-                  <Button
-                    component={Link}
-                    variant="contained"
-                    color="primary"
-                    size="large"
-                    href={'/'}
-                  >
+                  Unauthorized Access
+                  <br />
+                  You do not have permission to view this page.
+                  <br />
+                  If you believe this is a mistake, please{' '}
+                  <Link href={''} underline="none">
+                    contact us
+                  </Link>
+                </Typography>
+                <Box marginTop={4} display={'flex'} justifyContent={{ xs: 'center', md: 'flex-start' }}>
+                  <Button component={Link} variant="contained" color="primary" size="large" href={'/'}>
                     Back home
                   </Button>
                 </Box>
@@ -90,10 +73,7 @@ const Unauthorized = () => {
                   width={1}
                   height={1}
                   sx={{
-                    filter:
-                      theme.palette.mode === 'dark'
-                        ? 'brightness(0.8)'
-                        : 'none',
+                    filter: theme.palette.mode === 'dark' ? 'brightness(0.8)' : 'none',
                   }}
                 />
               </Box>

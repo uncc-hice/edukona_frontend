@@ -60,12 +60,7 @@ const Main = ({ children, colorInvert = false, bgcolor = 'transparent' }) => {
           />
         </Container>
       </AppBar>
-      <Sidebar
-        onClose={handleSidebarClose}
-        open={open}
-        variant="temporary"
-        pages={pages}
-      />
+      <Sidebar onClose={handleSidebarClose} open={open} variant="temporary" pages={pages} />
       <main>
         {children}
         <Divider />

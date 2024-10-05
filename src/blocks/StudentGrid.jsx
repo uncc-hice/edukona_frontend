@@ -4,23 +4,36 @@ import DeleteIcon from '@mui/icons-material/Delete';
 import { red } from '@mui/material/colors';
 
 const StudentGrid = ({ students, onDelete }) => {
-    return (
-        <Grid container spacing={2}>
-            {students.length > 0 ? students.map((student, index) => (
-                <Grid item xs={12} sm={6} md={4} key={index}>
-                    <Paper elevation={3} style={{ padding: '20px', position: 'relative', display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
-                        <div>
-                            <Typography variant="h6">{student.username}</Typography>
-                            <Typography>{student.class}</Typography>
-                        </div>
-                        <IconButton onClick={() => onDelete(student.username)} style={{ color: red[500] }}>
-                            <DeleteIcon />
-                        </IconButton>
-                    </Paper>
-                </Grid>
-            )) : <Typography>No students found.</Typography>}
-        </Grid>
-    );
+  return (
+    <Grid container spacing={2}>
+      {students.length > 0 ? (
+        students.map((student, index) => (
+          <Grid item xs={12} sm={6} md={4} key={index}>
+            <Paper
+              elevation={3}
+              style={{
+                padding: '20px',
+                position: 'relative',
+                display: 'flex',
+                alignItems: 'center',
+                justifyContent: 'space-between',
+              }}
+            >
+              <div>
+                <Typography variant="h6">{student.username}</Typography>
+                <Typography>{student.class}</Typography>
+              </div>
+              <IconButton onClick={() => onDelete(student.username)} style={{ color: red[500] }}>
+                <DeleteIcon />
+              </IconButton>
+            </Paper>
+          </Grid>
+        ))
+      ) : (
+        <Typography>No students found.</Typography>
+      )}
+    </Grid>
+  );
 };
 
 export default StudentGrid;
