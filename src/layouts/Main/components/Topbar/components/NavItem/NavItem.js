@@ -91,20 +91,13 @@ const NavItem = ({ title, id, items, colorInvert = false }) => {
                 sx={{
                   justifyContent: 'flex-start',
                   color: activeLink === p.href ? theme.palette.primary.main : theme.palette.text.primary,
-                  backgroundColor:
-                    activeLink === p.href ? alpha(theme.palette.primary.main, 0.1) : 'transparent',
+                  backgroundColor: activeLink === p.href ? alpha(theme.palette.primary.main, 0.1) : 'transparent',
                   fontWeight: activeLink === p.href ? 600 : 400,
                 }}
               >
                 {p.title}
                 {p.isNew && (
-                  <Box
-                    padding={0.5}
-                    display={'inline-flex'}
-                    borderRadius={1}
-                    bgcolor={'primary.main'}
-                    marginLeft={2}
-                  >
+                  <Box padding={0.5} display={'inline-flex'} borderRadius={1} bgcolor={'primary.main'} marginLeft={2}>
                     <Typography variant={'caption'} sx={{ color: 'common.white', lineHeight: 1 }}>
                       new
                     </Typography>

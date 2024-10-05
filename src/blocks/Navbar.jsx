@@ -21,21 +21,13 @@ const Navbar = () => {
           EduKona: Bridging Technology and Pedagogy with Adaptive Educational Games
         </Typography>
         <div>
-          <Button
-            color="inherit"
-            onClick={() => home()}
-            style={{ textTransform: 'capitalize', fontSize: '16px' }}
-          >
+          <Button color="inherit" onClick={() => home()} style={{ textTransform: 'capitalize', fontSize: '16px' }}>
             Home
           </Button>
           <Button color="inherit" style={{ textTransform: 'capitalize', fontSize: '16px' }}>
             Profile
           </Button>
-          <Button
-            color="inherit"
-            onClick={() => logout()}
-            style={{ textTransform: 'capitalize', fontSize: '16px' }}
-          >
+          <Button color="inherit" onClick={() => logout()} style={{ textTransform: 'capitalize', fontSize: '16px' }}>
             Logout
           </Button>
         </div>

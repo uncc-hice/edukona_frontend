@@ -42,10 +42,7 @@ const YourSessions = () => {
       <List>
         {sessions.map((session) => (
           <ListItem key={session.quiz_session_id} divider>
-            <ListItemText
-              primary={session.quiz_name}
-              secondary={`Start Time: ${formatDateTime(session.start_time)}`}
-            />
+            <ListItemText primary={session.quiz_name} secondary={`Start Time: ${formatDateTime(session.start_time)}`} />
             <Link to={`/results/${session.code}`} style={{ textDecoration: 'none' }}>
               <Button variant="contained" color="primary">
                 View Results

@@ -70,12 +70,7 @@ const mock = [
         viewBox="0 0 24 24"
         stroke="currentColor"
       >
-        <path
-          strokeLinecap="round"
-          strokeLinejoin="round"
-          strokeWidth={2}
-          d="M10 20l4-16m4 4l4 4-4 4M6 16l-4-4 4-4"
-        />
+        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M10 20l4-16m4 4l4 4-4 4M6 16l-4-4 4-4" />
       </svg>
     ),
   },
@@ -105,13 +100,7 @@ const ForStudent = () => {
           }}
         >
           <Box>
-            <Box
-              position={'relative'}
-              zIndex={2}
-              maxWidth={1}
-              height={'auto'}
-              sx={{ verticalAlign: 'middle' }}
-            >
+            <Box position={'relative'} zIndex={2} maxWidth={1} height={'auto'} sx={{ verticalAlign: 'middle' }}>
               <PhoneSkeletonIllustration />
             </Box>
             <Box position={'absolute'} top={'2.4%'} left={'4%'} width={'92.4%'} height={'96%'}>
@@ -178,8 +167,8 @@ const ForStudent = () => {
           Participating in classroom quizzes can be daunting,
         </Typography>
         <Typography variant="h6" component="p" align={'center'}>
-          but our app transforms this experience into an engaging and interactive activity, making it fun and
-          easy to excel.
+          but our app transforms this experience into an engaging and interactive activity, making it fun and easy to
+          excel.
         </Typography>
       </Box>
       <Grid container spacing={4}>

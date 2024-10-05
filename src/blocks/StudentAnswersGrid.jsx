@@ -3,15 +3,7 @@ import axios from 'axios';
 import { Grid, Box, Typography } from '@mui/material';
 import StudentAnswerOption from './StudentAnswerOption';
 
-const StudentAnswersGrid = ({
-  answers,
-  question,
-  code,
-  sendMessage,
-  setIsSubmitted,
-  isSubmitted,
-  quizSession,
-}) => {
+const StudentAnswersGrid = ({ answers, question, code, sendMessage, setIsSubmitted, isSubmitted, quizSession }) => {
   const { id: questionId, question_text, incorrect_answer_list, correct_answer } = question;
   const [selectedAnswer, setSelectedAnswer] = useState('');
   const sid = localStorage.getItem('sid');

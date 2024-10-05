@@ -59,10 +59,7 @@ function App() {
       <Router>
         <ReactNotifications />
         <Routes>
-          <Route
-            path="/student-dashboard"
-            element={isLoggedIn ? <StudentDashboard /> : <Navigate to="/login" />}
-          />
+          <Route path="/student-dashboard" element={isLoggedIn ? <StudentDashboard /> : <Navigate to="/login" />} />
           <Route path="/join" element={<JoinQuiz />} />
           <Route path="/" element={<Landing />} />
           <Route

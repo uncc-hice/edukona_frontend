@@ -59,13 +59,7 @@ const LoginForm = ({ toggleForm }) => {
 
   return (
     <Container component="main" maxWidth="xs" style={{ height: '100vh' }}>
-      <Grid
-        container
-        direction="column"
-        justifyContent="center"
-        alignItems="center"
-        style={{ minHeight: '100vh' }}
-      >
+      <Grid container direction="column" justifyContent="center" alignItems="center" style={{ minHeight: '100vh' }}>
         <div>
           <Typography variant="h4" component="h1" align="center">
             Login

@@ -32,8 +32,7 @@ const ResizableFrame = ({ src, title, path, iframeStyles = {}, ...rest }) => {
       iframeEl.current.contentWindow.document &&
       iframeEl.current.contentWindow.document.documentElement
     ) {
-      const height =
-        iframeEl.current.contentWindow.document.documentElement.offsetHeight || viewportInitialHeight;
+      const height = iframeEl.current.contentWindow.document.documentElement.offsetHeight || viewportInitialHeight;
       setViewportHeight(height);
     }
   };
@@ -112,12 +111,7 @@ const ResizableFrame = ({ src, title, path, iframeStyles = {}, ...rest }) => {
                   width={24}
                   height={24}
                 >
-                  <path
-                    strokeLinecap="round"
-                    strokeLinejoin="round"
-                    strokeWidth={2}
-                    d="M17 8l4 4m0 0l-4 4m4-4H3"
-                  />
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M17 8l4 4m0 0l-4 4m4-4H3" />
                 </Box>
               }
             >
@@ -198,13 +192,7 @@ const ResizableFrame = ({ src, title, path, iframeStyles = {}, ...rest }) => {
                   </Box>
                 </Button>
               </ButtonGroup>
-              <Button
-                component={'a'}
-                href={src}
-                target={'_blank'}
-                variant={'outlined'}
-                sx={{ marginLeft: 2 }}
-              >
+              <Button component={'a'} href={src} target={'_blank'} variant={'outlined'} sx={{ marginLeft: 2 }}>
                 <Box
                   component={'svg'}
                   xmlns="http://www.w3.org/2000/svg"

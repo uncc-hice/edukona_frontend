@@ -26,10 +26,7 @@ const Hero = () => {
           variant="h2"
           fontWeight={700}
           sx={{
-            background: `linear-gradient(180deg, transparent 82%, ${alpha(
-              theme.palette.secondary.main,
-              0.3
-            )} 0%)`,
+            background: `linear-gradient(180deg, transparent 82%, ${alpha(theme.palette.secondary.main, 0.3)} 0%)`,
           }}
         >
           efficient
@@ -80,12 +77,7 @@ const Hero = () => {
       }}
     >
       <Container paddingX={0} paddingY={0} maxWidth={{ sm: 1, md: 1236 }}>
-        <Box
-          display={'flex'}
-          flexDirection={{ xs: 'column', md: 'row' }}
-          position={'relative'}
-          minHeight={{ md: 600 }}
-        >
+        <Box display={'flex'} flexDirection={{ xs: 'column', md: 'row' }} position={'relative'} minHeight={{ md: 600 }}>
           <Box width={1} order={{ xs: 2, md: 1 }} display={'flex'} alignItems={'center'}>
             <Container>
               <LeftSide />

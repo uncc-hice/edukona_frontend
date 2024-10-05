@@ -58,14 +58,7 @@ const Topbar = ({ onSidebarOpen, colorInvert = false }) => {
                 Dashboard
               </Button>
 
-              <Button
-                variant="text"
-                color="primary"
-                component="a"
-                href="/team"
-                size="large"
-                sx={{ marginLeft: 4 }}
-              >
+              <Button variant="text" color="primary" component="a" href="/team" size="large" sx={{ marginLeft: 4 }}>
                 Team
               </Button>
 
@@ -75,14 +68,7 @@ const Topbar = ({ onSidebarOpen, colorInvert = false }) => {
             </>
           ) : (
             <>
-              <Button
-                variant="text"
-                color="primary"
-                component="a"
-                href="/team"
-                size="large"
-                sx={{ marginLeft: 4 }}
-              >
+              <Button variant="text" color="primary" component="a" href="/team" size="large" sx={{ marginLeft: 4 }}>
                 Team
               </Button>
               <Button

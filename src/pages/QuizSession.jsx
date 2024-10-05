@@ -43,9 +43,7 @@ const QuizSession = () => {
     if (receivedData.type === 'student_joined') {
       setStudents((prevStudents) => [...prevStudents, { username: receivedData.username }]);
     } else if (receivedData.type === 'student_deleted') {
-      setStudents((prevStudents) =>
-        prevStudents.filter((student) => student.username !== receivedData.username)
-      );
+      setStudents((prevStudents) => prevStudents.filter((student) => student.username !== receivedData.username));
       console.log(`Deleted student (here): ${receivedData.username}`);
     }
   };

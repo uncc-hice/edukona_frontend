@@ -55,14 +55,7 @@ const Overview = ({ mock }) => {
                   },
                 }}
               >
-                <Box
-                  component={CardMedia}
-                  borderRadius={2}
-                  width={1}
-                  height={1}
-                  minHeight={320}
-                  image={item.avatar}
-                />
+                <Box component={CardMedia} borderRadius={2} width={1} height={1} minHeight={320} image={item.avatar} />
                 <Box component={CardContent} bgcolor={'transparent'} marginTop={-5}>
                   <Box component={Card}>
                     <CardContent>

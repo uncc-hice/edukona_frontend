@@ -33,20 +33,10 @@ const Unauthorized = () => {
           <Grid container>
             <Grid item container alignItems={'center'} justifyContent={'center'} xs={12} md={6}>
               <Box>
-                <Typography
-                  variant="h1"
-                  component={'h1'}
-                  align={isMd ? 'left' : 'center'}
-                  sx={{ fontWeight: 700 }}
-                >
+                <Typography variant="h1" component={'h1'} align={isMd ? 'left' : 'center'} sx={{ fontWeight: 700 }}>
                   401
                 </Typography>
-                <Typography
-                  variant="h6"
-                  component="p"
-                  color="text.secondary"
-                  align={isMd ? 'left' : 'center'}
-                >
+                <Typography variant="h6" component="p" color="text.secondary" align={isMd ? 'left' : 'center'}>
                   Unauthorized Access
                   <br />
                   You do not have permission to view this page.

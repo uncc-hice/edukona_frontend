@@ -23,15 +23,12 @@ const JoinQuiz = () => {
   };
 
   // Setup WebSocket connection
-  const { sendMessage, lastMessage, readyState } = useWebSocket(
-    `wss://api.edukona.com/ws/student/join/${quizCode}/`,
-    {
-      onMessage: handleIncomingMessage,
-      shouldReconnect: (closeEvent) => true,
-      onOpen: () => console.log('WebSocket Connected'),
-      onClose: () => console.log('WebSocket Disconnected'),
-    }
-  );
+  const { sendMessage, lastMessage, readyState } = useWebSocket(`wss://api.edukona.com/ws/student/join/${quizCode}/`, {
+    onMessage: handleIncomingMessage,
+    shouldReconnect: (closeEvent) => true,
+    onOpen: () => console.log('WebSocket Connected'),
+    onClose: () => console.log('WebSocket Disconnected'),
+  });
 
   const handleSubmit = (e) => {
     e.preventDefault();

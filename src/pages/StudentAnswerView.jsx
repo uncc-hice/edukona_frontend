@@ -107,13 +107,7 @@ const StudentAnswerView = () => {
   return (
     <div>
       {loading ? (
-        <Box
-          display="flex"
-          flexDirection={'column'}
-          justifyContent="center"
-          alignItems="center"
-          height="100vh"
-        >
+        <Box display="flex" flexDirection={'column'} justifyContent="center" alignItems="center" height="100vh">
           <CircularProgress />
           <Typography variant="h6">Waiting for instructor to start the quiz.</Typography>
         </Box>

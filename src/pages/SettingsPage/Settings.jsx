@@ -121,9 +121,7 @@ const SettingsPage = () => {
         <div className="settings-panel">
           <h2>Behavioral Settings</h2>
           <FormControlLabel
-            control={
-              <Switch checked={settings.live_bar_chart} onChange={handleToggle} name="live_bar_chart" />
-            }
+            control={<Switch checked={settings.live_bar_chart} onChange={handleToggle} name="live_bar_chart" />}
             label="Live Bar Chart Display"
           />
           <FormControlLabel

@@ -6,13 +6,7 @@ const LaptopSkeleton = () => {
   const { mode } = theme.palette;
 
   return (
-    <svg
-      xmlns="http://www.w3.org/2000/svg"
-      x={0}
-      y={0}
-      enableBackground="new 0 0 999 577"
-      viewBox="0 0 999 577"
-    >
+    <svg xmlns="http://www.w3.org/2000/svg" x={0} y={0} enableBackground="new 0 0 999 577" viewBox="0 0 999 577">
       <path
         fill={theme.palette.background.paper}
         stroke={mode === 'light' ? '#ccc' : theme.palette.alternate.dark}
