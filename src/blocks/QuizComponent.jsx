@@ -41,17 +41,20 @@ const QuizComponent = ({
   return (
     <Box width="100%" p={theme.spacing(3)}>
       <Box display="flex" alignItems="center" justifyContent="space-between" width="100%">
-        <Box flexGrow={1} display="flex" justifyContent="center">
-          <Box mt={2} width="100%">
-            <LinearProgress variant="determinate" value={progressPercentage} style={{ height: 10, borderRadius: 5 }} />
+        {/* Progress Bar and Counts */}
+        <Box flexGrow={1}>
+          <Box mt={3} alignItems="center">
+            <LinearProgress variant="determinate" value={progressPercentage} style={{ height: 15, borderRadius: 5 }} />
             <Typography variant="body2" color="textSecondary" align="center" mt={1}>
               {Math.round(progressPercentage)}% of students have answered. Total Students: {userCount}. Total Responses:{' '}
               {totalResponses}
             </Typography>
           </Box>
         </Box>
+
+        {/* Timer */}
         {timerEnabled && (
-          <Box>
+          <Box ml={4}>
             <Timer key={resetTimer} initialTime={timerDuration} onTimerEnd={onTimerEnd} />
           </Box>
         )}
