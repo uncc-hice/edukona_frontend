@@ -4,6 +4,7 @@ import { useParams } from 'react-router-dom';
 import Navbar from '../blocks/Navbar';
 import { Button, Dialog, DialogActions, DialogContent, DialogContentText, DialogTitle, Grid, TextField } from '@mui/material';
 import {toast} from "react-toastify";
+import Dashboard from "../layouts/Dashboard/Dashboard";
 
 function EditQuizView() {
     const { quizId } = useParams();
@@ -225,10 +226,14 @@ function EditQuizView() {
     };
 
     return (
-        <div>
-            <Navbar />
+        <Dashboard>
             <div style={containerStyle}>
-                <h2 style={{ marginBottom: '20px', marginLeft: '20px', fontFamily: 'Roboto, sans-serif', fontSize: '30px' }}>Quiz Dashboard</h2>
+                <h2 style={{
+                    marginBottom: '20px',
+                    marginLeft: '20px',
+                    fontFamily: 'Roboto, sans-serif',
+                    fontSize: '30px'
+                }}>Quiz Dashboard</h2>
                 <form onSubmit={handleSubmit} style={formContainerStyle}>
                     <Grid container spacing={2}>
                         <Grid item xs={12} sm={6}>
@@ -242,7 +247,7 @@ function EditQuizView() {
                                     required
                                     fullWidth
                                     InputProps={{
-                                        style: { fontSize: '16px' }
+                                        style: {fontSize: '16px'}
                                     }}
                                     style={inputStyle}
                                 />
@@ -259,7 +264,7 @@ function EditQuizView() {
                                     required
                                     fullWidth
                                     InputProps={{
-                                        style: { fontSize: '16px' }
+                                        style: {fontSize: '16px'}
                                     }}
                                     style={inputStyle}
                                 />
@@ -276,7 +281,7 @@ function EditQuizView() {
                                     required
                                     fullWidth
                                     InputProps={{
-                                        style: { fontSize: '16px' }
+                                        style: {fontSize: '16px'}
                                     }}
                                     style={inputStyle}
                                 />
@@ -293,7 +298,7 @@ function EditQuizView() {
                                     required
                                     fullWidth
                                     InputProps={{
-                                        style: { fontSize: '16px' }
+                                        style: {fontSize: '16px'}
                                     }}
                                     style={inputStyle}
                                 />
@@ -310,7 +315,7 @@ function EditQuizView() {
                                     required
                                     fullWidth
                                     InputProps={{
-                                        style: { fontSize: '16px' }
+                                        style: {fontSize: '16px'}
                                     }}
                                     style={inputStyle}
                                 />
@@ -327,7 +332,7 @@ function EditQuizView() {
                                     required
                                     fullWidth
                                     InputProps={{
-                                        style: { fontSize: '16px' }
+                                        style: {fontSize: '16px'}
                                     }}
                                     style={inputStyle}
                                 />
@@ -346,35 +351,37 @@ function EditQuizView() {
                             <p style={labelStyle}>Points: {question.points}</p>
                             <p style={labelStyle}>Correct Answer: {question.correct_answer}</p>
                             <p style={labelStyle}>Incorrect Answers: {question.incorrect_answer_list.join(', ')}</p>
-                            <Button onClick={() => handleEditQuestion(question)} style={questionItemButtonStyle}>Edit</Button>
+                            <Button onClick={() => handleEditQuestion(question)}
+                                    style={questionItemButtonStyle}>Edit</Button>
                             <Button onClick={() => handleOpen(question.id)} style={deleteButtonStyle}>Delete</Button>
                         </div>
                     ))}
                 </div>
-				<Dialog
-					open={open}
-					onClose={handleClose}
-					aria-labelledby="alert-dialog-title"
-					aria-describedby="alert-dialog-description"
-					>
-					<DialogTitle id="alert-dialog-title">{"Confirm Deletion"}</DialogTitle>
-					<DialogContent>
-						<DialogContentText id="alert-dialog-description">
-							Are you sure you want to delete this question?
-						</DialogContentText>
-					</DialogContent>
-					<DialogActions>
-						<Button onClick={handleClose} color="primary">
-						Cancel
-						</Button>
-						<Button onClick={deleteQuestion} color="primary" autoFocus>
-						Confirm
-						</Button>
-					</DialogActions>
-				</Dialog>
+                <Dialog
+                    open={open}
+                    onClose={handleClose}
+                    aria-labelledby="alert-dialog-title"
+                    aria-describedby="alert-dialog-description"
+                >
+                    <DialogTitle id="alert-dialog-title">{"Confirm Deletion"}</DialogTitle>
+                    <DialogContent>
+                        <DialogContentText id="alert-dialog-description">
+                            Are you sure you want to delete this question?
+                        </DialogContentText>
+                    </DialogContent>
+                    <DialogActions>
+                        <Button onClick={handleClose} color="primary">
+                            Cancel
+                        </Button>
+                        <Button onClick={deleteQuestion} color="primary" autoFocus>
+                            Confirm
+                        </Button>
+                    </DialogActions>
+                </Dialog>
             </div>
-        </div>
-    );
+        </Dashboard>
+)
+    ;
 }
 
 export default EditQuizView;
