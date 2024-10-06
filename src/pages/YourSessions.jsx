@@ -2,7 +2,7 @@ import React, { useEffect, useState } from 'react';
 import axios from 'axios';
 import { Typography, List, ListItem, ListItemText, Button } from '@mui/material';
 import { Link } from 'react-router-dom';
-import Dashboard from "../layouts/Dashboard/Dashboard";
+import Dashboard from '../layouts/Dashboard/Dashboard';
 
 const YourSessions = () => {
   const [sessions, setSessions] = useState([]);

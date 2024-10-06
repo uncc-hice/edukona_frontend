@@ -2,10 +2,18 @@ import React, { useState, useEffect } from 'react';
 import axios from 'axios';
 import { useParams } from 'react-router-dom';
 import Navbar from '../blocks/Navbar';
-import { Button, Dialog, DialogActions, DialogContent, DialogContentText, DialogTitle, Grid, TextField } from '@mui/material';
-import {toast} from "react-toastify";
-import Dashboard from "../layouts/Dashboard/Dashboard";
-
+import {
+  Button,
+  Dialog,
+  DialogActions,
+  DialogContent,
+  DialogContentText,
+  DialogTitle,
+  Grid,
+  TextField,
+} from '@mui/material';
+import { toast } from 'react-toastify';
+import Dashboard from '../layouts/Dashboard/Dashboard';
 
 function EditQuizView() {
   const { quizId } = useParams();
@@ -225,163 +233,175 @@ function EditQuizView() {
     backgroundColor: '#28a745',
   };
 
-    return (
-        <Dashboard>
-            <div style={containerStyle}>
-                <h2 style={{
-                    marginBottom: '20px',
-                    marginLeft: '20px',
-                    fontFamily: 'Roboto, sans-serif',
-                    fontSize: '30px'
-                }}>Quiz Dashboard</h2>
-                <form onSubmit={handleSubmit} style={formContainerStyle}>
-                    <Grid container spacing={2}>
-                        <Grid item xs={12} sm={6}>
-                            <label style={labelStyle}>
-                                Question Text:
-                                <TextField
-                                    variant="outlined"
-                                    type="text"
-                                    value={questionText}
-                                    onChange={(e) => setQuestionText(e.target.value)}
-                                    required
-                                    fullWidth
-                                    InputProps={{
-                                        style: {fontSize: '16px'}
-                                    }}
-                                    style={inputStyle}
-                                />
-                            </label>
-                        </Grid>
-                        <Grid item xs={12} sm={6}>
-                            <label style={labelStyle}>
-                                Points:
-                                <TextField
-                                    variant="outlined"
-                                    type="number"
-                                    value={points}
-                                    onChange={(e) => setPoints(Number(e.target.value))}
-                                    required
-                                    fullWidth
-                                    InputProps={{
-                                        style: {fontSize: '16px'}
-                                    }}
-                                    style={inputStyle}
-                                />
-                            </label>
-                        </Grid>
-                        <Grid item xs={12} sm={6}>
-                            <label style={labelStyle}>
-                                Correct Answer:
-                                <TextField
-                                    variant="outlined"
-                                    type="text"
-                                    value={correctAnswer}
-                                    onChange={(e) => setCorrectAnswer(e.target.value)}
-                                    required
-                                    fullWidth
-                                    InputProps={{
-                                        style: {fontSize: '16px'}
-                                    }}
-                                    style={inputStyle}
-                                />
-                            </label>
-                        </Grid>
-                        <Grid item xs={12} sm={6}>
-                            <label style={labelStyle}>
-                                Incorrect Answer 1:
-                                <TextField
-                                    variant="outlined"
-                                    type="text"
-                                    value={answers[0]}
-                                    onChange={(e) => handleAnswerChange(0, e.target.value)}
-                                    required
-                                    fullWidth
-                                    InputProps={{
-                                        style: {fontSize: '16px'}
-                                    }}
-                                    style={inputStyle}
-                                />
-                            </label>
-                        </Grid>
-                        <Grid item xs={12} sm={6}>
-                            <label style={labelStyle}>
-                                Incorrect Answer 2:
-                                <TextField
-                                    variant="outlined"
-                                    type="text"
-                                    value={answers[1]}
-                                    onChange={(e) => handleAnswerChange(1, e.target.value)}
-                                    required
-                                    fullWidth
-                                    InputProps={{
-                                        style: {fontSize: '16px'}
-                                    }}
-                                    style={inputStyle}
-                                />
-                            </label>
-                        </Grid>
-                        <Grid item xs={12} sm={6}>
-                            <label style={labelStyle}>
-                                Incorrect Answer 3:
-                                <TextField
-                                    variant="outlined"
-                                    type="text"
-                                    value={answers[2]}
-                                    onChange={(e) => handleAnswerChange(2, e.target.value)}
-                                    required
-                                    fullWidth
-                                    InputProps={{
-                                        style: {fontSize: '16px'}
-                                    }}
-                                    style={inputStyle}
-                                />
-                            </label>
-                        </Grid>
-                    </Grid>
-                    <div style={buttonGroupStyle}>
-                        <Button type="submit" style={greenButtonStyle}>Save Question</Button>
-                        <Button type="button" onClick={resetForm} style={cancelButtonStyle}>Cancel</Button>
-                    </div>
-                </form>
-                <div style={questionsContainerStyle}>
-                    {questions.map((question, index) => (
-                        <div key={question.id} style={questionItemStyle}>
-                            <h3 style={labelStyle}>Question {index + 1}: {question.question_text}</h3>
-                            <p style={labelStyle}>Points: {question.points}</p>
-                            <p style={labelStyle}>Correct Answer: {question.correct_answer}</p>
-                            <p style={labelStyle}>Incorrect Answers: {question.incorrect_answer_list.join(', ')}</p>
-                            <Button onClick={() => handleEditQuestion(question)}
-                                    style={questionItemButtonStyle}>Edit</Button>
-                            <Button onClick={() => handleOpen(question.id)} style={deleteButtonStyle}>Delete</Button>
-                        </div>
-                    ))}
-                </div>
-                <Dialog
-                    open={open}
-                    onClose={handleClose}
-                    aria-labelledby="alert-dialog-title"
-                    aria-describedby="alert-dialog-description"
-                >
-                    <DialogTitle id="alert-dialog-title">{"Confirm Deletion"}</DialogTitle>
-                    <DialogContent>
-                        <DialogContentText id="alert-dialog-description">
-                            Are you sure you want to delete this question?
-                        </DialogContentText>
-                    </DialogContent>
-                    <DialogActions>
-                        <Button onClick={handleClose} color="primary">
-                            Cancel
-                        </Button>
-                        <Button onClick={deleteQuestion} color="primary" autoFocus>
-                            Confirm
-                        </Button>
-                    </DialogActions>
-                </Dialog>
+  return (
+    <Dashboard>
+      <div style={containerStyle}>
+        <h2
+          style={{
+            marginBottom: '20px',
+            marginLeft: '20px',
+            fontFamily: 'Roboto, sans-serif',
+            fontSize: '30px',
+          }}
+        >
+          Quiz Dashboard
+        </h2>
+        <form onSubmit={handleSubmit} style={formContainerStyle}>
+          <Grid container spacing={2}>
+            <Grid item xs={12} sm={6}>
+              <label style={labelStyle}>
+                Question Text:
+                <TextField
+                  variant="outlined"
+                  type="text"
+                  value={questionText}
+                  onChange={(e) => setQuestionText(e.target.value)}
+                  required
+                  fullWidth
+                  InputProps={{
+                    style: { fontSize: '16px' },
+                  }}
+                  style={inputStyle}
+                />
+              </label>
+            </Grid>
+            <Grid item xs={12} sm={6}>
+              <label style={labelStyle}>
+                Points:
+                <TextField
+                  variant="outlined"
+                  type="number"
+                  value={points}
+                  onChange={(e) => setPoints(Number(e.target.value))}
+                  required
+                  fullWidth
+                  InputProps={{
+                    style: { fontSize: '16px' },
+                  }}
+                  style={inputStyle}
+                />
+              </label>
+            </Grid>
+            <Grid item xs={12} sm={6}>
+              <label style={labelStyle}>
+                Correct Answer:
+                <TextField
+                  variant="outlined"
+                  type="text"
+                  value={correctAnswer}
+                  onChange={(e) => setCorrectAnswer(e.target.value)}
+                  required
+                  fullWidth
+                  InputProps={{
+                    style: { fontSize: '16px' },
+                  }}
+                  style={inputStyle}
+                />
+              </label>
+            </Grid>
+            <Grid item xs={12} sm={6}>
+              <label style={labelStyle}>
+                Incorrect Answer 1:
+                <TextField
+                  variant="outlined"
+                  type="text"
+                  value={answers[0]}
+                  onChange={(e) => handleAnswerChange(0, e.target.value)}
+                  required
+                  fullWidth
+                  InputProps={{
+                    style: { fontSize: '16px' },
+                  }}
+                  style={inputStyle}
+                />
+              </label>
+            </Grid>
+            <Grid item xs={12} sm={6}>
+              <label style={labelStyle}>
+                Incorrect Answer 2:
+                <TextField
+                  variant="outlined"
+                  type="text"
+                  value={answers[1]}
+                  onChange={(e) => handleAnswerChange(1, e.target.value)}
+                  required
+                  fullWidth
+                  InputProps={{
+                    style: { fontSize: '16px' },
+                  }}
+                  style={inputStyle}
+                />
+              </label>
+            </Grid>
+            <Grid item xs={12} sm={6}>
+              <label style={labelStyle}>
+                Incorrect Answer 3:
+                <TextField
+                  variant="outlined"
+                  type="text"
+                  value={answers[2]}
+                  onChange={(e) => handleAnswerChange(2, e.target.value)}
+                  required
+                  fullWidth
+                  InputProps={{
+                    style: { fontSize: '16px' },
+                  }}
+                  style={inputStyle}
+                />
+              </label>
+            </Grid>
+          </Grid>
+          <div style={buttonGroupStyle}>
+            <Button type="submit" style={greenButtonStyle}>
+              Save Question
+            </Button>
+            <Button type="button" onClick={resetForm} style={cancelButtonStyle}>
+              Cancel
+            </Button>
+          </div>
+        </form>
+        <div style={questionsContainerStyle}>
+          {questions.map((question, index) => (
+            <div key={question.id} style={questionItemStyle}>
+              <h3 style={labelStyle}>
+                Question {index + 1}: {question.question_text}
+              </h3>
+              <p style={labelStyle}>Points: {question.points}</p>
+              <p style={labelStyle}>Correct Answer: {question.correct_answer}</p>
+              <p style={labelStyle}>Incorrect Answers: {question.incorrect_answer_list.join(', ')}</p>
+              <Button onClick={() => handleEditQuestion(question)} style={questionItemButtonStyle}>
+                Edit
+              </Button>
+              <Button onClick={() => handleOpen(question.id)} style={deleteButtonStyle}>
+                Delete
+              </Button>
             </div>
-        </Dashboard>
-)
-    ;
+          ))}
+        </div>
+        <Dialog
+          open={open}
+          onClose={handleClose}
+          aria-labelledby="alert-dialog-title"
+          aria-describedby="alert-dialog-description"
+        >
+          <DialogTitle id="alert-dialog-title">{'Confirm Deletion'}</DialogTitle>
+          <DialogContent>
+            <DialogContentText id="alert-dialog-description">
+              Are you sure you want to delete this question?
+            </DialogContentText>
+          </DialogContent>
+          <DialogActions>
+            <Button onClick={handleClose} color="primary">
+              Cancel
+            </Button>
+            <Button onClick={deleteQuestion} color="primary" autoFocus>
+              Confirm
+            </Button>
+          </DialogActions>
+        </Dialog>
+      </div>
+    </Dashboard>
+  );
 }
 
 export default EditQuizView;
