@@ -6,224 +6,224 @@ import { Button, Dialog, DialogActions, DialogContent, DialogContentText, Dialog
 import {toast} from "react-toastify";
 import Dashboard from "../layouts/Dashboard/Dashboard";
 
+
 function EditQuizView() {
-    const { quizId } = useParams();
-    const [questions, setQuestions] = useState([]);
-    const [selectedQuestion, setSelectedQuestion] = useState(null);
-    const [questionText, setQuestionText] = useState('');
-    const [answers, setAnswers] = useState(['', '', '']);
-    const [correctAnswer, setCorrectAnswer] = useState('');
-    const [points, setPoints] = useState(0);
-	const [open, setOpen] = useState(false);
-	const [selectedQuestionId, setSelectedQuestionId] = useState(null);
+  const { quizId } = useParams();
+  const [questions, setQuestions] = useState([]);
+  const [selectedQuestion, setSelectedQuestion] = useState(null);
+  const [questionText, setQuestionText] = useState('');
+  const [answers, setAnswers] = useState(['', '', '']);
+  const [correctAnswer, setCorrectAnswer] = useState('');
+  const [points, setPoints] = useState(0);
+  const [open, setOpen] = useState(false);
+  const [selectedQuestionId, setSelectedQuestionId] = useState(null);
 
-    useEffect(() => {
-        if (quizId) {
-            fetchQuestions();
-        } else {
-            console.error('quizId is undefined');
-        }
-    }, [quizId]);
-
-    useEffect(() => {
-        if (selectedQuestion) {
-            const allAnswers = [...selectedQuestion.incorrect_answer_list, selectedQuestion.correct_answer];
-            setAnswers(selectedQuestion.incorrect_answer_list);
-            setCorrectAnswer(selectedQuestion.correct_answer);
-            setQuestionText(selectedQuestion.question_text);
-            setPoints(selectedQuestion.points);
-        }
-    }, [selectedQuestion]);
-
-    const token = localStorage.getItem('token');
-    if (!token) {
-        console.log("No token found");
-        return null;
+  useEffect(() => {
+    if (quizId) {
+      fetchQuestions();
+    } else {
+      console.error('quizId is undefined');
     }
+  }, [quizId]);
 
-    const fetchQuestions = async () => {
-        try {
-            const response = await axios.get(`https://api.edukona.com/all-questions/${quizId}/`, {
-                headers: {
-                    'Authorization': `Token ${token}`,
-                }
-            });
-            setQuestions(response.data.questions || []);
-        } catch (error) {
-            console.error('Error fetching questions:', error);
-        }
-    };
+  useEffect(() => {
+    if (selectedQuestion) {
+      const allAnswers = [...selectedQuestion.incorrect_answer_list, selectedQuestion.correct_answer];
+      setAnswers(selectedQuestion.incorrect_answer_list);
+      setCorrectAnswer(selectedQuestion.correct_answer);
+      setQuestionText(selectedQuestion.question_text);
+      setPoints(selectedQuestion.points);
+    }
+  }, [selectedQuestion]);
 
-    const saveQuestion = async (questionData) => {
+  const token = localStorage.getItem('token');
+  if (!token) {
+    console.log('No token found');
+    return null;
+  }
+
+  const fetchQuestions = async () => {
+    try {
+      const response = await axios.get(`https://api.edukona.com/all-questions/${quizId}/`, {
+        headers: {
+          Authorization: `Token ${token}`,
+        },
+      });
+      setQuestions(response.data.questions || []);
+    } catch (error) {
+      console.error('Error fetching questions:', error);
+    }
+  };
+
+  const saveQuestion = async (questionData) => {
     const endpoint = selectedQuestion?.id
-        ? `https://api.edukona.com/question/${selectedQuestion.id}/`
-        : `https://api.edukona.com/question/`;
+      ? `https://api.edukona.com/question/${selectedQuestion.id}/`
+      : `https://api.edukona.com/question/`;
     const method = selectedQuestion?.id ? 'put' : 'post';
 
     try {
-        await axios[method](endpoint, [questionData], {  // Wrap questionData in an array
-            headers: {
-                'Content-Type': 'application/json',
-                'Authorization': `Token ${token}`,
-            }
-        });
-        await fetchQuestions();
-        resetForm();
+      await axios[method](endpoint, [questionData], {
+        // Wrap questionData in an array
+        headers: {
+          'Content-Type': 'application/json',
+          Authorization: `Token ${token}`,
+        },
+      });
+      await fetchQuestions();
+      resetForm();
     } catch (error) {
-        console.error('Error saving the question:', error);
+      console.error('Error saving the question:', error);
     }
-};
+  };
 
-	const handleOpen = (questionId) => {
-		setSelectedQuestionId(questionId);
-		setOpen(true);
-	}
+  const handleOpen = (questionId) => {
+    setSelectedQuestionId(questionId);
+    setOpen(true);
+  };
 
-	const handleClose = () => {
-		setOpen(false);
-	}
+  const handleClose = () => {
+    setOpen(false);
+  };
 
-    const deleteQuestion = async () => {
-		handleClose()
-        try {
-            await axios.delete(`https://api.edukona.com/question/${selectedQuestionId}/`, {
-                headers: {
-                    'Authorization': `Token ${token}`,
-                }
-            });
-            toast.success('Question successfully deleted!', {
-                icon: '🗑️',
-            });
-            await fetchQuestions();
-        } catch (error) {
-            console.error('Error deleting question:', error);
-        }
+  const deleteQuestion = async () => {
+    handleClose();
+    try {
+      await axios.delete(`https://api.edukona.com/question/${selectedQuestionId}/`, {
+        headers: {
+          Authorization: `Token ${token}`,
+        },
+      });
+      toast.success('Question successfully deleted!', {
+        icon: '🗑️',
+      });
+      await fetchQuestions();
+    } catch (error) {
+      console.error('Error deleting question:', error);
+    }
+  };
+
+  const handleAnswerChange = (index, value) => {
+    const updatedAnswers = answers.map((answer, i) => (i === index ? value : answer));
+    setAnswers(updatedAnswers);
+  };
+
+  const handleEditQuestion = (question) => {
+    setSelectedQuestion(question);
+    setQuestionText(question.question_text);
+    setPoints(question.points);
+    setAnswers(question.incorrect_answer_list);
+    setCorrectAnswer(question.correct_answer);
+  };
+
+  const handleSubmit = (e) => {
+    e.preventDefault();
+
+    if (correctAnswer === '') {
+      alert('Please enter the correct answer.');
+      return;
+    }
+
+    const questionData = {
+      question_text: questionText,
+      incorrect_answer_list: answers,
+      correct_answer: correctAnswer,
+      points: parseInt(points, 10),
+      quiz_id: quizId,
     };
+    saveQuestion(questionData);
+  };
 
-    const handleAnswerChange = (index, value) => {
-        const updatedAnswers = answers.map((answer, i) => (
-            i === index ? value : answer
-        ));
-        setAnswers(updatedAnswers);
-    };
+  const resetForm = () => {
+    setQuestionText('');
+    setAnswers(['', '', '', '']);
+    setCorrectAnswer('');
+    setPoints(0);
+    setSelectedQuestion(null);
+  };
 
-    const handleEditQuestion = (question) => {
-        setSelectedQuestion(question);
-        setQuestionText(question.question_text);
-        setPoints(question.points);
-        setAnswers(question.incorrect_answer_list);
-        setCorrectAnswer(question.correct_answer);
-    };
+  const containerStyle = {
+    padding: '20px',
+    fontFamily: 'Roboto, sans-serif',
+    maxWidth: '1200px',
+    margin: '0 auto',
+  };
 
-    const handleSubmit = (e) => {
-        e.preventDefault();
+  const formContainerStyle = {
+    marginBottom: '20px',
+    border: '1px solid #ddd',
+    padding: '20px',
+    borderRadius: '8px',
+    backgroundColor: '#f9f9f9',
+  };
 
-        if (correctAnswer === '') {
-            alert('Please enter the correct answer.');
-            return;
-        }
+  const labelStyle = {
+    display: 'block',
+    marginBottom: '10px',
+    fontSize: '20px', // Increase font size
+    marginLeft: '20px',
+  };
 
-        const questionData = {
-            question_text: questionText,
-            incorrect_answer_list: answers,
-            correct_answer: correctAnswer,
-            points: parseInt(points, 10),
-            quiz_id: quizId
-        };
-        saveQuestion(questionData);
-    };
+  const inputStyle = {
+    marginBottom: '15px',
+    width: '100%',
+  };
 
-    const resetForm = () => {
-        setQuestionText('');
-        setAnswers(['', '', '', '']);
-        setCorrectAnswer('');
-        setPoints(0);
-        setSelectedQuestion(null);
-    };
+  const buttonGroupStyle = {
+    marginTop: '20px',
+  };
 
-    const containerStyle = {
-        padding: '20px',
-        fontFamily: 'Roboto, sans-serif',
-        maxWidth: '1200px',
-        margin: '0 auto'
-    };
+  const buttonStyle = {
+    marginRight: '10px',
+    padding: '10px 20px',
+    border: 'none',
+    borderRadius: '4px',
+    backgroundColor: '#007bff',
+    color: 'white',
+    cursor: 'pointer',
+    textTransform: 'capitalize',
+    fontSize: '18px', // Increase font size
+    marginLeft: '20px', // Add left margin
+  };
 
-    const formContainerStyle = {
-        marginBottom: '20px',
-        border: '1px solid #ddd',
-        padding: '20px',
-        borderRadius: '8px',
-        backgroundColor: '#f9f9f9'
-    };
+  const cancelButtonStyle = {
+    ...buttonStyle,
+    backgroundColor: '#6c757d',
+  };
 
-    const labelStyle = {
-        display: 'block',
-        marginBottom: '10px',
-        fontSize: '20px', // Increase font size
-        marginLeft: '20px'
-    };
+  const questionsContainerStyle = {
+    marginTop: '20px',
+  };
 
-    const inputStyle = {
-        marginBottom: '15px',
-        width: '100%'
-    };
+  const questionItemStyle = {
+    marginBottom: '20px',
+    padding: '20px',
+    border: '1px solid #ddd',
+    borderRadius: '8px',
+    backgroundColor: '#f1f1f1',
+  };
 
-    const buttonGroupStyle = {
-        marginTop: '20px'
-    };
+  const questionItemButtonStyle = {
+    marginRight: '10px',
+    padding: '8px 16px',
+    border: 'none',
+    borderRadius: '4px',
+    backgroundColor: '#28a745',
+    color: 'white',
+    cursor: 'pointer',
+    textTransform: 'capitalize',
+    fontSize: '18px', // Increase font size
+    marginLeft: '20px', // Add left margin
+  };
 
-    const buttonStyle = {
-        marginRight: '10px',
-        padding: '10px 20px',
-        border: 'none',
-        borderRadius: '4px',
-        backgroundColor: '#007bff',
-        color: 'white',
-        cursor: 'pointer',
-        textTransform: 'capitalize',
-        fontSize: '18px', // Increase font size
-        marginLeft: '20px' // Add left margin
-    };
+  const deleteButtonStyle = {
+    ...questionItemButtonStyle,
+    backgroundColor: '#dc3545',
+  };
 
-    const cancelButtonStyle = {
-        ...buttonStyle,
-        backgroundColor: '#6c757d'
-    };
-
-    const questionsContainerStyle = {
-        marginTop: '20px'
-    };
-
-    const questionItemStyle = {
-        marginBottom: '20px',
-        padding: '20px',
-        border: '1px solid #ddd',
-        borderRadius: '8px',
-        backgroundColor: '#f1f1f1'
-    };
-
-    const questionItemButtonStyle = {
-        marginRight: '10px',
-        padding: '8px 16px',
-        border: 'none',
-        borderRadius: '4px',
-        backgroundColor: '#28a745',
-        color: 'white',
-        cursor: 'pointer',
-        textTransform: 'capitalize',
-        fontSize: '18px', // Increase font size
-        marginLeft: '20px' // Add left margin
-    };
-
-    const deleteButtonStyle = {
-        ...questionItemButtonStyle,
-        backgroundColor: '#dc3545'
-    };
-
-    const greenButtonStyle = {
-        ...buttonStyle,
-        backgroundColor: '#28a745'
-    };
+  const greenButtonStyle = {
+    ...buttonStyle,
+    backgroundColor: '#28a745',
+  };
 
     return (
         <Dashboard>

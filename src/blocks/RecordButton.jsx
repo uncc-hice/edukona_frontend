@@ -1,44 +1,64 @@
-import { Button, Select, MenuItem, FormControl, InputLabel } from "@mui/material";
-import axios from "axios";
-import { useEffect, useRef, useState } from "react"
-import { toast } from "react-toastify";
+import {
+  Button,
+  Select,
+  MenuItem,
+  FormControl,
+  InputLabel,
+  Dialog,
+  DialogTitle,
+  TextField,
+  DialogContent,
+  Typography,
+} from '@mui/material';
+import axios from 'axios';
+import { useEffect, useRef, useState } from 'react';
+import { toast } from 'react-toastify';
+import RecordingTimer from './RecordingTimer';
 
-const mimetype = "audio/webm";
-const uploadEndPoint = "https://api.edukona.com/upload-audio/";
+const mimetype = 'audio/webm';
+const uploadEndPoint = 'https://api.edukona.com/upload-audio/';
 
 // Creates the filename for new audio files
 const createFileName = () => {
-  const padNumber = (number) => number <= 10 ? '0' + number : number;
+  const padNumber = (number) => (number <= 10 ? '0' + number : number);
   const date = new Date();
   const dateString = `${date.getFullYear()}${padNumber(date.getMonth() + 1)}${padNumber(date.getDate())}`;
   const timeString = `${padNumber(date.getHours())}-${padNumber(date.getMinutes())}-${padNumber(date.getSeconds())}`;
   return `${dateString}-${timeString}.webm`;
-}
+};
 
 const RecordButton = ({ onUpdate }) => {
   const [isRecording, setIsRecording] = useState(false);
   const [isUploading, setIsUploading] = useState(false);
   const [devices, setDevices] = useState([]);
-  const [selectedDeviceId, setSelectedDeviceId] = useState("");
-  const [buttonText, setButtonText] = useState("Start Recording");
+  const [selectedDeviceId, setSelectedDeviceId] = useState('');
+  const [buttonText, setButtonText] = useState('Start Recording');
+  const [titleOpen, setTitleOpen] = useState(false);
+  const [cancelOpen, setCancelOpen] = useState(false);
+  const [title, setTitle] = useState(null);
   const audioBlob = useRef(null);
   const stream = useRef(null);
   const recorder = useRef(null);
   const chunks = useRef([]);
+
   const handleUpload = () => {
+    setTitleOpen(false);
     setIsUploading(true);
-    setButtonText("Uploading Audio")
+    setButtonText('Uploading Audio');
     const formData = new FormData();
     formData.append('file', audioBlob.current, createFileName());
     formData.append('type', mimetype);
-    axios.post(uploadEndPoint, formData, {
-      headers: {
-        'Content-Type': 'multipart/form', 'Authorization': `Token ${localStorage.getItem('token')}`,
-      }
-    })
-      .then(res => {
+    formData.append('title', title);
+    axios
+      .post(uploadEndPoint, formData, {
+        headers: {
+          'Content-Type': 'multipart/form',
+          Authorization: `Token ${localStorage.getItem('token')}`,
+        },
+      })
+      .then((res) => {
         setIsUploading(false);
-        setButtonText("Start Recording");
+        setButtonText('Start Recording');
         if (res.status === 201) {
           toast.success('Recording successfully uploaded!', {
             icon: '🎉',
@@ -46,8 +66,16 @@ const RecordButton = ({ onUpdate }) => {
           onUpdate();
         }
       })
-      .catch(error => console.log(error));
-  }
+      .catch((error) => console.log(error));
+    setTitle(null);
+  };
+
+  const handleCancelUpload = () => {
+    setButtonText('Start Recording');
+    setTitleOpen(false);
+    setCancelOpen(false);
+    setTitle(null);
+  };
 
   useEffect(() => {
     const getDevices = async () => {
@@ -56,19 +84,18 @@ const RecordButton = ({ onUpdate }) => {
         await navigator.mediaDevices.getUserMedia({ audio: true });
 
         const devices = await navigator.mediaDevices.enumerateDevices();
-        const audioDevices = devices.filter((device) => device.kind === "audioinput");
+        const audioDevices = devices.filter((device) => device.kind === 'audioinput');
         setDevices(audioDevices);
         if (audioDevices.length > 0 && !selectedDeviceId) {
           setSelectedDeviceId(audioDevices[0].deviceId);
         }
       } catch (error) {
-        console.error("Error fetching devices: ", error);
+        console.error('Error fetching devices: ', error);
       }
     };
 
     getDevices();
   }, []);
-
 
   const startRecording = async () => {
     try {
@@ -90,13 +117,12 @@ const RecordButton = ({ onUpdate }) => {
         const blob = new Blob(chunks.current, { type: mimetype });
         audioBlob.current = blob;
         chunks.current = [];
-        handleUpload();
       };
       recorder.current.start();
     } catch (error) {
-      console.log("Could not access microphone: " + error);
+      console.log('Could not access microphone: ' + error);
     }
-  }
+  };
 
   const stopRecording = () => {
     if (recorder.current && recorder.current.state === 'recording') {
@@ -107,44 +133,78 @@ const RecordButton = ({ onUpdate }) => {
         t.stop();
       });
     }
-  }
+  };
 
   const handleClick = async () => {
     if (isRecording) {
       setIsRecording(false);
-      stopRecording()
+      stopRecording();
+      setTitleOpen(true);
     } else {
       setIsRecording(true);
-      setButtonText("Stop Recording");
+      setButtonText('Stop Recording');
       startRecording();
     }
-  }
+  };
 
-  return (<div style={{ display: "flex", alignItems: "center", marginBottom: "1rem" }}>
-    <FormControl variant="outlined" style={{ minWidth: 200, marginRight: "1rem" }}>
-      <InputLabel id="microphone-select-label">Microphone</InputLabel>
-      <Select
-        labelId="microphone-select-label"
-        id="microphone-select"
-        value={selectedDeviceId}
-        onChange={(e) => setSelectedDeviceId(e.target.value)}
-        label="Microphone"
-        disabled={isRecording || isUploading}
+  return (
+    <div style={{ display: 'flex', alignItems: 'center', marginBottom: '1rem' }}>
+      <FormControl variant="outlined" style={{ minWidth: 200, marginRight: '1rem' }}>
+        <InputLabel id="microphone-select-label">Microphone</InputLabel>
+        <Select
+          labelId="microphone-select-label"
+          id="microphone-select"
+          value={selectedDeviceId}
+          onChange={(e) => setSelectedDeviceId(e.target.value)}
+          label="Microphone"
+          disabled={isRecording || isUploading}
+        >
+          {devices.map((device, idx) => (
+            <MenuItem key={device.deviceId} value={device.deviceId}>
+              {device.label || `Microphone ${idx + 1}`}
+            </MenuItem>
+          ))}
+        </Select>
+      </FormControl>
+      <Button
+        onClick={handleClick}
+        variant={isRecording ? 'contained' : 'outlined'}
+        color={isRecording ? 'error' : 'primary'}
+        disabled={isUploading}
       >
-        {devices.map((device, idx) => (<MenuItem key={device.deviceId} value={device.deviceId}>
-          {device.label || `Microphone ${idx + 1}`}
-        </MenuItem>))}
-      </Select>
-    </FormControl>
-    <Button
-      onClick={handleClick}
-      variant={isRecording ? "contained" : "outlined"}
-      color="primary"
-      disabled={isUploading}
-    >
-      {buttonText}
-    </Button>
-  </div>);
-}
+        {buttonText}
+      </Button>
+      <RecordingTimer active={isRecording} />
+      <Dialog open={titleOpen}>
+        <DialogTitle>Enter a title for new recording</DialogTitle>
+        <DialogContent>
+          <TextField
+            autoFocus
+            required
+            margin="dense"
+            id="recordingTitle"
+            label="Recording Title"
+            type="text"
+            fullWidth
+            variant="standard"
+            onChange={(e) => setTitle(e.target.value)}
+          />
+          <Button onClick={() => setCancelOpen(true)}>Cancel</Button>
+          <Button disabled={title === null} onClick={handleUpload}>
+            Upload Recording
+          </Button>
+        </DialogContent>
+      </Dialog>
+      <Dialog open={cancelOpen}>
+        <DialogTitle>Enter a title for new recording</DialogTitle>
+        <DialogContent>
+          <Typography variant={'h6'}>Are you sure you want to cancel? Your recording will be lost</Typography>
+          <Button onClick={handleCancelUpload}>Cancel Audio upload</Button>
+          <Button onClick={() => setCancelOpen(false)}>Back to title creation</Button>
+        </DialogContent>
+      </Dialog>
+    </div>
+  );
+};
 
 export default RecordButton;

@@ -22,13 +22,7 @@ const SidebarNav = ({ pages }) => {
   return (
     <Box>
       <Box width={1} paddingX={2} paddingY={1}>
-        <Box
-          display={'flex'}
-          component="a"
-          href="/"
-          title="theFront"
-          width={{ xs: 100, md: 120 }}
-        >
+        <Box display={'flex'} component="a" href="/" title="theFront" width={{ xs: 100, md: 120 }}>
           <Box
             component={'img'}
             src={
@@ -44,25 +38,19 @@ const SidebarNav = ({ pages }) => {
       <Box paddingX={2} paddingY={2}>
         <Box marginTop={2}>
           <Button
-              size={'large'}
-              variant="contained"
-              color="primary"
-              fullWidth
-              component="a"
-              target="blank"
-              href="/signup"
+            size={'large'}
+            variant="contained"
+            color="primary"
+            fullWidth
+            component="a"
+            target="blank"
+            href="/signup"
           >
             Sign Up
           </Button>
         </Box>
         <Box marginTop={1}>
-          <Button
-              size={'large'}
-              variant="outlined"
-              fullWidth
-              component="a"
-              href="/login"
-          >
+          <Button size={'large'} variant="outlined" fullWidth component="a" href="/login">
             Login
           </Button>
         </Box>
