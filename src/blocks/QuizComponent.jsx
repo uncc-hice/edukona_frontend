@@ -5,8 +5,18 @@ import AnswersGrid from './AnswersGrid';
 import Timer from '../blocks/Timer';
 
 const QuizComponent = ({
-                         userCount, liveBarChart, question, code, sendMessage, responseData, quizEnded, timerEnabled, timerDuration, resetTimer, onTimerEnd,
-                       }) => {
+  userCount,
+  liveBarChart,
+  question,
+  code,
+  sendMessage,
+  responseData,
+  quizEnded,
+  timerEnabled,
+  timerDuration,
+  resetTimer,
+  onTimerEnd,
+}) => {
   const theme = useTheme();
   const [shuffledAnswers, setShuffledAnswers] = useState([]);
 
@@ -24,40 +34,40 @@ const QuizComponent = ({
     return Object.values(responseData).reduce((total, count) => total + count, 0);
   };
 
-  return (<Box width="100%" p={theme.spacing(3)}>
-    <Box display="flex" alignItems="center" justifyContent="space-between" width="100%">
-      <Box flexGrow={1} display="flex" justifyContent="center">
-        <Typography variant="h6" gutterBottom component="div" textAlign="center">
-          Total Responses: {getTotalResponses()}
-        </Typography>
-        <Typography variant="h6" gutterBottom component="div" textAlign="center" ml={2}>
-          Total Students: {userCount}
+  return (
+    <Box width="100%" p={theme.spacing(3)}>
+      <Box display="flex" alignItems="center" justifyContent="space-between" width="100%">
+        <Box flexGrow={1} display="flex" justifyContent="center">
+          <Typography variant="h6" gutterBottom component="div" textAlign="center">
+            Total Responses: {getTotalResponses()}
+          </Typography>
+          <Typography variant="h6" gutterBottom component="div" textAlign="center" ml={2}>
+            Total Students: {userCount}
+          </Typography>
+        </Box>
+        {timerEnabled && (
+          <Box>
+            <Timer key={resetTimer} initialTime={timerDuration} onTimerEnd={onTimerEnd} />
+          </Box>
+        )}
+      </Box>
+      <Box mt={3} textAlign="center">
+        <Typography variant="h2" gutterBottom component="div">
+          {question['question_text']}
         </Typography>
       </Box>
-      {timerEnabled && (<Box>
-        <Timer
-          key={resetTimer}
-          initialTime={timerDuration}
-          onTimerEnd={onTimerEnd}
+      <Box mt={3}>
+        <AnswersGrid
+          liveBarChart={liveBarChart}
+          answers={shuffledAnswers}
+          code={code}
+          qid={question['id']}
+          responseData={responseData}
+          sendMessage={sendMessage}
         />
-      </Box>)}
+      </Box>
     </Box>
-    <Box mt={3} textAlign="center">
-      <Typography variant="h2" gutterBottom component="div">
-        {question['question_text']}
-      </Typography>
-    </Box>
-    <Box mt={3}>
-      <AnswersGrid
-        liveBarChart={liveBarChart}
-        answers={shuffledAnswers}
-        code={code}
-        qid={question['id']}
-        responseData={responseData}
-        sendMessage={sendMessage}
-      />
-    </Box>
-  </Box>);
+  );
 };
 
 export default QuizComponent;

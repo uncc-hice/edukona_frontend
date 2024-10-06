@@ -5,13 +5,7 @@ const PhoneSkeleton = () => {
   const theme = useTheme();
 
   return (
-    <svg
-      xmlns="http://www.w3.org/2000/svg"
-      x={0}
-      y={0}
-      enableBackground="new 0 0 444 908"
-      viewBox="0 0 444 908"
-    >
+    <svg xmlns="http://www.w3.org/2000/svg" x={0} y={0} enableBackground="new 0 0 444 908" viewBox="0 0 444 908">
       <path
         fill={theme.palette.background.paper}
         stroke={theme.palette.alternate.dark}

@@ -26,10 +26,7 @@ const Hero = () => {
           variant="h2"
           fontWeight={700}
           sx={{
-            background: `linear-gradient(180deg, transparent 82%, ${alpha(
-              theme.palette.secondary.main,
-              0.3,
-            )} 0%)`,
+            background: `linear-gradient(180deg, transparent 82%, ${alpha(theme.palette.secondary.main, 0.3)} 0%)`,
           }}
         >
           efficient
@@ -37,7 +34,7 @@ const Hero = () => {
       </Box>
       <Box marginBottom={3}>
         <Typography variant="h6" component="p" color="text.secondary">
-            Bridging Technology and Pedagogy with Adaptive Educational Games.
+          Bridging Technology and Pedagogy with Adaptive Educational Games.
         </Typography>
       </Box>
       <Button variant="contained" color="primary" size="large">
@@ -59,7 +56,9 @@ const Hero = () => {
         <Box
           component={'img'}
           loading="lazy"
-          src={'https://elasticbeanstalk-us-west-2-730335402099.s3.us-west-2.amazonaws.com/hice_frontend/pexels-keira-burton-6146978.jpg'}
+          src={
+            'https://elasticbeanstalk-us-west-2-730335402099.s3.us-west-2.amazonaws.com/hice_frontend/pexels-keira-burton-6146978.jpg'
+          }
           height={{ xs: 'auto', md: 1 }}
           maxHeight={{ xs: 300, md: 1 }}
           width={1}
@@ -78,18 +77,8 @@ const Hero = () => {
       }}
     >
       <Container paddingX={0} paddingY={0} maxWidth={{ sm: 1, md: 1236 }}>
-        <Box
-          display={'flex'}
-          flexDirection={{ xs: 'column', md: 'row' }}
-          position={'relative'}
-          minHeight={{ md: 600 }}
-        >
-          <Box
-            width={1}
-            order={{ xs: 2, md: 1 }}
-            display={'flex'}
-            alignItems={'center'}
-          >
+        <Box display={'flex'} flexDirection={{ xs: 'column', md: 'row' }} position={'relative'} minHeight={{ md: 600 }}>
+          <Box width={1} order={{ xs: 2, md: 1 }} display={'flex'} alignItems={'center'}>
             <Container>
               <LeftSide />
             </Container>

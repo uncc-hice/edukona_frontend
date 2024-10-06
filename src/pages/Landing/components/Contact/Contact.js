@@ -20,10 +20,7 @@ const Contact = () => {
           top: 0,
           right: 0,
           backgroundSize: '18px 18px',
-          backgroundImage: `radial-gradient(${alpha(
-            theme.palette.primary.dark,
-            0.4,
-          )} 20%, transparent 20%)`,
+          backgroundImage: `radial-gradient(${alpha(theme.palette.primary.dark, 0.4)} 20%, transparent 20%)`,
           opacity: 0.2,
         },
       }}
@@ -59,47 +56,28 @@ const Contact = () => {
             style={{
               minHeight: 300,
               borderRadius: 8,
-              filter:
-                theme.palette.mode === 'dark'
-                  ? 'grayscale(0.5) opacity(0.7)'
-                  : 'none',
+              filter: theme.palette.mode === 'dark' ? 'grayscale(0.5) opacity(0.7)' : 'none',
             }}
           />
         </Box>
         <Grid container spacing={2}>
           <Grid item xs={12} sm={6}>
-            <Typography
-              variant={'body1'}
-              gutterBottom
-              sx={{ fontWeight: 'medium' }}
-            >
+            <Typography variant={'body1'} gutterBottom sx={{ fontWeight: 'medium' }}>
               Call us:
             </Typography>
             <Typography variant={'subtitle1'}>+1 919 338 4103</Typography>
           </Grid>
           <Grid item xs={12} sm={6}>
-            <Typography
-              variant={'body1'}
-              gutterBottom
-              sx={{ fontWeight: 'medium' }}
-            >
+            <Typography variant={'body1'} gutterBottom sx={{ fontWeight: 'medium' }}>
               Email us:
             </Typography>
-            <Typography variant={'subtitle1'}>
-              aaladar@charlotte.edu
-            </Typography>
+            <Typography variant={'subtitle1'}>aaladar@charlotte.edu</Typography>
           </Grid>
           <Grid item xs={12}>
-            <Typography
-              variant={'body1'}
-              gutterBottom
-              sx={{ fontWeight: 'medium' }}
-            >
+            <Typography variant={'body1'} gutterBottom sx={{ fontWeight: 'medium' }}>
               Address:
             </Typography>
-            <Typography variant={'subtitle1'}>
-              9201 University City Blvd, Charlotte, NC 28223
-            </Typography>
+            <Typography variant={'subtitle1'}>9201 University City Blvd, Charlotte, NC 28223</Typography>
           </Grid>
         </Grid>
       </Box>

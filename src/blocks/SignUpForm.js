@@ -1,9 +1,19 @@
-import React, { useState } from "react";
+import React, { useState } from 'react';
 import axios from 'axios';
-import { TextField, Button, Typography, Container, Grid, Select, MenuItem, InputLabel, FormControl } from '@mui/material';
-import { signUp } from './Functions'
+import {
+  TextField,
+  Button,
+  Typography,
+  Container,
+  Grid,
+  Select,
+  MenuItem,
+  InputLabel,
+  FormControl,
+} from '@mui/material';
+import { signUp } from './Functions';
 
-const SignUpForm = ({toggleForm}) => {
+const SignUpForm = ({ toggleForm }) => {
   const [username, setUsername] = useState('');
   const [password, setPassword] = useState('');
   const [confirmPassword, setConfirmPassword] = useState('');
@@ -22,7 +32,6 @@ const SignUpForm = ({toggleForm}) => {
       return false;
     }
 
-
     return true;
   };
 
@@ -33,7 +42,7 @@ const SignUpForm = ({toggleForm}) => {
       return;
     }
     //signUp function imported from Functions.js
-    signUp(username, password, email,role);
+    signUp(username, password, email, role);
   };
 
   return (
@@ -44,7 +53,11 @@ const SignUpForm = ({toggleForm}) => {
             <Typography variant="h4" component="h2" align="center" gutterBottom>
               Sign Up
             </Typography>
-            {error && <Typography variant="body2" color="error" align="center">{error}</Typography>}
+            {error && (
+              <Typography variant="body2" color="error" align="center">
+                {error}
+              </Typography>
+            )}
             <form onSubmit={handleSubmit}>
               <TextField
                 fullWidth
@@ -87,12 +100,7 @@ const SignUpForm = ({toggleForm}) => {
               />
               <FormControl fullWidth variant="outlined" margin="normal">
                 <InputLabel id="role-label">Role</InputLabel>
-                <Select
-                  label="Role"
-                  id="role"
-                  value={role}
-                  onChange={(e) => setRole(e.target.value)}
-                >
+                <Select label="Role" id="role" value={role} onChange={(e) => setRole(e.target.value)}>
                   <MenuItem value="student">Student</MenuItem>
                   <MenuItem value="instructor">Instructor</MenuItem>
                 </Select>

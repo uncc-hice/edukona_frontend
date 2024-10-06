@@ -1,6 +1,6 @@
 // UserContext.js
 import React, { createContext, useState, useEffect } from 'react';
-import axios from "axios";
+import axios from 'axios';
 
 export const UserContext = createContext();
 
@@ -18,12 +18,14 @@ export const UserProvider = ({ children }) => {
 
     //declares user data (password and username)
     const data = {
-      username: username, password: password
+      username: username,
+      password: password,
     };
 
     //uses the axios.post function to send the data to backend
-    axios.post(axiosUrl, data)
-      .then(response => {
+    axios
+      .post(axiosUrl, data)
+      .then((response) => {
         //creates a response in console to ensure that the data sent was correct
         console.log('Response: ', response.data);
         //sets token data
@@ -37,12 +39,11 @@ export const UserProvider = ({ children }) => {
         if (response.data['instructor']) {
           navigate('/');
         }
-
       })
-      .catch(error => {
+      .catch((error) => {
         console.error('Error: ', error.response.status);
         if (error.response.status === 400 || error.response.status === 401) {
-          setError("Invalid username or password.");
+          setError('Invalid username or password.');
         } else {
           setError("Sorry, we couldn't log you in due to an internal server error.");
         }
@@ -52,13 +53,13 @@ export const UserProvider = ({ children }) => {
   // Function to log out the user
 
   const logout = () => {
-    localStorage.removeItem('token')
-    localStorage.removeItem('user')
-    localStorage.removeItem('instructor')
+    localStorage.removeItem('token');
+    localStorage.removeItem('user');
+    localStorage.removeItem('instructor');
     setIsLoggedIn(false);
     setToken(null);
     window.location.reload();
-  }
+  };
 
   // Listen for changes to localStorage
   useEffect(() => {
@@ -85,7 +86,9 @@ export const UserProvider = ({ children }) => {
     };
   }, []);
 
-  return (<UserContext.Provider value={{ setToken, setIsLoggedIn, isLoggedIn, token, login, logout }}>
-    {children}
-  </UserContext.Provider>);
+  return (
+    <UserContext.Provider value={{ setToken, setIsLoggedIn, isLoggedIn, token, login, logout }}>
+      {children}
+    </UserContext.Provider>
+  );
 };

@@ -21,21 +21,14 @@ const NavItem = ({ title, items }) => {
 
   return (
     <Box>
-      <Accordion
-        disableGutters
-        elevation={0}
-        sx={{ backgroundColor: 'transparent' }}
-      >
+      <Accordion disableGutters elevation={0} sx={{ backgroundColor: 'transparent' }}>
         <AccordionSummary
           expandIcon={<ExpandMoreIcon />}
           aria-controls="panel1a-content"
           id="panel1a-header"
           sx={{ padding: 0 }}
         >
-          <Typography
-            fontWeight={hasActiveLink() ? 600 : 400}
-            color={hasActiveLink() ? 'primary' : 'text.primary'}
-          >
+          <Typography fontWeight={hasActiveLink() ? 600 : 400} color={hasActiveLink() ? 'primary' : 'text.primary'}>
             {title}
           </Typography>
         </AccordionSummary>
@@ -50,30 +43,15 @@ const NavItem = ({ title, items }) => {
                   fullWidth
                   sx={{
                     justifyContent: 'flex-start',
-                    color:
-                      activeLink === p.href
-                        ? theme.palette.primary.main
-                        : theme.palette.text.primary,
-                    backgroundColor:
-                      activeLink === p.href
-                        ? alpha(theme.palette.primary.main, 0.1)
-                        : 'transparent',
+                    color: activeLink === p.href ? theme.palette.primary.main : theme.palette.text.primary,
+                    backgroundColor: activeLink === p.href ? alpha(theme.palette.primary.main, 0.1) : 'transparent',
                     fontWeight: activeLink === p.href ? 600 : 400,
                   }}
                 >
                   {p.title}
                   {p.isNew && (
-                    <Box
-                      padding={0.5}
-                      display={'inline-flex'}
-                      borderRadius={1}
-                      bgcolor={'primary.main'}
-                      marginLeft={2}
-                    >
-                      <Typography
-                        variant={'caption'}
-                        sx={{ color: 'common.white', lineHeight: 1 }}
-                      >
+                    <Box padding={0.5} display={'inline-flex'} borderRadius={1} bgcolor={'primary.main'} marginLeft={2}>
+                      <Typography variant={'caption'} sx={{ color: 'common.white', lineHeight: 1 }}>
                         new
                       </Typography>
                     </Box>

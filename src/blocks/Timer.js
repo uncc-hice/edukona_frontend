@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useRef } from "react";
+import React, { useState, useEffect, useRef } from 'react';
 import { CircularProgressbarWithChildren, buildStyles } from 'react-circular-progressbar';
 import 'react-circular-progressbar/dist/styles.css';
 
@@ -37,18 +37,24 @@ const Timer = React.memo(({ initialTime, onTimerEnd }) => {
     return '#ff3f34'; // Red
   };
 
-  return (<div style={{ width: 80, height: 80 }}>
-    <CircularProgressbarWithChildren
-      value={percentage}
-      styles={buildStyles({
-        rotation: 0, strokeLinecap: 'round', pathTransitionDuration: 0.5, pathColor: getPathColor(percentage), trailColor: '#d6d6d6',
-      })}
-    >
-      <div style={{ fontSize: 16 }}>
-        <strong>{timeLeft}s</strong>
-      </div>
-    </CircularProgressbarWithChildren>
-  </div>);
+  return (
+    <div style={{ width: 80, height: 80 }}>
+      <CircularProgressbarWithChildren
+        value={percentage}
+        styles={buildStyles({
+          rotation: 0,
+          strokeLinecap: 'round',
+          pathTransitionDuration: 0.5,
+          pathColor: getPathColor(percentage),
+          trailColor: '#d6d6d6',
+        })}
+      >
+        <div style={{ fontSize: 16 }}>
+          <strong>{timeLeft}s</strong>
+        </div>
+      </CircularProgressbarWithChildren>
+    </div>
+  );
 });
 
 export default Timer;
