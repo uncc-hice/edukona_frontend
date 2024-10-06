@@ -13,6 +13,7 @@ import {
   TextField,
 } from '@mui/material';
 import { toast } from 'react-toastify';
+import Dashboard from '../layouts/Dashboard/Dashboard';
 
 function EditQuizView() {
   const { quizId } = useParams();
@@ -233,8 +234,7 @@ function EditQuizView() {
   };
 
   return (
-    <div>
-      <Navbar />
+    <Dashboard>
       <div style={containerStyle}>
         <h2
           style={{
@@ -400,7 +400,7 @@ function EditQuizView() {
           </DialogActions>
         </Dialog>
       </div>
-    </div>
+    </Dashboard>
   );
 }
 

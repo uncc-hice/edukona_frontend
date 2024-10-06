@@ -14,6 +14,7 @@ import './SettingsPage.css';
 import { useNavigate, useParams } from 'react-router-dom';
 import axios from 'axios';
 import Navbar from '../../blocks/Navbar';
+import Dashboard from '../../layouts/Dashboard/Dashboard';
 
 const SettingsPage = () => {
   const [settings, setSettings] = useState(null);
@@ -100,23 +101,21 @@ const SettingsPage = () => {
   };
 
   const handleBackButton = () => {
-    navigate(`/`);
+    navigate(`/dashboard`);
   };
 
   if (!settings) {
     return (
-      <>
-        <Navbar />
+      <Dashboard>
         <div className="settings-container">
           <CircularProgress />
         </div>
-      </>
+      </Dashboard>
     );
   }
 
   return (
-    <>
-      <Navbar />
+    <Dashboard>
       <div className="settings-container">
         <div className="settings-panel">
           <h2>Behavioral Settings</h2>
@@ -193,7 +192,7 @@ const SettingsPage = () => {
           </Button>
         </div>
       </div>
-    </>
+    </Dashboard>
   );
 };
 
