@@ -77,16 +77,11 @@ const StudentAnswersGrid = ({ answers, question, code, sendMessage, setIsSubmitt
               answer={answer}
               index={index}
               onClick={() => handleSubmitAnswer(answer)}
-              disabled={!(answer === selectedAnswer || !isSubmitted)}
+              selected={answer === selectedAnswer}
             />
           </Grid>
         ))}
       </Grid>
-      {isSubmitted && (
-        <Button variant={'contained'} sx={{ marginTop: '5px' }} onClick={handleChangeAnswer}>
-          Select a different answer
-        </Button>
-      )}
     </Box>
   );
 };
