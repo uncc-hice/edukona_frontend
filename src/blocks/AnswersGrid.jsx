@@ -15,9 +15,8 @@ const StyledCountText = styled(Typography)(({ theme }) => ({
   marginBottom: '8px', // Space below the count before the answer option
 }));
 
-const AnswersGrid = ({ liveBarChart, sendMessage, answers, responseData = {} }) => {
-  // Calculate total responses by summing values in responseData
-  const totalResponses = Object.values(responseData).reduce((sum, count) => sum + count, 0);
+const AnswersGrid = ({ liveBarChart, sendMessage, answers, responseData }) => {
+  const totalResponses = responseData.total_responses;
 
   useEffect(() => {
     const token = localStorage.getItem('token');
@@ -33,7 +32,7 @@ const AnswersGrid = ({ liveBarChart, sendMessage, answers, responseData = {} }) 
   return (
     <Grid container spacing={2} justifyContent="center" alignItems="center">
       {answers.map((answer, index) => {
-        const count = responseData[answer] || 0;
+        const count = responseData?.answers?.[answer] || 0;
         const width = totalResponses > 0 ? (count / totalResponses) * 100 : 0;
 
         return (
