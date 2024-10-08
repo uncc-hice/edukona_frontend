@@ -3,6 +3,7 @@ import { useTheme } from '@mui/system';
 import { Typography, Box, LinearProgress } from '@mui/material';
 import AnswersGrid from './AnswersGrid';
 import Timer from '../blocks/Timer';
+import AudioToggle from '../blocks/AudioToggle';
 
 const QuizComponent = ({
   userCount,
@@ -41,6 +42,11 @@ const QuizComponent = ({
   return (
     <Box width="100%" p={theme.spacing(3)}>
       <Box display="flex" alignItems="center" justifyContent="space-between" width="100%">
+        {/* AudioToggle on the Left */}
+        <Box mt={-1}>
+          <AudioToggle src="/QuizWhiz.mp3" />
+        </Box>
+
         {/* Progress Bar and Counts */}
         <Box flexGrow={1}>
           <Box mt={3} alignItems="center">
@@ -59,8 +65,6 @@ const QuizComponent = ({
           </Box>
         )}
       </Box>
-
-      {/* Progress Bar */}
 
       {/* Question Text */}
       <Box mt={3} textAlign="center">

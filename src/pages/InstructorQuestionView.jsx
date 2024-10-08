@@ -5,7 +5,6 @@ import QuizComponent from '../blocks/QuizComponent';
 import { useParams } from 'react-router-dom';
 import QuizEndView from './QuizEndView';
 import useWebSocket from 'react-use-websocket';
-import AudioToggle from '../blocks/AudioToggle';
 
 const InstructorQuestionView = () => {
   const [currentQuestion, setCurrentQuestion] = useState(undefined);
@@ -66,9 +65,6 @@ const InstructorQuestionView = () => {
   return (
     <Box display="flex" flexDirection="column" height="100vh">
       <Navbar />
-      <Box display="flex" flexDirection="row">
-        <AudioToggle src="/marimba.mp3" />
-      </Box>
       <Box flexGrow={1} width="100%">
         {quizEnded ? (
           <QuizEndView />
