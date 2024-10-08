@@ -23,6 +23,10 @@ const StudentAnswersGrid = ({ answers, question, code, sendMessage, setIsSubmitt
   };
 
   const handleSubmitAnswer = async (answer) => {
+    if (answer == selectedAnswer) {
+      return;
+    }
+
     if (!sid) {
       console.error('No student ID found');
       return;
