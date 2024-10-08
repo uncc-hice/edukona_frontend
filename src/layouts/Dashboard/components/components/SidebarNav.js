@@ -5,7 +5,7 @@ import Button from '@mui/material/Button';
 
 const mock = [
   {
-    groupTitle: 'Quiz',
+    groupTitle: '',
     id: 'quiz',
     pages: [
       {

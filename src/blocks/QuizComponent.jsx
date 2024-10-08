@@ -1,8 +1,9 @@
 import React, { useState, useEffect } from 'react';
 import { useTheme } from '@mui/system';
-import { Typography, Box } from '@mui/material';
+import { Typography, Box, LinearProgress } from '@mui/material';
 import AnswersGrid from './AnswersGrid';
 import Timer from '../blocks/Timer';
+import AudioToggle from '../blocks/AudioToggle';
 
 const QuizComponent = ({
   userCount,
@@ -34,28 +35,45 @@ const QuizComponent = ({
     return Object.values(responseData).reduce((total, count) => total + count, 0);
   };
 
+  // Calculate progress percentage
+  const totalResponses = getTotalResponses();
+  const progressPercentage = userCount > 0 ? (totalResponses / userCount) * 100 : 0;
+
   return (
     <Box width="100%" p={theme.spacing(3)}>
       <Box display="flex" alignItems="center" justifyContent="space-between" width="100%">
-        <Box flexGrow={1} display="flex" justifyContent="center">
-          <Typography variant="h6" gutterBottom component="div" textAlign="center">
-            Total Responses: {getTotalResponses()}
-          </Typography>
-          <Typography variant="h6" gutterBottom component="div" textAlign="center" ml={2}>
-            Total Students: {userCount}
-          </Typography>
+        {/* AudioToggle on the Left */}
+        <Box mt={-1}>
+          <AudioToggle src="/QuizWhiz.mp3" />
         </Box>
+
+        {/* Progress Bar and Counts */}
+        <Box flexGrow={1}>
+          <Box mt={3} alignItems="center">
+            <LinearProgress variant="determinate" value={progressPercentage} style={{ height: 15, borderRadius: 5 }} />
+            <Typography variant="body2" color="textSecondary" align="center" mt={1}>
+              {Math.round(progressPercentage)}% of students have answered. Total Students: {userCount}. Total Responses:{' '}
+              {totalResponses}
+            </Typography>
+          </Box>
+        </Box>
+
+        {/* Timer */}
         {timerEnabled && (
-          <Box>
+          <Box ml={4}>
             <Timer key={resetTimer} initialTime={timerDuration} onTimerEnd={onTimerEnd} />
           </Box>
         )}
       </Box>
+
+      {/* Question Text */}
       <Box mt={3} textAlign="center">
         <Typography variant="h2" gutterBottom component="div">
           {question['question_text']}
         </Typography>
       </Box>
+
+      {/* Answers Grid */}
       <Box mt={3}>
         <AnswersGrid
           liveBarChart={liveBarChart}

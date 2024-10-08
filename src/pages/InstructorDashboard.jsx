@@ -26,9 +26,6 @@ const InstructorDashBoard = () => {
   return (
     <Dashboard>
       <Box sx={{ flexGrow: 1, padding: '25px' }}>
-        <Typography variant="h4" sx={{ marginBottom: '20px' }}>
-          Your Quizzes
-        </Typography>
         <QuizList />
       </Box>
     </Dashboard>
