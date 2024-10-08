@@ -2,7 +2,7 @@ import React from 'react';
 import { Button, ButtonBase, Typography } from '@mui/material';
 import { styled } from '@mui/system';
 
-const getColor = index => {
+const getColor = (index) => {
   const colors = ['#e91e63', '#9c27b0', '#2196f3', '#00bcd4'];
   return colors[index % colors.length]; // Cycle through colors based on index
 };

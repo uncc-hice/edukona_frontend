@@ -1,5 +1,4 @@
 import React, { useEffect, useState } from 'react';
-import axios from 'axios';
 import { Grid, Box, Typography, Button } from '@mui/material';
 import StudentAnswerOption from './StudentAnswerOption';
 
