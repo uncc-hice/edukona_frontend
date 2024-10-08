@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import axios from 'axios';
-import { Grid, Box, Typography } from '@mui/material';
+import { Grid, Box, Typography, Button } from '@mui/material';
 import StudentAnswerOption from './StudentAnswerOption';
 
 const StudentAnswersGrid = ({ answers, question, code, sendMessage, setIsSubmitted, isSubmitted, quizSession }) => {
@@ -17,9 +17,12 @@ const StudentAnswersGrid = ({ answers, question, code, sendMessage, setIsSubmitt
     }
   }, [questionId, setIsSubmitted, code, sid]);
 
-  const handleSubmitAnswer = async (answer) => {
-    if (isSubmitted) return; // Prevents re-submitting if already submitted
+  const handleChangeAnswer = () => {
+    setIsSubmitted(false);
+    setSelectedAnswer('');
+  };
 
+  const handleSubmitAnswer = async (answer) => {
     if (!sid) {
       console.error('No student ID found');
       return;
@@ -71,12 +74,16 @@ const StudentAnswersGrid = ({ answers, question, code, sendMessage, setIsSubmitt
               answer={answer}
               index={index}
               onClick={() => handleSubmitAnswer(answer)}
-              isSelected={selectedAnswer === answer}
-              isSubmitted={isSubmitted}
+              disabled={!(answer === selectedAnswer || !isSubmitted)}
             />
           </Grid>
         ))}
       </Grid>
+      {isSubmitted && (
+        <Button variant={'contained'} sx={{ marginTop: '5px' }} onClick={handleChangeAnswer}>
+          Select a different answer
+        </Button>
+      )}
     </Box>
   );
 };

@@ -2,7 +2,7 @@ import React from 'react';
 import { Button, ButtonBase, Typography } from '@mui/material';
 import { styled } from '@mui/system';
 
-const getColor = (index) => {
+const getColor = index => {
   const colors = ['#e91e63', '#9c27b0', '#2196f3', '#00bcd4'];
   return colors[index % colors.length]; // Cycle through colors based on index
 };
@@ -28,12 +28,12 @@ const StyledButtonBase = styled(ButtonBase)(({ theme, index, disabled }) => ({
     opacity: 0.5, // Adjust as needed to indicate disabled state visually
   }),
 }));
-const StudentAnswerOption = ({ answer, index, onClick, isSelected, isSubmitted }) => {
+const StudentAnswerOption = ({ answer, index, onClick, disabled }) => {
   return (
     <StyledButtonBase
       variant="contained"
       onClick={onClick}
-      disabled={isSubmitted}
+      disabled={disabled}
       index={index}
       // Adjust color or style if needed based on isSelected
     >
