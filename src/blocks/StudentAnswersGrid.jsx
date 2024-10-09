@@ -1,9 +1,9 @@
 import React, { useEffect, useState } from 'react';
-import { Grid, Box, Typography, Button } from '@mui/material';
+import { Grid, Box } from '@mui/material';
 import StudentAnswerOption from './StudentAnswerOption';
 
-const StudentAnswersGrid = ({ answers, question, code, sendMessage, setIsSubmitted, isSubmitted, quizSession }) => {
-  const { id: questionId, question_text, incorrect_answer_list, correct_answer } = question;
+const StudentAnswersGrid = ({ answers, question, code, sendMessage, setIsSubmitted, isSubmitted }) => {
+  const { id: questionId } = question;
   const [selectedAnswer, setSelectedAnswer] = useState('');
   const sid = localStorage.getItem('sid');
 
@@ -16,13 +16,8 @@ const StudentAnswersGrid = ({ answers, question, code, sendMessage, setIsSubmitt
     }
   }, [questionId, setIsSubmitted, code, sid]);
 
-  const handleChangeAnswer = () => {
-    setIsSubmitted(false);
-    setSelectedAnswer('');
-  };
-
   const handleSubmitAnswer = async (answer) => {
-    if (answer == selectedAnswer) {
+    if (answer === selectedAnswer) {
       return;
     }
 
@@ -78,6 +73,7 @@ const StudentAnswersGrid = ({ answers, question, code, sendMessage, setIsSubmitt
               index={index}
               onClick={() => handleSubmitAnswer(answer)}
               selected={answer === selectedAnswer}
+              submitted={isSubmitted}
             />
           </Grid>
         ))}

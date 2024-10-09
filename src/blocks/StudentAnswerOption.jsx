@@ -7,7 +7,7 @@ const getColor = (index) => {
   return colors[index % colors.length]; // Cycle through colors based on index
 };
 
-const StyledButtonBase = styled(ButtonBase)(({ theme, index, selected }) => ({
+const StyledButtonBase = styled(ButtonBase)(({ theme, index, selected, submitted }) => ({
   backgroundColor: getColor(index), // Set background color based on index
   textAlign: 'center',
   width: '100%',
@@ -21,17 +21,21 @@ const StyledButtonBase = styled(ButtonBase)(({ theme, index, selected }) => ({
     boxShadow: theme.shadows[4],
   },
   color: theme.palette.getContrastText(getColor(index)),
-  ...(!selected && {
-    color: theme.palette.text.disabled, // Example disabled text color
-    opacity: 0.2, // Adjust as needed to indicate disabled state visually
+  ...(!selected &&
+    submitted && {
+      opacity: 0.3, // Adjust as needed to indicate disabled state visually
+    }),
+  ...(selected && {
+    boxShadow: '0px 8px 16px rgba(0, 0, 0, 0.4)',
   }),
 }));
-const StudentAnswerOption = ({ answer, index, onClick, selected }) => {
+const StudentAnswerOption = ({ answer, index, onClick, selected, submitted }) => {
   return (
     <StyledButtonBase
       variant="contained"
       onClick={onClick}
       selected={selected}
+      submitted={submitted}
       index={index}
       // Adjust color or style if needed based on isSelected
     >
