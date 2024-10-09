@@ -89,7 +89,10 @@ const QuizListRow = ({ quiz, onUpdate }) => {
           error: 'Failed to delete session',
         }
       )
-      .then(() => fetchSessions());
+      .then(() => {
+        onUpdate();
+        fetchSessions();
+      });
     setSessionModalOpen(false);
   };
 
