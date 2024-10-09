@@ -30,13 +30,8 @@ const QuizComponent = ({
     }
   }, [question]);
 
-  // Function to calculate total responses
-  const getTotalResponses = () => {
-    return Object.values(responseData).reduce((total, count) => total + count, 0);
-  };
-
   // Calculate progress percentage
-  const totalResponses = getTotalResponses();
+  const totalResponses = responseData.total_responses || 0;
   const progressPercentage = userCount > 0 ? (totalResponses / userCount) * 100 : 0;
 
   return (
@@ -69,7 +64,7 @@ const QuizComponent = ({
       {/* Question Text */}
       <Box mt={3} textAlign="center">
         <Typography variant="h2" gutterBottom component="div">
-          {question['question_text']}
+          {question['question_text'] || 0}
         </Typography>
       </Box>
 

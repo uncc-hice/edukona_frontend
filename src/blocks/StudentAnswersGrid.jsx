@@ -1,10 +1,9 @@
 import React, { useEffect, useState } from 'react';
-import axios from 'axios';
-import { Grid, Box, Typography } from '@mui/material';
+import { Grid, Box } from '@mui/material';
 import StudentAnswerOption from './StudentAnswerOption';
 
-const StudentAnswersGrid = ({ answers, question, code, sendMessage, setIsSubmitted, isSubmitted, quizSession }) => {
-  const { id: questionId, question_text, incorrect_answer_list, correct_answer } = question;
+const StudentAnswersGrid = ({ answers, question, code, sendMessage, setIsSubmitted, isSubmitted }) => {
+  const { id: questionId } = question;
   const [selectedAnswer, setSelectedAnswer] = useState('');
   const sid = localStorage.getItem('sid');
 
@@ -18,7 +17,9 @@ const StudentAnswersGrid = ({ answers, question, code, sendMessage, setIsSubmitt
   }, [questionId, setIsSubmitted, code, sid]);
 
   const handleSubmitAnswer = async (answer) => {
-    if (isSubmitted) return; // Prevents re-submitting if already submitted
+    if (answer === selectedAnswer) {
+      return;
+    }
 
     if (!sid) {
       console.error('No student ID found');
@@ -71,8 +72,8 @@ const StudentAnswersGrid = ({ answers, question, code, sendMessage, setIsSubmitt
               answer={answer}
               index={index}
               onClick={() => handleSubmitAnswer(answer)}
-              isSelected={selectedAnswer === answer}
-              isSubmitted={isSubmitted}
+              selected={answer === selectedAnswer}
+              submitted={isSubmitted}
             />
           </Grid>
         ))}
