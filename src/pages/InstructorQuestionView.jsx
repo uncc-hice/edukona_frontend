@@ -73,7 +73,7 @@ const InstructorQuestionView = () => {
             sendMessage={sendMessage}
             quizEnded={quizEnded}
             timerEnabled={settings['timer']}
-            timerDuration={settings['timer_duration']}
+            timerDuration={currentQuestion.duration}
             resetTimer={resetTimer}
             onTimerEnd={onTimerEnd}
           />
