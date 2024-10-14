@@ -47,7 +47,7 @@ const Topbar = ({ onSidebarOpen, colorInvert = false }) => {
 
           {isLoggedIn ? (
             <>
-                {/* I believe this is what issue KAN-85 wants me to do. If I am wrong, please let me know */}
+              {/* I believe this is what issue KAN-85 wants me to do. If I am wrong, please let me know */}
               <Button
                 variant="text"
                 color="primary"
@@ -58,16 +58,16 @@ const Topbar = ({ onSidebarOpen, colorInvert = false }) => {
               >
                 Quizzes
               </Button>
-            <Button
+              <Button
                 variant="text"
                 color="primary"
                 component="a"
                 href="/recordings"
                 size="large"
                 sx={{ marginLeft: 4 }}
-            >
+              >
                 Recordings
-            </Button>
+              </Button>
 
               <Button variant="text" color="primary" component="a" href="/team" size="large" sx={{ marginLeft: 4 }}>
                 Team

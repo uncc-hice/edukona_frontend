@@ -2,7 +2,7 @@ name: Deploy Front-end to EB
 
 on:
   pull_request:
-    types: [ labeled ]
+    types: [labeled]
 
 jobs:
   deploy:
@@ -115,8 +115,7 @@ jobs:
             fi
             echo "Environment is in '$status' state. Waiting for $delay seconds..."
             sleep $delay
-          done      
-
+          done
 
       - name: Deploy to Elastic Beanstalk
         run: |

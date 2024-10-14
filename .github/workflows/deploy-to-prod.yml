@@ -2,8 +2,7 @@ name: Deploy to production on PR merge with main
 
 on:
   pull_request:
-    types: [ closed ]
-
+    types: [closed]
 
 jobs:
   deploy:
@@ -50,7 +49,7 @@ jobs:
 
           aws configure set aws_access_key_id ${{ secrets.AWS_ACCESS_KEY_ID }}
           aws configure set aws_secret_access_key ${{ secrets.AWS_SECRET_ACCESS_KEY }}
-          aws configure set region ${{ secrets.AWS_REGION }} 
+          aws configure set region ${{ secrets.AWS_REGION }}
 
       - name: Deploy to Elastic Beanstalk Production
         run: |

@@ -2,7 +2,7 @@ name: Remove Preview Environment on Merge
 
 on:
   pull_request:
-    types: [ closed ]
+    types: [closed]
 
 jobs:
   deploy:
@@ -34,7 +34,7 @@ jobs:
           prNumber=${{ github.event.pull_request.number }}
           echo "Deleting Environment : pr$prNumber"
           DELETE_ENV_NAME=hice-frontend-${prNumber}
-          
+
           # only terminate environment for label if that environment actually exists and is active (might not if label deploy failed)
           if aws elasticbeanstalk describe-environments --environment-names $DELETE_ENV_NAME --no-include-deleted | grep -q $DELETE_ENV_NAME; then
             echo "Terminating environment $DELETE_ENV_NAME"  

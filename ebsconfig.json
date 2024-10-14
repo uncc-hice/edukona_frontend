@@ -1,37 +1,37 @@
 [
-    {
-        "Namespace": "aws:elasticbeanstalk:environment",
-        "OptionName": "EnvironmentType",
-        "Value": "SingleInstance"
-    },
-    {
-        "Namespace": "aws:autoscaling:launchconfiguration",
-        "OptionName": "IamInstanceProfile",
-        "Value": "aws-elasticbeanstalk-ec2-role"
-    },
-    {
-        "Namespace": "aws:autoscaling:launchconfiguration",
-        "OptionName": "InstanceType",
-        "Value": "t4g.medium"
-    },
-    {
-        "Namespace": "aws:elasticbeanstalk:application:environment",
-        "OptionName": "REACT_APP_API_BASE_URL",
-        "Value": "https://api.edukona.com"
-    },
-    {
-        "Namespace": "aws:elasticbeanstalk:application:environment",
-        "OptionName": "REACT_APP_GA_MEASUREMENT_ID",
-        "Value": "G-VJV3XKFBC3"
-    },
-    {
-        "Namespace": "aws:elasticbeanstalk:application:environment",
-        "OptionName": "REACT_APP_GOOGLE_CLIENT_ID",
-        "Value": "466702698703-vbnms985kail3918949qcn741o2dtr8t.apps.googleusercontent.com"
-    },
-    {
-        "Namespace": "aws:elasticbeanstalk:command",
-        "OptionName": "Timeout",
-        "Value": "600"
-    }
+  {
+    "Namespace": "aws:elasticbeanstalk:environment",
+    "OptionName": "EnvironmentType",
+    "Value": "SingleInstance"
+  },
+  {
+    "Namespace": "aws:autoscaling:launchconfiguration",
+    "OptionName": "IamInstanceProfile",
+    "Value": "aws-elasticbeanstalk-ec2-role"
+  },
+  {
+    "Namespace": "aws:autoscaling:launchconfiguration",
+    "OptionName": "InstanceType",
+    "Value": "t4g.medium"
+  },
+  {
+    "Namespace": "aws:elasticbeanstalk:application:environment",
+    "OptionName": "REACT_APP_API_BASE_URL",
+    "Value": "https://api.edukona.com"
+  },
+  {
+    "Namespace": "aws:elasticbeanstalk:application:environment",
+    "OptionName": "REACT_APP_GA_MEASUREMENT_ID",
+    "Value": "G-VJV3XKFBC3"
+  },
+  {
+    "Namespace": "aws:elasticbeanstalk:application:environment",
+    "OptionName": "REACT_APP_GOOGLE_CLIENT_ID",
+    "Value": "466702698703-vbnms985kail3918949qcn741o2dtr8t.apps.googleusercontent.com"
+  },
+  {
+    "Namespace": "aws:elasticbeanstalk:command",
+    "OptionName": "Timeout",
+    "Value": "600"
+  }
 ]
