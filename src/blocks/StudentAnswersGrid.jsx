@@ -6,6 +6,7 @@ const StudentAnswersGrid = ({ answers, question, code, sendMessage, setIsSubmitt
   const { id: questionId } = question;
   const [selectedAnswer, setSelectedAnswer] = useState('');
   const sid = localStorage.getItem('sid');
+  const [questionTimedOut, setQuestionTimedOut] = useState(false);
 
   useEffect(() => {
     // Check if there's a stored submission state for the current question
@@ -14,6 +15,8 @@ const StudentAnswersGrid = ({ answers, question, code, sendMessage, setIsSubmitt
       setSelectedAnswer(storedSubmission);
       setIsSubmitted(true);
     }
+
+    setInterval(() => setQuestionTimedOut(true), question.duration * 1000);
   }, [questionId, setIsSubmitted, code, sid]);
 
   const handleSubmitAnswer = async (answer) => {
@@ -73,7 +76,8 @@ const StudentAnswersGrid = ({ answers, question, code, sendMessage, setIsSubmitt
               index={index}
               onClick={() => handleSubmitAnswer(answer)}
               selected={answer === selectedAnswer}
-              submitted={isSubmitted}
+              submitted={isSubmitted || questionTimedOut}
+              timedOut={questionTimedOut}
             />
           </Grid>
         ))}
