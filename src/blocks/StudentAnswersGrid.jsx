@@ -15,9 +15,12 @@ const StudentAnswersGrid = ({ answers, question, code, sendMessage, setIsSubmitt
       setSelectedAnswer(storedSubmission);
       setIsSubmitted(true);
     }
-
-    setInterval(() => setQuestionTimedOut(true), question.duration * 1000);
-  }, [questionId, setIsSubmitted, code, sid]);
+    setQuestionTimedOut(false);
+    const questionInterval = setInterval(() => {
+      setQuestionTimedOut(true);
+      clearInterval(questionInterval);
+    }, question.duration * 1000);
+  }, [questionId, setIsSubmitted, code, sid, question.duration]);
 
   const handleSubmitAnswer = async (answer) => {
     if (answer === selectedAnswer) {
