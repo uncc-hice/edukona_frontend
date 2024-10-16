@@ -5,6 +5,8 @@ import QuizComponent from '../blocks/QuizComponent';
 import { useParams } from 'react-router-dom';
 import QuizEndView from './QuizEndView';
 import useWebSocket from 'react-use-websocket';
+import { Topbar } from '../layouts/Main/components';
+import Container from '../components/Container';
 
 const InstructorQuestionView = () => {
   const [currentQuestion, setCurrentQuestion] = useState(undefined);
@@ -59,7 +61,9 @@ const InstructorQuestionView = () => {
 
   return (
     <Box display="flex" flexDirection="column" height="100vh">
-      <Navbar />
+      <Container maxWidth={1} paddingY={{ xs: 1, sm: 1.5 }}>
+        <Topbar />
+      </Container>
       <Box flexGrow={1} width="100%">
         {quizEnded ? (
           <QuizEndView />
