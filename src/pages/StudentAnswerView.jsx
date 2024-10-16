@@ -1,10 +1,11 @@
 import React, { useState, useEffect } from 'react';
 import { useParams } from 'react-router-dom';
-import { Box, Button, CircularProgress, Typography } from '@mui/material';
+import { Box, Button, CircularProgress, Container, Typography } from '@mui/material';
 import StudentAnswersGrid from '../blocks/StudentAnswersGrid';
 import QuizEndView from './QuizEndView';
 import useWebSocket from 'react-use-websocket'; // Adjust the import path as needed
 import { Store } from 'react-notifications-component';
+import { Topbar } from '../layouts/Main/components';
 
 const StudentAnswerView = () => {
   const [question, setQuestion] = useState(null);
@@ -105,7 +106,10 @@ const StudentAnswerView = () => {
   };
 
   return (
-    <div>
+    <Box marginX={'5px'}>
+      <Container maxWidth={1} paddingY={{ xs: 1, sm: 1.5 }}>
+        <Topbar />
+      </Container>
       {loading ? (
         <Box display="flex" flexDirection={'column'} justifyContent="center" alignItems="center" height="100vh">
           <CircularProgress />
@@ -149,7 +153,7 @@ const StudentAnswerView = () => {
           </Button>
         </>
       )}
-    </div>
+    </Box>
   );
 };
 
