@@ -26,14 +26,9 @@ const InstructorQuestionView = () => {
       } else if (data.type === 'quiz_ended') {
         setQuizEnded(true);
         setCurrentQuestion(null);
-      } else if (data.type === 'user_response') {
-        console.log('Response data:', data.response);
-        setResponseData((prevData) => {
-          const updatedData = { ...prevData };
-          const response = data.response;
-          updatedData[response] = (updatedData[response] || 0) + 1;
-          return updatedData;
-        });
+      } else if (data.type === 'update_answers') {
+        console.log('Response data:', data.data);
+        setResponseData(data.data);
       } else if (data.type === 'settings') {
         setSettings(data.settings);
         setUserCount(data.user_count);
@@ -78,7 +73,7 @@ const InstructorQuestionView = () => {
             sendMessage={sendMessage}
             quizEnded={quizEnded}
             timerEnabled={settings['timer']}
-            timerDuration={settings['timer_duration']}
+            timerDuration={currentQuestion.duration}
             resetTimer={resetTimer}
             onTimerEnd={onTimerEnd}
           />

@@ -46,7 +46,8 @@ const Footer = () => {
             </Box>
             <Box marginLeft={2}>
               <Link variant={'body2'} underline="none" component="a" href="/dashboard" color="text.primary">
-                Dashboard
+                {/* Changed it from dashboard to quizzes - Jacob P */}
+                Quizzes
               </Link>
             </Box>
             <Box marginLeft={2}>

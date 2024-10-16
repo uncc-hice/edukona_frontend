@@ -89,7 +89,10 @@ const QuizListRow = ({ quiz, onUpdate }) => {
           error: 'Failed to delete session',
         }
       )
-      .then(() => fetchSessions());
+      .then(() => {
+        onUpdate();
+        fetchSessions();
+      });
     setSessionModalOpen(false);
   };
 
@@ -163,12 +166,12 @@ const QuizListRow = ({ quiz, onUpdate }) => {
         <TableCell>{createdAt.current}</TableCell>
         <TableCell>
           <Button variant="contained" color="primary" onClick={handleViewSessions}>
-            {sessionsOpen ? 'Close Sessions' : 'View Sessions'}
+            {sessionsOpen ? `Close Sessions (${quiz.num_sessions})` : `View Sessions (${quiz.num_sessions})`}
           </Button>
         </TableCell>
         <TableCell>
           <Button variant="contained" color="primary" onClick={() => viewQuestions(quiz.id)}>
-            View Questions
+            View Questions ({quiz.num_questions})
           </Button>
         </TableCell>
         <TableCell>

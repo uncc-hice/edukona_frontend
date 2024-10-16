@@ -20,6 +20,7 @@ EduKona is an innovative educational platform that is free and open-source, desi
 Visit [EduKona Live](https://edukona.com/) to experience the platform live!
 
 ### Steps to Use
+
 1. Sign up as an instructor.
 2. Create and manage quizzes through an intuitive dashboard.
 3. Engage students with real-time quizzes by providing them a quiz code.
