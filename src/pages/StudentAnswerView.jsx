@@ -5,7 +5,7 @@ import StudentAnswersGrid from '../blocks/StudentAnswersGrid';
 import QuizEndView from './QuizEndView';
 import useWebSocket from 'react-use-websocket'; // Adjust the import path as needed
 import { Store } from 'react-notifications-component';
-import Topbar from '../layouts/Main/components/Topbar';
+import { Topbar } from '../layouts/Main/components';
 
 const StudentAnswerView = () => {
   const [question, setQuestion] = useState(null);
@@ -109,7 +109,7 @@ const StudentAnswerView = () => {
     <Box marginX={'5px'}>
       <Container maxWidth={1} paddingY={{ xs: 1, sm: 1.5 }}>
         <Topbar />
-      </Container>{' '}
+      </Container>
       {loading ? (
         <Box display="flex" flexDirection={'column'} justifyContent="center" alignItems="center" height="100vh">
           <CircularProgress />
