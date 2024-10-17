@@ -1,6 +1,5 @@
 import React, { useEffect, useState } from 'react';
 import { Table, TableBody, TableContainer, Paper } from '@mui/material';
-import { useNavigate } from 'react-router-dom';
 import axios from 'axios';
 import QuizListRow from './QuizListRow';
 
