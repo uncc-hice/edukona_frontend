@@ -23,16 +23,15 @@ import Unauthorized from './pages/Unauthorized';
 import 'slick-carousel/slick/slick.css';
 import 'slick-carousel/slick/slick-theme.css';
 import 'aos/dist/aos.css';
-import DevRoute from './blocks/DevRoute';
 import InstructorRecordings from './pages/InstructorRecordings/InstructorRecordings';
 import { ToastContainer } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
-import { UserContext, UserProvider } from './UserContext';
+import { UserContext } from './UserContext';
 import Team from './pages/Team/Team';
 
 function App() {
   const [showLogin, setShowLogin] = useState(true);
-  const { isLoggedIn, token, login, logout } = useContext(UserContext);
+  const { isLoggedIn } = useContext(UserContext);
 
   const toggleForm = () => {
     setShowLogin(!showLogin);
