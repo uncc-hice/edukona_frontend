@@ -6,18 +6,15 @@ import Card from '@mui/material/Card';
 import CardContent from '@mui/material/CardContent';
 import ListItemText from '@mui/material/ListItemText';
 import CardMedia from '@mui/material/CardMedia';
-import { Link as ScrollLink } from 'react-scroll'; // For smooth scrolling
+
+import IconButton from '@mui/material/IconButton';
+import LinkedInIcon from '@mui/icons-material/LinkedIn';
+import TwitterIcon from '@mui/icons-material/Twitter'; // Use TwitterIcon for X
 
 import Container from '../../../components/Container';
 
 const Overview = ({ mock }) => {
-  const handleCardClick = (i) => {
-    const targetId = `team-member-${i}`;
-    document.getElementById(targetId)?.scrollIntoView({
-      behavior: 'smooth',
-      block: 'center',
-    });
-  };
+  const numberOfItems = mock.length;
 
   return (
     <Container>
@@ -38,62 +35,70 @@ const Overview = ({ mock }) => {
             Pioneering minds advancing knowledge through collaboration.
           </Typography>
         </Box>
-        <Grid container spacing={2}>
+        <Grid container spacing={2} justifyContent={numberOfItems < 4 ? 'center' : 'flex-start'}>
           {mock.map((item, i) => (
             <Grid item xs={12} sm={6} md={3} key={i}>
               <Card
-                onClick={() => handleCardClick(i)}
                 sx={{
                   boxShadow: 0,
+                  border: '1px solid lightgrey',
                   background: 'transparent',
                   backgroundImage: 'none',
                   transition: 'transform 0.3s ease, box-shadow 0.3s ease',
                   '&:hover': {
-                    transform: 'scale(1.05)',
-                    boxShadow: 4,
-                    cursor: 'pointer',
+                    boxShadow: 3,
                   },
                 }}
               >
-                <Box component={CardMedia} borderRadius={2} width={1} height={1} minHeight={320} image={item.avatar} />
-                <Box component={CardContent} bgcolor={'transparent'} marginTop={-5}>
-                  <Box component={Card}>
-                    <CardContent>
-                      <ListItemText primary={item.name} secondary={item.title} />
-                    </CardContent>
-                  </Box>
+                <Box
+                  component={CardMedia}
+                  borderRadius={2}
+                  bordertopr
+                  width={1}
+                  height={1}
+                  minHeight={320}
+                  image={item.avatar}
+                  sx={{ borderBottomRightRadius: 0, borderBottomLeftRadius: 0 }}
+                />
+                <Box component={Card}>
+                  <CardContent>
+                    <ListItemText primary={item.name} secondary={item.title} />
+                    {(item.linkedIn || item.x) && (
+                      <Box marginTop={1}>
+                        {item.linkedIn && (
+                          <IconButton
+                            aria-label="LinkedIn"
+                            size="small"
+                            color="primary"
+                            component="a"
+                            href={item.linkedIn}
+                            target="_blank"
+                            rel="noopener"
+                          >
+                            <LinkedInIcon />
+                          </IconButton>
+                        )}
+                        {item.x && (
+                          <IconButton
+                            aria-label="X"
+                            size="small"
+                            color="primary"
+                            component="a"
+                            href={item.x}
+                            target="_blank"
+                            rel="noopener"
+                          >
+                            <TwitterIcon />
+                          </IconButton>
+                        )}
+                      </Box>
+                    )}
+                  </CardContent>
                 </Box>
               </Card>
             </Grid>
           ))}
         </Grid>
-
-        {/* Learn more section with arrow */}
-        <Box
-          sx={{
-            display: 'flex',
-            justifyContent: 'center',
-            alignItems: 'center',
-            marginTop: 4,
-          }}
-        >
-          <ScrollLink to="team-section" smooth={true}>
-            <Box
-              sx={{
-                display: 'flex',
-                flexDirection: 'column',
-                alignItems: 'center',
-              }}
-            >
-              <Typography variant="h6" fontWeight={700} color="primary">
-                Learn more about us
-              </Typography>
-              <Box component="span" sx={{ fontSize: '2rem', color: 'primary.main' }}>
-                ↓
-              </Box>
-            </Box>
-          </ScrollLink>
-        </Box>
       </Box>
     </Container>
   );
