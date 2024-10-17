@@ -124,7 +124,7 @@ const InstructorRecordings = () => {
   };
 
   // Establish WebSocket connection with the token
-  const {} = useWebSocket(`wss://api.edukona.com/ws/recordings/?token=${token.current}`, {
+  useWebSocket(`wss://api.edukona.com/ws/recordings/?token=${token.current}`, {
     onOpen: () => console.log('WebSocket connected'),
     onClose: () => console.log('WebSocket disconnected'),
     onError: websocketError,

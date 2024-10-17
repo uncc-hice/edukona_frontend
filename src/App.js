@@ -32,7 +32,7 @@ import Team from './pages/Team/Team';
 
 function App() {
   const [showLogin, setShowLogin] = useState(true);
-  const { isLoggedIn, token, login, logout } = useContext(UserContext);
+  const { isLoggedIn } = useContext(UserContext);
 
   const toggleForm = () => {
     setShowLogin(!showLogin);
