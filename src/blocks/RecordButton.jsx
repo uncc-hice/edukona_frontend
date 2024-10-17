@@ -77,7 +77,6 @@ const RecordButton = ({ onUpdate }) => {
     setTitle(null);
   };
 
-  // First useEffect: Fetch devices on mount
   useEffect(() => {
     const getDevices = async () => {
       try {
@@ -93,9 +92,8 @@ const RecordButton = ({ onUpdate }) => {
     };
 
     getDevices();
-  }, []); // Empty dependency array ensures this runs once on mount
+  }, []);
 
-  // Second useEffect: Set default selectedDeviceId when devices are loaded
   useEffect(() => {
     if (devices.length > 0 && !selectedDeviceId) {
       setSelectedDeviceId(devices[0].deviceId);
@@ -201,11 +199,11 @@ const RecordButton = ({ onUpdate }) => {
         </DialogContent>
       </Dialog>
       <Dialog open={cancelOpen}>
-        <DialogTitle>Confirm Cancellation</DialogTitle>
+        <DialogTitle>Enter a title for new recording</DialogTitle>
         <DialogContent>
           <Typography variant="h6">Are you sure you want to cancel? Your recording will be lost.</Typography>
-          <Button onClick={handleCancelUpload}>Yes, Cancel Upload</Button>
-          <Button onClick={() => setCancelOpen(false)}>No, Go Back</Button>
+          <Button onClick={handleCancelUpload}>Cancel Audio upload</Button>
+          <Button onClick={() => setCancelOpen(false)}>Back to title creation</Button>
         </DialogContent>
       </Dialog>
     </div>
