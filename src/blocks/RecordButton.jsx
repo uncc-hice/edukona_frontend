@@ -86,9 +86,6 @@ const RecordButton = ({ onUpdate }) => {
         const devices = await navigator.mediaDevices.enumerateDevices();
         const audioDevices = devices.filter((device) => device.kind === 'audioinput');
         setDevices(audioDevices);
-        if (audioDevices.length > 0 && !selectedDeviceId) {
-          setSelectedDeviceId(audioDevices[0].deviceId);
-        }
       } catch (error) {
         console.error('Error fetching devices: ', error);
       }
@@ -96,6 +93,12 @@ const RecordButton = ({ onUpdate }) => {
 
     getDevices();
   }, []);
+
+  useEffect(() => {
+    if (devices.length > 0 && !selectedDeviceId) {
+      setSelectedDeviceId(devices[0].deviceId);
+    }
+  }, [devices, selectedDeviceId]); // Dependencies include devices and selectedDeviceId
 
   const startRecording = async () => {
     try {
@@ -198,7 +201,7 @@ const RecordButton = ({ onUpdate }) => {
       <Dialog open={cancelOpen}>
         <DialogTitle>Enter a title for new recording</DialogTitle>
         <DialogContent>
-          <Typography variant={'h6'}>Are you sure you want to cancel? Your recording will be lost</Typography>
+          <Typography variant="h6">Are you sure you want to cancel? Your recording will be lost.</Typography>
           <Button onClick={handleCancelUpload}>Cancel Audio upload</Button>
           <Button onClick={() => setCancelOpen(false)}>Back to title creation</Button>
         </DialogContent>

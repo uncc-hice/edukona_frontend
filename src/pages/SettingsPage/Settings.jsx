@@ -13,7 +13,6 @@ import {
 import './SettingsPage.css';
 import { useNavigate, useParams } from 'react-router-dom';
 import axios from 'axios';
-import Navbar from '../../blocks/Navbar';
 import Dashboard from '../../layouts/Dashboard/Dashboard';
 
 const SettingsPage = () => {

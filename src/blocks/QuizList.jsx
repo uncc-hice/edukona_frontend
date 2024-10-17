@@ -1,28 +1,13 @@
-import React, { useEffect, useState } from 'react';
-import {
-  Table,
-  TableBody,
-  TableCell,
-  TableContainer,
-  TableRow,
-  Paper,
-  Button,
-  DialogActions,
-  DialogContent,
-  DialogContentText,
-  DialogTitle,
-  Dialog,
-} from '@mui/material';
-import { useNavigate } from 'react-router-dom';
+import React, { useEffect, useState, useCallback } from 'react';
+import { Table, TableBody, TableContainer, Paper } from '@mui/material';
 import axios from 'axios';
-import { toast } from 'react-toastify';
 import QuizListRow from './QuizListRow';
 
 const QuizList = () => {
   const [quizzes, setQuizzes] = useState([]);
   const token = localStorage.getItem('token');
 
-  const fetchQuizzes = async () => {
+  const fetchQuizzes = useCallback(async () => {
     try {
       const response = await axios.get('https://api.edukona.com/quiz/', {
         headers: {
@@ -36,7 +21,7 @@ const QuizList = () => {
     } catch (error) {
       console.error('An error occurred while fetching the quizzes:', error.message);
     }
-  };
+  }, [token]);
 
   const onUpdate = () => {
     fetchQuizzes();
@@ -44,7 +29,7 @@ const QuizList = () => {
 
   useEffect(() => {
     fetchQuizzes();
-  }, []);
+  }, [fetchQuizzes]);
 
   return (
     <TableContainer component={Paper}>

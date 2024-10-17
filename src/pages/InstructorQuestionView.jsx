@@ -1,6 +1,5 @@
 import React, { useEffect, useState, useCallback } from 'react';
 import { Typography, Button, Box } from '@mui/material';
-import Navbar from '../blocks/Navbar';
 import QuizComponent from '../blocks/QuizComponent';
 import { useParams } from 'react-router-dom';
 import QuizEndView from './QuizEndView';

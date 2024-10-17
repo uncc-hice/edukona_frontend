@@ -1,7 +1,6 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useCallback } from 'react';
 import axios from 'axios';
 import { useParams } from 'react-router-dom';
-import Navbar from '../blocks/Navbar';
 import {
   Button,
   Dialog,
@@ -26,31 +25,9 @@ function EditQuizView() {
   const [open, setOpen] = useState(false);
   const [selectedQuestionId, setSelectedQuestionId] = useState(null);
 
-  useEffect(() => {
-    if (quizId) {
-      fetchQuestions();
-    } else {
-      console.error('quizId is undefined');
-    }
-  }, [quizId]);
-
-  useEffect(() => {
-    if (selectedQuestion) {
-      const allAnswers = [...selectedQuestion.incorrect_answer_list, selectedQuestion.correct_answer];
-      setAnswers(selectedQuestion.incorrect_answer_list);
-      setCorrectAnswer(selectedQuestion.correct_answer);
-      setQuestionText(selectedQuestion.question_text);
-      setPoints(selectedQuestion.points);
-    }
-  }, [selectedQuestion]);
-
   const token = localStorage.getItem('token');
-  if (!token) {
-    console.log('No token found');
-    return null;
-  }
 
-  const fetchQuestions = async () => {
+  const fetchQuestions = useCallback(async () => {
     try {
       const response = await axios.get(`https://api.edukona.com/all-questions/${quizId}/`, {
         headers: {
@@ -61,7 +38,29 @@ function EditQuizView() {
     } catch (error) {
       console.error('Error fetching questions:', error);
     }
-  };
+  }, [quizId, token]);
+
+  useEffect(() => {
+    if (quizId) {
+      fetchQuestions();
+    } else {
+      console.error('quizId is undefined');
+    }
+  }, [quizId, fetchQuestions]);
+
+  useEffect(() => {
+    if (selectedQuestion) {
+      setAnswers(selectedQuestion.incorrect_answer_list);
+      setCorrectAnswer(selectedQuestion.correct_answer);
+      setQuestionText(selectedQuestion.question_text);
+      setPoints(selectedQuestion.points);
+    }
+  }, [selectedQuestion]);
+
+  if (!token) {
+    console.log('No token found');
+    return null;
+  }
 
   const saveQuestion = async (questionData) => {
     const endpoint = selectedQuestion?.id

@@ -1,10 +1,9 @@
 import React from 'react';
 import { alpha, useTheme } from '@mui/material/styles';
 import Box from '@mui/material/Box';
-import Divider from '@mui/material/Divider';
 import Main from '../../layouts/Main';
 import Container from '../../components/Container';
-import { Hero, VideoSection, Trucking, Integrations, Contact, About } from './components';
+import { Hero, VideoSection, Trucking, Contact } from './components';
 
 const Landing = () => {
   const theme = useTheme();

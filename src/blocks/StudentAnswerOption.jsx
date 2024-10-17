@@ -1,5 +1,5 @@
 import React from 'react';
-import { Button, ButtonBase, Typography } from '@mui/material';
+import { ButtonBase, Typography } from '@mui/material';
 import { styled } from '@mui/system';
 
 const getColor = (index) => {
