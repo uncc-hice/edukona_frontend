@@ -42,7 +42,7 @@ const ResizableFrame = ({ src, title, path, iframeStyles = {}, ...rest }) => {
   }, [viewportWidth]);
 
   useEffect(() => {
-    setRandom(random + 1);
+    setRandom((prevRandom) => prevRandom + 1);
   }, [theme.palette.mode]);
 
   const handleResizeBtnClick = (width) => {
@@ -216,6 +216,7 @@ const ResizableFrame = ({ src, title, path, iframeStyles = {}, ...rest }) => {
             <NoSsr>
               <Box maxWidth={viewportWidthMap[viewportWidth]} width={1} display={'flex'}>
                 <iframe
+                  title={title}
                   ref={iframeEl}
                   key={random}
                   src={src}
