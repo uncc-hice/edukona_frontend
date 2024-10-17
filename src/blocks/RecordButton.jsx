@@ -193,7 +193,7 @@ const RecordButton = ({ onUpdate }) => {
             onChange={(e) => setTitle(e.target.value)}
           />
           <Button onClick={() => setCancelOpen(true)}>Cancel</Button>
-          <Button disabled={!title} onClick={handleUpload}>
+          <Button disabled={title === null} onClick={handleUpload}>
             Upload Recording
           </Button>
         </DialogContent>
