@@ -148,7 +148,6 @@ function EditQuizView() {
     setSelectedQuestion(null);
   };
 
-  // **7. Styling Objects (Unchanged)**
   const containerStyle = {
     padding: '20px',
     fontFamily: 'Roboto, sans-serif',
