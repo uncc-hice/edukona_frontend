@@ -29,7 +29,7 @@ const StyledButtonBase = styled(ButtonBase)(({ theme, index, selected, submitted
     boxShadow: '0px 8px 16px rgba(0, 0, 0, 0.4)',
   }),
 }));
-const StudentAnswerOption = ({ answer, index, onClick, selected, submitted, timedOut }) => {
+const StudentAnswerOption = ({ answer, index, onClick, selected, submitted }) => {
   return (
     <StyledButtonBase
       variant="contained"
@@ -37,7 +37,6 @@ const StudentAnswerOption = ({ answer, index, onClick, selected, submitted, time
       selected={selected}
       submitted={submitted}
       index={index}
-      disabled={timedOut}
       // Adjust color or style if needed based on isSelected
     >
       <Typography variant="h4">{answer}</Typography>

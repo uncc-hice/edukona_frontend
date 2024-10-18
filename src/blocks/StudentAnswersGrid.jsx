@@ -2,11 +2,11 @@ import React, { useEffect, useState } from 'react';
 import { Grid, Box } from '@mui/material';
 import StudentAnswerOption from './StudentAnswerOption';
 
-const StudentAnswersGrid = ({ answers, question, code, sendMessage, setIsSubmitted, isSubmitted }) => {
+const StudentAnswersGrid = ({ answers, question, code, sendMessage, setIsSubmitted, isSubmitted, isLocked }) => {
   const { id: questionId } = question;
   const [selectedAnswer, setSelectedAnswer] = useState('');
+  const [prevSelectedAnswer, setPrevSelectedAnswer] = useState('');
   const sid = localStorage.getItem('sid');
-  const [questionTimedOut, setQuestionTimedOut] = useState(false);
 
   useEffect(() => {
     // Check if there's a stored submission state for the current question
@@ -15,14 +15,13 @@ const StudentAnswersGrid = ({ answers, question, code, sendMessage, setIsSubmitt
       setSelectedAnswer(storedSubmission);
       setIsSubmitted(true);
     }
-    setQuestionTimedOut(false);
-    const questionInterval = setInterval(() => {
-      setQuestionTimedOut(true);
-      clearInterval(questionInterval);
-    }, question.duration * 1000);
   }, [questionId, setIsSubmitted, code, sid, question.duration]);
 
   const handleSubmitAnswer = async (answer) => {
+    if (isLocked === true) {
+      setSelectedAnswer(prevSelectedAnswer);
+      return;
+    }
     if (answer === selectedAnswer) {
       return;
     }
@@ -54,6 +53,7 @@ const StudentAnswersGrid = ({ answers, question, code, sendMessage, setIsSubmitt
         })
       );
 
+      setPrevSelectedAnswer(selectedAnswer);
       setSelectedAnswer(answer);
       setIsSubmitted(true);
       localStorage.setItem(`submitted_${questionId}_${code}_${sid}`, answer); // Store the submission state persistently
@@ -79,8 +79,7 @@ const StudentAnswersGrid = ({ answers, question, code, sendMessage, setIsSubmitt
               index={index}
               onClick={() => handleSubmitAnswer(answer)}
               selected={answer === selectedAnswer}
-              submitted={isSubmitted || questionTimedOut}
-              timedOut={questionTimedOut}
+              submitted={isSubmitted}
             />
           </Grid>
         ))}
