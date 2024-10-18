@@ -10,7 +10,7 @@ import RecordVoiceOverIcon from '@mui/icons-material/RecordVoiceOver';
 import { Typography, useTheme } from '@mui/material';
 import Dashboard from '../layouts/Dashboard/Dashboard';
 import Container from '../components/Container';
-import {Main} from "../layouts";
+import { Main } from '../layouts';
 
 const InstructorDashBoard = () => {
   const navigate = useNavigate();

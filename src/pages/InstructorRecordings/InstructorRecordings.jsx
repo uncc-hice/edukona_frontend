@@ -26,7 +26,7 @@ import { toast } from 'react-toastify';
 import { Delete } from '@mui/icons-material';
 import Dashboard from '../../layouts/Dashboard/Dashboard';
 import RecordingTitle from '../../blocks/RecordingTitle';
-import {Main} from "../../layouts";
+import { Main } from '../../layouts';
 
 const InstructorRecordings = () => {
   const [recordings, setRecordings] = useState([]);
