@@ -9,7 +9,6 @@ import { UserContext } from '../../../../UserContext'; // Adjust the path based 
 
 const Topbar = ({ onSidebarOpen, colorInvert = false }) => {
   const theme = useTheme();
-  const { mode } = theme.palette;
   const isMd = useMediaQuery(theme.breakpoints.up('md'));
 
   const { isLoggedIn, logout } = useContext(UserContext);

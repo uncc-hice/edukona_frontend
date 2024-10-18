@@ -19,7 +19,6 @@ const AnswersGrid = ({ liveBarChart, sendMessage, answers, responseData }) => {
   const totalResponses = responseData.total_responses;
 
   useEffect(() => {
-    const token = localStorage.getItem('token');
     // Send an update order message when answers or their order changes
     sendMessage(
       JSON.stringify({

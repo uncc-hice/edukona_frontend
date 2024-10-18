@@ -10,24 +10,6 @@ import Topbar from '../Main/components/Topbar';
 import Sidebar from './components/Sidebar';
 import Footer from './components/Footer';
 
-const ChildMock = () => {
-  const theme = useTheme();
-  return (
-    <Box p={4}>
-      <Box
-        width={1}
-        height={1}
-        minHeight={800}
-        borderRadius={2}
-        border={`2px solid ${theme.palette.divider}`}
-        sx={{
-          borderStyle: 'dashed',
-        }}
-      />
-    </Box>
-  );
-};
-
 const Dashboard = ({ children }) => {
   const theme = useTheme();
   const isMd = useMediaQuery(theme.breakpoints.up('md'), {

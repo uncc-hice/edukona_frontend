@@ -1,5 +1,5 @@
 import React from 'react';
-import { Button, ButtonBase, Typography } from '@mui/material';
+import { ButtonBase, Typography } from '@mui/material';
 import { styled } from '@mui/system';
 
 const getColor = (index) => {
@@ -29,7 +29,7 @@ const StyledButtonBase = styled(ButtonBase)(({ theme, index, selected, submitted
     boxShadow: '0px 8px 16px rgba(0, 0, 0, 0.4)',
   }),
 }));
-const StudentAnswerOption = ({ answer, index, onClick, selected, submitted }) => {
+const StudentAnswerOption = ({ answer, index, onClick, selected, submitted, timedOut }) => {
   return (
     <StyledButtonBase
       variant="contained"
@@ -37,6 +37,7 @@ const StudentAnswerOption = ({ answer, index, onClick, selected, submitted }) =>
       selected={selected}
       submitted={submitted}
       index={index}
+      disabled={timedOut}
       // Adjust color or style if needed based on isSelected
     >
       <Typography variant="h4">{answer}</Typography>

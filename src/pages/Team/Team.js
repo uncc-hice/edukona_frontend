@@ -5,34 +5,34 @@ import Card from '@mui/material/Card';
 import CardContent from '@mui/material/CardContent';
 import ListItemText from '@mui/material/ListItemText';
 import CardMedia from '@mui/material/CardMedia';
+import Divider from '@mui/material/Divider';
 import Container from '../../components/Container';
 import Main from '../../layouts/Main';
 import Overview from './components/Overview';
-import Divider from '@mui/material/Divider';
 
 const mock = [
   {
     name: 'Ayman Hajja',
-    title: 'Lead Developer and Professor at UNC Charlotte',
-    avatar: 'https://placehold.co/600x400',
+    title: 'Principal Investigator and Chief Engineer',
+    avatar: 'https://elasticbeanstalk-us-west-2-730335402099.s3.us-west-2.amazonaws.com/hice_frontend/Ayman.jpeg',
     desc: '',
   },
   {
     name: 'Aryan Aladar',
-    title: 'Lead Developer and Student at UNC Chapel Hill',
-    avatar: 'https://placehold.co/600x400',
+    title: 'Senior Research Assistant and Senior Developer',
+    avatar: 'https://elasticbeanstalk-us-west-2-730335402099.s3.us-west-2.amazonaws.com/hice_frontend/Aryan.JPG',
     desc: '',
   },
   {
     name: 'Austin Hunter',
-    title: 'Full-Stack Developer and Student at UNC Charlotte',
-    avatar: 'https://placehold.co/600x400',
+    title: 'Research Assistant and Developer',
+    avatar: 'https://elasticbeanstalk-us-west-2-730335402099.s3.us-west-2.amazonaws.com/hice_frontend/Austin.jpg',
     desc: '',
   },
   {
     name: 'Andrew Praskala',
-    title: 'Full-Stack Developer and Student at UNC Charlotte',
-    avatar: 'https://placehold.co/600x400',
+    title: 'Project Contributor',
+    avatar: 'https://elasticbeanstalk-us-west-2-730335402099.s3.us-west-2.amazonaws.com/hice_frontend/andrew.jpg',
     desc: '',
   },
 ];
@@ -66,16 +66,17 @@ const Team = () => {
               bgcolor: i % 2 === 0 ? 'background.default' : 'background.paper', // Alternate background
             }}
           >
-            {/* Image section */}
-            <Box
-              component={CardMedia}
+            {/* Image section with lazy loading */}
+            <CardMedia
+              component="img"
+              image={item.avatar}
+              loading="lazy"
               sx={{
                 borderRadius: 2,
                 width: { xs: '100%', md: '40%' },
                 height: { xs: '300px', md: '400px' },
-                backgroundSize: 'cover',
-                backgroundPosition: 'center',
-                backgroundImage: `url(${item.avatar})`,
+                objectFit: 'cover',
+                objectPosition: 'center',
               }}
             />
 

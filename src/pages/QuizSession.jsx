@@ -2,8 +2,8 @@ import React, { useEffect, useState } from 'react';
 import { Typography, Container, Button, Paper } from '@mui/material';
 import { useNavigate, useParams } from 'react-router-dom';
 import StudentGrid from '../blocks/StudentGrid.jsx';
-import Navbar from '../blocks/Navbar.jsx';
 import useWebSocket from 'react-use-websocket';
+import Dashboard from '../layouts/Dashboard/Dashboard.js';
 
 const fetchStudents = async (code, token) => {
   console.log('token', token);
@@ -48,16 +48,13 @@ const QuizSession = () => {
     }
   };
 
-  const { sendMessage, lastMessage, readyState } = useWebSocket(
-    `wss://api.edukona.com/ws/quiz-session-instructor/${code}/`,
-    {
-      onOpen: () => console.log('WebSocket connected'),
-      onClose: () => console.log('WebSocket disconnected'),
-      onError: (event) => console.error('WebSocket error', event),
-      onMessage: handleIncomingMessage,
-      shouldReconnect: (closeEvent) => true, // Automatically reconnect
-    }
-  );
+  const { sendMessage } = useWebSocket(`wss://api.edukona.com/ws/quiz-session-instructor/${code}/`, {
+    onOpen: () => console.log('WebSocket connected'),
+    onClose: () => console.log('WebSocket disconnected'),
+    onError: (event) => console.error('WebSocket error', event),
+    onMessage: handleIncomingMessage,
+    shouldReconnect: (closeEvent) => true, // Automatically reconnect
+  });
 
   const onDelete = (username) => {
     console.log(`Sending delete for username: ${username}`);
@@ -70,8 +67,7 @@ const QuizSession = () => {
   };
 
   return (
-    <>
-      <Navbar />
+    <Dashboard>
       <Container>
         <div
           style={{
@@ -88,14 +84,14 @@ const QuizSession = () => {
             Students: {students.length}
           </Typography>
         </div>
-        <Paper style={{ padding: '20px', marginTop: '20px' }}>
+        <Paper style={{ padding: '20px', marginTop: '20px', marginBottom: '20px' }}>
           <StudentGrid students={students} onDelete={onDelete} />
           <Button variant="contained" color="primary" style={{ marginTop: '20px' }} onClick={startQuiz}>
             Start Quiz
           </Button>
         </Paper>
       </Container>
-    </>
+    </Dashboard>
   );
 };
 
