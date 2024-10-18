@@ -24,7 +24,6 @@ import RecordButton from '../../blocks/RecordButton';
 import useWebSocket from 'react-use-websocket';
 import { toast } from 'react-toastify';
 import { Delete } from '@mui/icons-material';
-import Dashboard from '../../layouts/Dashboard/Dashboard';
 import RecordingTitle from '../../blocks/RecordingTitle';
 import { Main } from '../../layouts';
 
