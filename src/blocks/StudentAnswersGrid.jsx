@@ -15,7 +15,10 @@ const StudentAnswersGrid = ({ answers, question, code, sendMessage, setIsSubmitt
       setSelectedAnswer(storedSubmission);
       setIsSubmitted(true);
     }
-  }, [questionId, setIsSubmitted, code, sid, question.duration]);
+    if (isLocked === true) {
+      setSelectedAnswer(prevSelectedAnswer);
+    }
+  }, [questionId, setIsSubmitted, code, sid, question.duration, isLocked]);
 
   const handleSubmitAnswer = async (answer) => {
     if (isLocked === true) {
