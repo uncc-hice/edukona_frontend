@@ -10,6 +10,7 @@ import CardMedia from '@mui/material/CardMedia';
 import IconButton from '@mui/material/IconButton';
 import LinkedInIcon from '@mui/icons-material/LinkedIn';
 import TwitterIcon from '@mui/icons-material/Twitter'; // Use TwitterIcon for X
+import GitHubIcon from '@mui/icons-material/GitHub'; // Import GitHubIcon
 
 import Container from '../../../components/Container';
 
@@ -53,17 +54,19 @@ const Overview = ({ mock }) => {
                 <Box
                   component={CardMedia}
                   borderRadius={2}
-                  bordertopr
                   width={1}
                   height={1}
                   minHeight={320}
                   image={item.avatar}
-                  sx={{ borderBottomRightRadius: 0, borderBottomLeftRadius: 0 }}
+                  sx={{
+                    borderBottomRightRadius: 0,
+                    borderBottomLeftRadius: 0,
+                  }}
                 />
                 <Box component={Card}>
                   <CardContent>
                     <ListItemText primary={item.name} secondary={item.title} />
-                    {(item.linkedIn || item.x) && (
+                    {(item.linkedIn || item.x || item.github) && (
                       <Box marginTop={1}>
                         {item.linkedIn && (
                           <IconButton
@@ -89,6 +92,19 @@ const Overview = ({ mock }) => {
                             rel="noopener"
                           >
                             <TwitterIcon />
+                          </IconButton>
+                        )}
+                        {item.github && (
+                          <IconButton
+                            aria-label="GitHub"
+                            size="small"
+                            color="primary"
+                            component="a"
+                            href={item.github}
+                            target="_blank"
+                            rel="noopener"
+                          >
+                            <GitHubIcon />
                           </IconButton>
                         )}
                       </Box>
