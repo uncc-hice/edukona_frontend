@@ -3,6 +3,8 @@ import Box from '@mui/material/Box';
 import Typography from '@mui/material/Typography';
 import Button from '@mui/material/Button';
 
+
+
 const mock = [
   {
     groupTitle: '',
@@ -29,6 +31,7 @@ const mock = [
           </svg>
         ),
       },
+      /*
       {
         title: 'Sessions',
         href: '/your-sessions',
@@ -50,6 +53,7 @@ const mock = [
           </svg>
         ),
       },
+      */
       {
         title: 'Recordings',
         href: '/recordings',

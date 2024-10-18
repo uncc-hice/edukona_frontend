@@ -10,6 +10,7 @@ import RecordVoiceOverIcon from '@mui/icons-material/RecordVoiceOver';
 import { Typography, useTheme } from '@mui/material';
 import Dashboard from '../layouts/Dashboard/Dashboard';
 import Container from '../components/Container';
+import {Main} from "../layouts";
 
 const InstructorDashBoard = () => {
   const navigate = useNavigate();
@@ -24,11 +25,11 @@ const InstructorDashBoard = () => {
   };
 
   return (
-    <Dashboard>
+    <Main>
       <Box sx={{ flexGrow: 1, padding: '25px' }}>
         <QuizList />
       </Box>
-    </Dashboard>
+    </Main>
   );
 };
 
