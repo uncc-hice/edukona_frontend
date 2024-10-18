@@ -8,15 +8,16 @@ const mock = [
     title: 'Principal Investigator and Chief Engineer',
     avatar: 'https://elasticbeanstalk-us-west-2-730335402099.s3.us-west-2.amazonaws.com/hice_frontend/Ayman.jpeg',
     desc: '',
-    linkedIn: 'https://www.linkedin.com/in/ayman-hajja/',
-    x: 'https://twitter.com/aymanhajja',
+    linkedIn: 'https://www.linkedin.com/in/ayman-hajja-09032b67/',
+    github: 'https://github.com/amhajja', // Added GitHub link
   },
   {
     name: 'Aryan Aladar',
     title: 'Senior Research Assistant and Senior Developer',
     avatar: 'https://elasticbeanstalk-us-west-2-730335402099.s3.us-west-2.amazonaws.com/hice_frontend/Aryan.JPG',
     desc: '',
-    linkedIn: 'https://www.linkedin.com/in/aryan-aladar/',
+    linkedIn: 'https://www.linkedin.com/in/aladar/',
+    github: 'https://github.com/aaladaruncc', // Added GitHub link
     // No X link
   },
   {
@@ -24,7 +25,8 @@ const mock = [
     title: 'Research Assistant and Software Developer',
     avatar: 'https://elasticbeanstalk-us-west-2-730335402099.s3.us-west-2.amazonaws.com/hice_frontend/Austin.jpg',
     desc: '',
-    // No social links
+    linkedIn: 'https://www.linkedin.com/in/austinfhunter/',
+    github: 'https://github.com/AustinfHunter',
   },
 ];
 
