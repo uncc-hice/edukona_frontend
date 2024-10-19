@@ -2,15 +2,15 @@
 import React from 'react';
 import QuizList from '../blocks/QuizList';
 import Box from '@mui/material/Box';
-import Dashboard from '../layouts/Dashboard/Dashboard';
+import { Main } from '../layouts';
 
 const InstructorDashBoard = () => {
   return (
-    <Dashboard>
+    <Main>
       <Box sx={{ flexGrow: 1, padding: '25px' }}>
         <QuizList />
       </Box>
-    </Dashboard>
+    </Main>
   );
 };
 

@@ -29,6 +29,7 @@ const mock = [
           </svg>
         ),
       },
+      /*
       {
         title: 'Sessions',
         href: '/your-sessions',
@@ -50,6 +51,7 @@ const mock = [
           </svg>
         ),
       },
+      */
       {
         title: 'Recordings',
         href: '/recordings',

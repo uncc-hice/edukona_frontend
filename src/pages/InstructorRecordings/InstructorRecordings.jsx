@@ -24,8 +24,8 @@ import RecordButton from '../../blocks/RecordButton';
 import useWebSocket from 'react-use-websocket';
 import { toast } from 'react-toastify';
 import { Delete } from '@mui/icons-material';
-import Dashboard from '../../layouts/Dashboard/Dashboard';
 import RecordingTitle from '../../blocks/RecordingTitle';
+import { Main } from '../../layouts';
 
 const InstructorRecordings = () => {
   const [recordings, setRecordings] = useState([]);
@@ -137,7 +137,7 @@ const InstructorRecordings = () => {
   }, [token]);
 
   return (
-    <Dashboard>
+    <Main>
       <Container sx={{ padding: '40px' }}>
         <Snackbar open={open} autoHideDuration={6000} onClose={handleClose}>
           <Alert onClose={handleClose} severity="error" sx={{ width: '100%' }}>
@@ -233,7 +233,7 @@ const InstructorRecordings = () => {
           </DialogActions>
         </Dialog>
       </Container>
-    </Dashboard>
+    </Main>
   );
 };
 
