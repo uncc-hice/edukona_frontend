@@ -6,6 +6,7 @@ import QuizEndView from './QuizEndView';
 import useWebSocket from 'react-use-websocket'; // Adjust the import path as needed
 import { Store } from 'react-notifications-component';
 import { Topbar } from '../layouts/Main/components';
+import { toast } from 'react-toastify';
 
 const StudentAnswerView = () => {
   const [question, setQuestion] = useState(null);
@@ -16,6 +17,7 @@ const StudentAnswerView = () => {
   const [isSubmitted, setIsSubmitted] = useState(false);
   const [quizEnded, setQuizEnded] = useState(false);
   const [skipPowerUp, setSkipPowerUp] = useState(false);
+  const [isLocked, setIsLocked] = useState(false);
 
   let url = `wss://api.edukona.com/ws/student/join/${code}/`;
   const sid = localStorage.getItem('sid');
@@ -24,6 +26,7 @@ const StudentAnswerView = () => {
     const receivedData = JSON.parse(event.data);
     console.log('Received data:', receivedData);
     if (receivedData.type === 'next_question') {
+      setIsLocked(false);
       setIsSubmitted(false);
       setQuestion(receivedData.question);
       setAnswers(receivedData.order);
@@ -67,6 +70,9 @@ const StudentAnswerView = () => {
           onScreen: true,
         },
       });
+    } else if (receivedData.type === 'question_locked') {
+      setIsLocked(true);
+      toast.error('Could not submit answer: Question locked.');
     }
   };
 
@@ -127,6 +133,7 @@ const StudentAnswerView = () => {
             isSubmitted={isSubmitted}
             setIsSubmitted={setIsSubmitted} // Pass setIsSubmitted to child
             quizSession={quizSession}
+            isLocked={isLocked}
           />
           <Box textAlign="right" p={2}>
             {skipPowerUp && !isSubmitted && (
