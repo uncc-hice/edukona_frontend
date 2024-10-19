@@ -33,6 +33,7 @@ const InstructorQuestionView = () => {
       } else if (data.type === 'settings') {
         setSettings(data.settings);
         setUserCount(data.user_count);
+      } else if (data.type === 'skipped_question' && data.status === 'success') {
       }
     },
     [setCurrentQuestion, setResetTimer, setResponseData, setSettings, setUserCount]
@@ -49,6 +50,18 @@ const InstructorQuestionView = () => {
     setResponseData({});
     sendMessage(JSON.stringify({ type: 'next_question' }));
   }, [sendMessage]);
+
+  // New function to handle skipping the question
+  const handleSkipQuestion = useCallback(() => {
+    if (currentQuestion && currentQuestion.id) {
+      sendMessage(
+        JSON.stringify({
+          type: 'skip_question',
+          question_id: currentQuestion.id,
+        })
+      );
+    }
+  }, [sendMessage, currentQuestion]);
 
   const onTimerEnd = useCallback(() => {
     // Handle what happens when the timer ends
@@ -86,6 +99,9 @@ const InstructorQuestionView = () => {
       </Box>
       {!quizEnded && currentQuestion && (
         <Box textAlign="right" p={2}>
+          <Button variant="outlined" color="primary" onClick={handleSkipQuestion} style={{ marginRight: '8px' }}>
+            Skip Question
+          </Button>
           <Button variant="contained" color="primary" onClick={handleNextQuestion}>
             Next Question
           </Button>
