@@ -2,7 +2,7 @@ name: ESLint Check
 
 on:
   pull_request:
-    types: [ opened, synchronize ]
+    types: [opened, synchronize]
 
 jobs:
   eslint:
@@ -15,7 +15,7 @@ jobs:
       - name: Setup Node.js
         uses: actions/setup-node@v3
         with:
-          node-version: '16'  # Specify the Node.js version you use
+          node-version: '16' # Specify the Node.js version you use
 
       - name: Install dependencies
         run: npm install
