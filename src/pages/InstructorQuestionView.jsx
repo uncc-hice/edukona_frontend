@@ -60,8 +60,6 @@ const InstructorQuestionView = () => {
           question_id: currentQuestion.id,
         })
       );
-
-
     }
   }, [sendMessage, currentQuestion]);
 
@@ -101,12 +99,7 @@ const InstructorQuestionView = () => {
       </Box>
       {!quizEnded && currentQuestion && (
         <Box textAlign="right" p={2}>
-          <Button
-            variant="outlined"
-            color="primary"
-            onClick={handleSkipQuestion}
-            style={{ marginRight: '8px' }}
-          >
+          <Button variant="outlined" color="primary" onClick={handleSkipQuestion} style={{ marginRight: '8px' }}>
             Skip Question
           </Button>
           <Button variant="contained" color="primary" onClick={handleNextQuestion}>
