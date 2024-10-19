@@ -56,8 +56,10 @@ const StudentAnswersGrid = ({ answers, question, code, sendMessage, setIsSubmitt
         })
       );
 
-      setPrevSelectedAnswer(selectedAnswer);
-      setSelectedAnswer(answer);
+      setSelectedAnswer((prevAnswer) => {
+        setPrevSelectedAnswer(prevAnswer);
+        return answer;
+      });
       setIsSubmitted(true);
       localStorage.setItem(`submitted_${questionId}_${code}_${sid}`, answer); // Store the submission state persistently
       // Optionally handle response data like 'is_correct'
