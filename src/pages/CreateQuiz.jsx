@@ -43,7 +43,7 @@ function CreateQuiz() {
     };
 
     try {
-      const response = await axios.post('https://api.edukona.com/quiz/', quizData, {
+      const response = await axios.post('https://api.edukona.com/quiz/create/', quizData, {
         headers: {
           'Content-Type': 'application/json',
           Authorization: `Token ${token}`,
