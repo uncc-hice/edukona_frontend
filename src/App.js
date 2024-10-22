@@ -28,6 +28,7 @@ import { ToastContainer } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 import { UserContext } from './UserContext';
 import Team from './pages/Team/Team';
+import ProfilePage from './pages/ProfilePage/Profile';
 
 function App() {
   const [showLogin, setShowLogin] = useState(true);
@@ -78,6 +79,7 @@ function App() {
           <Route path="/quiz/:quizId/edit" element={isLoggedIn ? <EditQuizView /> : <Navigate to="/" />} />
           <Route path="/quiz/:code" element={isLoggedIn ? <InstructorQuestionView /> : <Navigate to="/" />} />
           <Route path="/quiz/:id/settings" element={isLoggedIn ? <SettingsPage /> : <Navigate to="/" />} />
+          <Route path="/profile" element={isLoggedIn ? <ProfilePage /> : <Navigate to="/" />} />
           <Route path={'/team'} element={<Team />} />
           {/*<Route path="/create-landing" element={<DevRoute element={<Landing />} />} />*/}
           <Route path="/unauthorized" element={<Unauthorized />} />
