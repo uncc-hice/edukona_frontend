@@ -10,7 +10,6 @@ const JoinQuiz = () => {
 
   const handleIncomingMessage = (event) => {
     const data = JSON.parse(event.data);
-    console.log('Response from server:', data);
     if (data.type === 'success') {
       console.log('Quiz joined successfully', data);
       localStorage.setItem('sid', data.student_id);
