@@ -39,7 +39,6 @@ const QuizSession = () => {
 
   const handleIncomingMessage = (event) => {
     const receivedData = JSON.parse(event.data);
-    console.log('Received data:', receivedData);
     if (receivedData.type === 'student_joined') {
       setStudents((prevStudents) => [...prevStudents, { username: receivedData.username }]);
     } else if (receivedData.type === 'student_deleted') {
