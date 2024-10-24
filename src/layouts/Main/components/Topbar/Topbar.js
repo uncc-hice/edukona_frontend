@@ -71,7 +71,14 @@ const Topbar = ({ onSidebarOpen, colorInvert = false }) => {
               <Button variant="text" color="primary" component="a" href="/team" size="large" sx={{ marginLeft: 4 }}>
                 Team
               </Button>
-              <Button variant="text" color="primary" component="a" href="/profile" size="large" sx={{ marginLeft: 4 }}>
+              <Button
+                variant="text"
+                color="primary"
+                component="a"
+                href="/account-general"
+                size="large"
+                sx={{ marginLeft: 4 }}
+              >
                 Profile
               </Button>
 
