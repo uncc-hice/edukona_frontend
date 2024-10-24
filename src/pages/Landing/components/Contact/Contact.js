@@ -117,7 +117,6 @@ const Contact = () => {
                     <Grid item xs={12} sm={6}>
                       <TextField
                         fullWidth
-                        required
                         id="last_name"
                         name="last_name"
                         label="Last Name"
