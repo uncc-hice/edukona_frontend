@@ -64,15 +64,9 @@ const Contact = () => {
         <Grid container spacing={2}>
           <Grid item xs={12} sm={6}>
             <Typography variant={'body1'} gutterBottom sx={{ fontWeight: 'medium' }}>
-              Call us:
-            </Typography>
-            <Typography variant={'subtitle1'}>+1 919 338 4103</Typography>
-          </Grid>
-          <Grid item xs={12} sm={6}>
-            <Typography variant={'body1'} gutterBottom sx={{ fontWeight: 'medium' }}>
               Email us:
             </Typography>
-            <Typography variant={'subtitle1'}>aaladar@charlotte.edu</Typography>
+            <Typography variant={'subtitle1'}>edukona.team@gmail.com</Typography>
           </Grid>
           <Grid item xs={12}>
             <Typography variant={'body1'} gutterBottom sx={{ fontWeight: 'medium' }}>
@@ -96,6 +90,7 @@ const Contact = () => {
             onSubmit={() => {
               console.log('submission not finished');
             }}
+            p={6}
           >
             <Grid container spacing={2}>
               <Grid item xs={12} sm={6}>
