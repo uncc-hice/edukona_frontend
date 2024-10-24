@@ -52,24 +52,16 @@ const General = () => {
         </Box>
         <Grid container spacing={4}>
           <Grid item xs={12} sm={6}>
-            <Typography variant={'subtitle2'} sx={{ marginBottom: 2 }} fontWeight={700}>
-              First Name: {userData?.firstName || 'Loading...'}
-            </Typography>
+            First Name: {userData?.firstName || 'Loading...'}
           </Grid>
           <Grid item xs={12} sm={6}>
-            <Typography variant={'subtitle2'} sx={{ marginBottom: 2 }} fontWeight={700}>
-              Last Name: {userData?.lastName || 'Loading...'}
-            </Typography>
+            Last Name: {userData?.lastName || 'Loading...'}
           </Grid>
           <Grid item xs={12} sm={6}>
-            <Typography variant={'subtitle2'} sx={{ marginBottom: 2 }} fontWeight={700}>
-              Username: {userData?.username || 'Loading...'}
-            </Typography>
+            Username: {userData?.username || 'Loading...'}
           </Grid>
           <Grid item xs={12} sm={6}>
-            <Typography variant={'subtitle2'} sx={{ marginBottom: 2 }} fontWeight={700}>
-              Email: {userData?.email || 'Loading...'}
-            </Typography>
+            Email: {userData?.email || 'Loading...'}
           </Grid>
         </Grid>
       </Page>

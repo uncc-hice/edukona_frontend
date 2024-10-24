@@ -1,13 +1,10 @@
 import React, { useState, useEffect } from 'react';
-import PropTypes from 'prop-types';
 import { useTheme } from '@mui/material/styles';
 import Box from '@mui/material/Box';
 import Card from '@mui/material/Card';
 import List from '@mui/material/List';
-import ListItemIcon from '@mui/material/ListItemIcon';
 import Grid from '@mui/material/Grid';
 import Typography from '@mui/material/Typography';
-
 import Container from '../../../../components/Container';
 import { ListItem } from '@mui/material';
 
@@ -98,10 +95,6 @@ const Page = ({ children }) => {
       </Container>
     </Box>
   );
-};
-
-Page.propTypes = {
-  children: PropTypes.node,
 };
 
 export default Page;
