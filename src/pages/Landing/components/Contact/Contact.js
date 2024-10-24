@@ -4,6 +4,7 @@ import Box from '@mui/material/Box';
 import Typography from '@mui/material/Typography';
 import Grid from '@mui/material/Grid';
 import { alpha, useTheme } from '@mui/material/styles';
+import { TextField, Button, Paper } from '@mui/material/';
 
 const Contact = () => {
   const theme = useTheme();
@@ -80,6 +81,52 @@ const Contact = () => {
             <Typography variant={'subtitle1'}>9201 University City Blvd, Charlotte, NC 28223</Typography>
           </Grid>
         </Grid>
+
+        <Paper
+          elevation={3}
+          sx={{
+            maxWidth: 600,
+            mx: 'auto',
+            mt: 4,
+            bgcolor: 'background.paper',
+          }}
+        >
+          <Box
+            component="form"
+            onSubmit={() => {
+              console.log('submission not finished');
+            }}
+          >
+            <Grid container spacing={2}>
+              <Grid item xs={12} sm={6}>
+                <TextField fullWidth required id="first_name" name="first_name" label="First Name" variant="outlined" />
+              </Grid>
+              <Grid item xs={12} sm={6}>
+                <TextField fullWidth required id="last_name" name="last_name" label="Last Name" variant="outlined" />
+              </Grid>
+              <Grid item xs={12}>
+                <TextField fullWidth required id="email" name="email" label="Email" type="email" variant="outlined" />
+              </Grid>
+              <Grid item xs={12}>
+                <TextField
+                  fullWidth
+                  required
+                  id="message"
+                  name="message"
+                  label="Message"
+                  multiline
+                  rows={4}
+                  variant="outlined"
+                />
+              </Grid>
+              <Grid item xs={12}>
+                <Button type="submit" variant="contained" fullWidth size="large" sx={{ mt: 2 }}>
+                  Submit
+                </Button>
+              </Grid>
+            </Grid>
+          </Box>
+        </Paper>
       </Box>
     </Box>
   );
