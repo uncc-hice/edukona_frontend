@@ -5,6 +5,18 @@ import Typography from '@mui/material/Typography';
 import Grid from '@mui/material/Grid';
 import { alpha, useTheme } from '@mui/material/styles';
 import { TextField, Button, Paper } from '@mui/material/';
+import axios from 'axios';
+
+const submit_form = async (e) => {
+  e.preventDefault();
+  const form = e.target;
+  try {
+    await axios.post("https://api.edukona.com/contact-us/", form);
+    e.target.reset();
+  } catch (error) {
+    console.error(error);
+  }
+};
 
 const Contact = () => {
   const theme = useTheme();
@@ -92,9 +104,7 @@ const Contact = () => {
               >
                 <Box
                   component="form"
-                  onSubmit={() => {
-                    console.log('submission not finished');
-                  }}
+                  onSubmit={submit_form}
                   p={6}
                   margin={1}
                 >
