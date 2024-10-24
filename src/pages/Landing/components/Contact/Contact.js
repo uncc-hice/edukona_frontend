@@ -107,7 +107,14 @@ const Contact = () => {
                   margin: 'auto',
                 }}
               >
-                <Box component="form" onSubmit={(e) => {submit_form(e, theme)}} p={6} margin={1}>
+                <Box
+                  component="form"
+                  onSubmit={(e) => {
+                    submit_form(e, theme);
+                  }}
+                  p={6}
+                  margin={1}
+                >
                   <Grid container spacing={2}>
                     <Grid item xs={12} sm={6}>
                       <TextField
