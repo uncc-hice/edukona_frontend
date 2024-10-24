@@ -11,7 +11,7 @@ const submit_form = async (e) => {
   e.preventDefault();
   const form = e.target;
   try {
-    await axios.post("https://api.edukona.com/contact-us/", form);
+    await axios.post('https://api.edukona.com/contact-us/', form);
     e.target.reset();
   } catch (error) {
     console.error(error);
@@ -99,15 +99,10 @@ const Contact = () => {
                 sx={{
                   maxWidth: 600,
                   bgcolor: 'background.paper',
-                  margin: 'auto'
+                  margin: 'auto',
                 }}
               >
-                <Box
-                  component="form"
-                  onSubmit={submit_form}
-                  p={6}
-                  margin={1}
-                >
+                <Box component="form" onSubmit={submit_form} p={6} margin={1}>
                   <Grid container spacing={2}>
                     <Grid item xs={12} sm={6}>
                       <TextField
