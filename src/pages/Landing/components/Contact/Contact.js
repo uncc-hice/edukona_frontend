@@ -6,20 +6,25 @@ import Grid from '@mui/material/Grid';
 import { alpha, useTheme } from '@mui/material/styles';
 import { TextField, Button, Paper, Divider, Stack } from '@mui/material/';
 import axios from 'axios';
-
-const submit_form = async (e) => {
-  e.preventDefault();
-  const form = e.target;
-  try {
-    await axios.post('https://api.edukona.com/contact-us/', form);
-    e.target.reset();
-  } catch (error) {
-    console.error(error);
-  }
-};
+import { toast } from 'react-toastify';
 
 const Contact = () => {
   const theme = useTheme();
+
+  const submit_form = async (event, theme) => {
+    event.preventDefault();
+    const toast_theme = { theme: theme.palette.mode };
+    const form = event.target;
+    try {
+      await axios.post('https://api.edukona.com/contact-us/', form);
+      event.target.reset();
+      toast.success('Message sent successfully!', toast_theme);
+    } catch (error) {
+      console.error(error);
+      toast.error('Failed to send message. Please try again.', toast_theme);
+    }
+  };
+
   return (
     <Box
       sx={{
@@ -102,7 +107,7 @@ const Contact = () => {
                   margin: 'auto',
                 }}
               >
-                <Box component="form" onSubmit={submit_form} p={6} margin={1}>
+                <Box component="form" onSubmit={(e) => {submit_form(e, theme)}} p={6} margin={1}>
                   <Grid container spacing={2}>
                     <Grid item xs={12} sm={6}>
                       <TextField
