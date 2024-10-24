@@ -4,7 +4,7 @@ import Box from '@mui/material/Box';
 import Typography from '@mui/material/Typography';
 import Grid from '@mui/material/Grid';
 import { alpha, useTheme } from '@mui/material/styles';
-import { TextField, Button, Paper } from '@mui/material/';
+import { TextField, Button, Paper, Divider, Stack } from '@mui/material/';
 import axios from 'axios';
 
 const submit_form = async (e) => {
@@ -115,13 +115,7 @@ const Contact = () => {
                       />
                     </Grid>
                     <Grid item xs={12} sm={6}>
-                      <TextField
-                        fullWidth
-                        id="last_name"
-                        name="last_name"
-                        label="Last Name"
-                        variant="outlined"
-                      />
+                      <TextField fullWidth id="last_name" name="last_name" label="Last Name" variant="outlined" />
                     </Grid>
                     <Grid item xs={12}>
                       <TextField
@@ -147,9 +141,15 @@ const Contact = () => {
                       />
                     </Grid>
                     <Grid item xs={12}>
-                      <Button type="submit" variant="contained" fullWidth size="large" sx={{ mt: 2 }}>
+                      <Button type="submit" variant="contained" fullWidth size="large" sx={{ mt: 2, mb: 2 }}>
                         Submit
                       </Button>
+                    </Grid>
+                    <Grid item xs={12} textAlign={'center'}>
+                      <Stack spacing={2}>
+                        <Divider />
+                        <Typography variant={'subtitle2'}>We'll get back to you in 1-2 business days.</Typography>
+                      </Stack>
                     </Grid>
                   </Grid>
                 </Box>
