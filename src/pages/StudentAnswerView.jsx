@@ -24,7 +24,6 @@ const StudentAnswerView = () => {
 
   const handleIncomingMessage = (event) => {
     const receivedData = JSON.parse(event.data);
-    console.log('Received data:', receivedData);
     if (receivedData.type === 'next_question') {
       setIsLocked(false);
       setIsSubmitted(false);
