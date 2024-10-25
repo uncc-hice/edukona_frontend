@@ -6,7 +6,7 @@ import QuizEndView from './QuizEndView';
 import useWebSocket from 'react-use-websocket';
 import { Topbar } from '../layouts/Main/components';
 import Container from '../components/Container';
-import Leaderboard from "./Leaderboard/Leaderboard";
+import Leaderboard from './Leaderboard/Leaderboard';
 
 const InstructorQuestionView = () => {
   const [currentQuestion, setCurrentQuestion] = useState(undefined);
@@ -25,7 +25,7 @@ const InstructorQuestionView = () => {
         setCurrentQuestion(data.question);
         setResetTimer((prev) => !prev); // Toggle to reset the timer
       } else if (data.type === 'quiz_ended') {
-          setGrades(data.grades);
+        setGrades(data.grades);
         setQuizEnded(true);
         setCurrentQuestion(null);
       } else if (data.type === 'update_answers') {

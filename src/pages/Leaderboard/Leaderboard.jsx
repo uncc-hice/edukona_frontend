@@ -4,9 +4,9 @@ import { motion } from 'framer-motion';
 
 // Dummy data
 const expected_grades = {
-  "100.0": ["Aryan", "Phillip"],
-  "50.0": ["James", "Margaret"],
-  "0.0": ["John"],
+  '100.0': ['Aryan', 'Phillip'],
+  '50.0': ['James', 'Margaret'],
+  '0.0': ['John'],
 };
 
 // Framer motion animations
@@ -14,8 +14,8 @@ const containerVariants = {
   hidden: { opacity: 0 },
   visible: {
     opacity: 1,
-    transition: { staggerChildren: 0.2 }
-  }
+    transition: { staggerChildren: 0.2 },
+  },
 };
 
 const itemVariants = {
@@ -23,8 +23,8 @@ const itemVariants = {
   visible: {
     opacity: 1,
     y: 0,
-    transition: { type: 'spring', stiffness: 100 }
-  }
+    transition: { type: 'spring', stiffness: 100 },
+  },
 };
 
 // Helper function to transform data into a sorted list
@@ -32,15 +32,15 @@ const getSortedData = (grades) => {
   const sortedData = [];
   Object.keys(grades)
     .sort((a, b) => b - a)
-    .forEach(score => {
-      grades[score].forEach(name => {
+    .forEach((score) => {
+      grades[score].forEach((name) => {
         sortedData.push({ name, score });
       });
     });
   return sortedData;
 };
 
-const Leaderboard = ({grades}) => {
+const Leaderboard = ({ grades }) => {
   const sortedData = getSortedData(grades);
 
   return (
@@ -50,10 +50,7 @@ const Leaderboard = ({grades}) => {
       </Typography>
 
       <Paper elevation={3} sx={{ p: 3, borderRadius: 3 }}>
-        <List component={motion.div}
-              variants={containerVariants}
-              initial="hidden"
-              animate="visible">
+        <List component={motion.div} variants={containerVariants} initial="hidden" animate="visible">
           {sortedData.map((entry, index) => (
             <ListItem
               key={index}
@@ -66,7 +63,8 @@ const Leaderboard = ({grades}) => {
                 mb: 1,
                 borderRadius: 2,
                 boxShadow: 2,
-              }}>
+              }}
+            >
               <Grid container alignItems="center">
                 <Grid item xs={2}>
                   <Typography variant="h5" fontWeight="bold">
