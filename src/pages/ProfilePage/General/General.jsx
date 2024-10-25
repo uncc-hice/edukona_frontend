@@ -52,16 +52,16 @@ const General = () => {
         </Box>
         <Grid container spacing={4}>
           <Grid item xs={12} sm={6}>
-            First Name: {userData?.firstName || 'Loading...'}
+            First Name: {userData?.firstName || ''}
           </Grid>
           <Grid item xs={12} sm={6}>
-            Last Name: {userData?.lastName || 'Loading...'}
+            Last Name: {userData?.lastName || ''}
           </Grid>
           <Grid item xs={12} sm={6}>
-            Username: {userData?.username || 'Loading...'}
+            Username: {userData?.username || ''}
           </Grid>
           <Grid item xs={12} sm={6}>
-            Email: {userData?.email || 'Loading...'}
+            Email: {userData?.email || ''}
           </Grid>
         </Grid>
       </Page>
