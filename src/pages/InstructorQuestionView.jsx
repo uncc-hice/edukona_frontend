@@ -6,6 +6,7 @@ import QuizEndView from './QuizEndView';
 import useWebSocket from 'react-use-websocket';
 import { Topbar } from '../layouts/Main/components';
 import Container from '../components/Container';
+import Leaderboard from "./Leaderboard/Leaderboard";
 
 const InstructorQuestionView = () => {
   const [currentQuestion, setCurrentQuestion] = useState(undefined);
@@ -15,6 +16,7 @@ const InstructorQuestionView = () => {
   const [responseData, setResponseData] = useState({});
   const [settings, setSettings] = useState({});
   const [userCount, setUserCount] = useState(0);
+  const [grades, setGrades] = useState({});
 
   const handleIncomingMessage = useCallback(
     (event) => {
@@ -23,6 +25,7 @@ const InstructorQuestionView = () => {
         setCurrentQuestion(data.question);
         setResetTimer((prev) => !prev); // Toggle to reset the timer
       } else if (data.type === 'quiz_ended') {
+          setGrades(data.grades);
         setQuizEnded(true);
         setCurrentQuestion(null);
       } else if (data.type === 'update_answers') {
@@ -76,7 +79,7 @@ const InstructorQuestionView = () => {
       </Container>
       <Box flexGrow={1} width="100%">
         {quizEnded ? (
-          <QuizEndView />
+          <Leaderboard grades={grades} />
         ) : currentQuestion ? (
           <QuizComponent
             userCount={userCount}
