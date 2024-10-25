@@ -9,7 +9,7 @@ const QuizList = () => {
 
   const fetchQuizzes = useCallback(async () => {
     try {
-      const response = await axios.get('https://api.edukona.com/quiz/', {
+      const response = await axios.get('https://api.edukona.com/instructor/quizzes/', {
         headers: {
           'Content-Type': 'application/json',
           Authorization: `Token ${token}`,

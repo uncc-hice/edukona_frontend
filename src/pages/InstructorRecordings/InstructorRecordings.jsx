@@ -133,8 +133,6 @@ const InstructorRecordings = () => {
 
   const handleIncomingMessage = (event) => {
     const receivedData = JSON.parse(event.data);
-    console.log('Received data:', receivedData);
-
     if (receivedData.type === 'transcript_completed') {
       // Update the specific recording by mapping over the recordings
       setRecordings((prevRecordings) =>

@@ -19,8 +19,6 @@ const InstructorQuestionView = () => {
   const handleIncomingMessage = useCallback(
     (event) => {
       const data = JSON.parse(event.data);
-      console.log('Received data:', data);
-
       if (data.type === 'next_question' || data.type === 'current_question') {
         setCurrentQuestion(data.question);
         setResetTimer((prev) => !prev); // Toggle to reset the timer

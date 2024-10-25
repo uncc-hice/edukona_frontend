@@ -43,11 +43,6 @@ const StudentAnswersGrid = ({ answers, question, code, sendMessage, setIsSubmitt
     };
 
     try {
-      // const response = await axios.post('https://api.edukona.com/user-response/', postData, {
-      //     headers: {
-      //         'Content-Type': 'application/json'
-      //     },
-      // });
       console.log('response data:', postData);
       sendMessage(
         JSON.stringify({
