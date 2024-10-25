@@ -21,7 +21,7 @@ const General = () => {
   useEffect(() => {
     const fetchData = async () => {
       try {
-        const generalResponse = await axios.get('https://api.edukona.com/account-general', {
+        const generalResponse = await axios.get('https://api.edukona.com/profile', {
           headers: {
             'Content-Type': 'application/json',
             Authorization: `Token ${token}`,
