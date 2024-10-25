@@ -13,7 +13,8 @@ import {
 import { signUp } from './Functions';
 
 const SignUpForm = ({ toggleForm }) => {
-  const [username, setUsername] = useState('');
+  const [firstName, setFirstName] = useState('');
+  const [lastName, setLastName] = useState('');
   const [password, setPassword] = useState('');
   const [confirmPassword, setConfirmPassword] = useState('');
   const [email, setEmail] = useState('');
@@ -21,7 +22,7 @@ const SignUpForm = ({ toggleForm }) => {
   const [error, setError] = useState('');
 
   const validateForm = () => {
-    if (!username || !password || !confirmPassword || !email) {
+    if (!firstName || !password || !confirmPassword || !email) {
       setError('Please fill in all fields.');
       return false;
     }
@@ -41,7 +42,7 @@ const SignUpForm = ({ toggleForm }) => {
       return;
     }
     //signUp function imported from Functions.js
-    signUp(username, password, email, role);
+    signUp(firstName, lastName, password, email, role);
   };
 
   return (
@@ -57,15 +58,25 @@ const SignUpForm = ({ toggleForm }) => {
                 {error}
               </Typography>
             )}
+            {/* Added first name and last name input boxes here */}
             <form onSubmit={handleSubmit}>
               <TextField
                 fullWidth
-                id="username"
-                label="Username"
+                id="firstName"
+                label="First Name"
                 variant="outlined"
                 margin="normal"
-                value={username}
-                onChange={(e) => setUsername(e.target.value)}
+                value={firstName}
+                onChange={(e) => setFirstName(e.target.value)}
+              />
+              <TextField
+                fullWidth
+                id="lastName"
+                label="Last Name"
+                variant="outlined"
+                margin="normal"
+                value={lastName}
+                onChange={(e) => setLastName(e.target.value)}
               />
               <TextField
                 fullWidth
