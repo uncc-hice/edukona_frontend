@@ -28,8 +28,8 @@ const General = () => {
           },
         });
         if (generalResponse.status === 200) {
-          const { firstName, lastName, username, email } = generalResponse.data;
-          setUserData({ firstName, lastName, username, email });
+          const { first_name, last_name, username, email } = generalResponse.data;
+          setUserData({ first_name, last_name, username, email });
         }
       } catch (error) {
         console.error("Failed to gather the user's information.", error);
