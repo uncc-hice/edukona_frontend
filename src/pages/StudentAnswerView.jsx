@@ -23,6 +23,7 @@ const StudentAnswerView = () => {
   const sid = localStorage.getItem('sid');
 
   const handleIncomingMessage = (event) => {
+    const theme = localStorage.getItem('themeMode');
     const receivedData = JSON.parse(event.data);
     if (receivedData.type === 'next_question') {
       setIsLocked(false);
@@ -71,7 +72,7 @@ const StudentAnswerView = () => {
       });
     } else if (receivedData.type === 'question_locked') {
       setIsLocked(true);
-      toast.error('Could not submit answer: Question locked.');
+      toast.error('Could not submit answer: Question locked.', { theme });
     }
   };
 

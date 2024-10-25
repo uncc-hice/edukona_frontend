@@ -40,6 +40,7 @@ const RecordButton = ({ onUpdate }) => {
   const stream = useRef(null);
   const recorder = useRef(null);
   const chunks = useRef([]);
+  const theme = localStorage.getItem('themeMode');
 
   const handleUpload = () => {
     setTitleOpen(false);
@@ -62,6 +63,7 @@ const RecordButton = ({ onUpdate }) => {
         if (res.status === 201) {
           toast.success('Recording successfully uploaded!', {
             icon: '🎉',
+            theme,
           });
           onUpdate();
         }

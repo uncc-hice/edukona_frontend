@@ -11,9 +11,9 @@ import { toast } from 'react-toastify';
 const Contact = () => {
   const theme = useTheme();
 
-  const submit_form = async (event, theme) => {
+  const submit_form = async (event) => {
     event.preventDefault();
-    const toast_theme = { theme: theme.palette.mode };
+    const toast_theme = theme.palette.mode;
     const form = event.target;
     try {
       await axios.post('https://api.edukona.com/contact-us/', form);
@@ -110,7 +110,7 @@ const Contact = () => {
                 <Box
                   component="form"
                   onSubmit={(e) => {
-                    submit_form(e, theme);
+                    submit_form(e);
                   }}
                   p={6}
                   margin={1}

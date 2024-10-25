@@ -33,6 +33,7 @@ const InstructorRecordings = () => {
   const [selectedRecording, setSelectedRecording] = useState(null);
   const [openDialogue, setOpenDialogue] = useState(false);
   const token = useRef(localStorage.getItem('token'));
+  const theme = localStorage.getItem('themeMode');
 
   const fetchRecordings = () =>
     axios
@@ -58,8 +59,8 @@ const InstructorRecordings = () => {
       })
       .then((res) =>
         res.status === 200
-          ? toast.success('Recording successfully deleted!', { icon: '🗑️' })
-          : toast.error('Could not delete recording.', {})
+          ? toast.success('Recording successfully deleted!', { icon: '🗑️', theme })
+          : toast.error('Could not delete recording.', { theme })
       )
       .then(() => fetchRecordings())
       .catch((error) => console.error(error));
@@ -83,6 +84,7 @@ const InstructorRecordings = () => {
           pending: 'Creating quiz',
           success: 'Succesfully created quiz!',
           error: 'Failed to create quiz!',
+          theme,
         }
       )
       .then((res) => {
