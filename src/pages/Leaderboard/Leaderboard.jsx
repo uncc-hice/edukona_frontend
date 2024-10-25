@@ -1,13 +1,6 @@
 import React from 'react';
-import { Container, Paper, Typography, Box, Grid, List, ListItem, ListItemText } from '@mui/material';
+import { Container, Paper, Typography, Grid, List, ListItem, ListItemText } from '@mui/material';
 import { motion } from 'framer-motion';
-
-// Dummy data
-const expected_grades = {
-  '100.0': ['Aryan', 'Phillip'],
-  '50.0': ['James', 'Margaret'],
-  '0.0': ['John'],
-};
 
 // Framer motion animations
 const containerVariants = {

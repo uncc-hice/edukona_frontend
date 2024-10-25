@@ -2,7 +2,6 @@ import React, { useEffect, useState, useCallback } from 'react';
 import { Typography, Button, Box } from '@mui/material';
 import QuizComponent from '../blocks/QuizComponent';
 import { useParams } from 'react-router-dom';
-import QuizEndView from './QuizEndView';
 import useWebSocket from 'react-use-websocket';
 import { Topbar } from '../layouts/Main/components';
 import Container from '../components/Container';
