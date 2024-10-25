@@ -10,8 +10,8 @@ import { useNavigate } from 'react-router-dom';
 
 const General = () => {
   const [userData, setUserData] = useState({
-    firstName: '',
-    lastName: '',
+    first_name: '',
+    last_name: '',
     username: '',
     email: '',
   });
@@ -52,10 +52,10 @@ const General = () => {
         </Box>
         <Grid container spacing={4}>
           <Grid item xs={12} sm={6}>
-            First Name: {userData?.firstName || ''}
+            First Name: {userData?.first_name || ''}
           </Grid>
           <Grid item xs={12} sm={6}>
-            Last Name: {userData?.lastName || ''}
+            Last Name: {userData?.last_name || ''}
           </Grid>
           <Grid item xs={12} sm={6}>
             Username: {userData?.username || ''}
