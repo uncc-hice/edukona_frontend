@@ -26,7 +26,7 @@ import { toast } from 'react-toastify';
 import { Delete } from '@mui/icons-material';
 import RecordingTitle from '../../blocks/RecordingTitle';
 import { Main } from '../../layouts';
-import {useNavigate} from "react-router-dom";
+import { useNavigate } from 'react-router-dom';
 
 const InstructorRecordings = () => {
   const [recordings, setRecordings] = useState([]);
@@ -50,7 +50,6 @@ const InstructorRecordings = () => {
     setSelectedRecording(recordingId);
     setOpenDialogue(true);
   };
-
 
   const startQuiz = async (quizId) => {
     if (!token) {
@@ -84,9 +83,6 @@ const InstructorRecordings = () => {
       // Handle error (e.g., showing an error message to the user)
     }
   };
-
-
-
 
   const handleDeleteRecording = () => {
     axios
@@ -126,7 +122,7 @@ const InstructorRecordings = () => {
       )
       .then((res) => {
         console.log(res.data);
-        startQuiz(res.data.quiz_id)
+        startQuiz(res.data.quiz_id);
       })
       .catch((error) => console.error(error));
   };
