@@ -9,18 +9,19 @@ import {
   TextField,
   DialogContent,
   Typography,
+  LinearProgress,
 } from '@mui/material';
 import axios from 'axios';
 import { useEffect, useRef, useState } from 'react';
 import { toast } from 'react-toastify';
 import RecordingTimer from './RecordingTimer';
+import AWS from 'aws-sdk';
 
 const mimetype = 'audio/webm';
-const uploadEndPoint = 'https://api.edukona.com/upload-audio/';
 
 // Creates the filename for new audio files
 const createFileName = () => {
-  const padNumber = (number) => (number <= 10 ? '0' + number : number);
+  const padNumber = (number) => (number <= 9 ? '0' + number : number);
   const date = new Date();
   const dateString = `${date.getFullYear()}${padNumber(date.getMonth() + 1)}${padNumber(date.getDate())}`;
   const timeString = `${padNumber(date.getHours())}-${padNumber(date.getMinutes())}-${padNumber(date.getSeconds())}`;
@@ -30,6 +31,7 @@ const createFileName = () => {
 const RecordButton = ({ onUpdate }) => {
   const [isRecording, setIsRecording] = useState(false);
   const [isUploading, setIsUploading] = useState(false);
+  const [uploadProgress, setUploadProgress] = useState(0);
   const [devices, setDevices] = useState([]);
   const [selectedDeviceId, setSelectedDeviceId] = useState('');
   const [buttonText, setButtonText] = useState('Start Recording');
@@ -42,33 +44,105 @@ const RecordButton = ({ onUpdate }) => {
   const chunks = useRef([]);
   const theme = localStorage.getItem('themeMode');
 
-  const handleUpload = () => {
+  const handleUpload = async () => {
     setTitleOpen(false);
     setIsUploading(true);
     setButtonText('Uploading Audio');
-    const formData = new FormData();
-    formData.append('file', audioBlob.current, createFileName());
-    formData.append('type', mimetype);
-    formData.append('title', title);
-    axios
-      .post(uploadEndPoint, formData, {
-        headers: {
-          'Content-Type': 'multipart/form',
-          Authorization: `Token ${localStorage.getItem('token')}`,
-        },
-      })
-      .then((res) => {
+
+    const fileName = createFileName();
+    const file = new File([audioBlob.current], fileName, {
+      type: mimetype,
+    });
+
+    try {
+      // Fetch temporary credentials
+      const response = await axios.post(
+        'https://api.edukona.com/generate-temporary-credentials/',
+        {},
+        {
+          headers: {
+            Authorization: `Token ${localStorage.getItem('token')}`,
+          },
+        }
+      );
+
+      const { AccessKeyId, SecretAccessKey, SessionToken, Region, BucketName, Folder } = response.data;
+
+      // Configure AWS SDK
+      AWS.config.update({
+        accessKeyId: AccessKeyId,
+        secretAccessKey: SecretAccessKey,
+        sessionToken: SessionToken,
+        region: Region,
+      });
+
+      const s3 = new AWS.S3();
+
+      // Upload file to S3
+      const s3Key = `${Folder}/${fileName}`; // Store the S3 key for later use
+
+      const params = {
+        Bucket: BucketName,
+        Key: s3Key,
+        Body: file,
+        ContentType: mimetype,
+        ACL: 'private',
+      };
+
+      const options = {
+        partSize: 5 * 1024 * 1024, // 5 MB
+        queueSize: 1, // Concurrent upload threads
+      };
+
+      const upload = s3.upload(params, options);
+
+      upload.on('httpUploadProgress', (event) => {
+        const percentCompleted = Math.round((event.loaded * 100) / event.total);
+        setUploadProgress(percentCompleted);
+      });
+
+      upload.send(async (err, data) => {
         setIsUploading(false);
         setButtonText('Start Recording');
-        if (res.status === 201) {
+        setUploadProgress(0);
+        if (err) {
+          console.error('Upload Error:', err);
+          toast.error('Upload failed');
+        } else {
+          console.log('Upload Success:', data);
           toast.success('Recording successfully uploaded!', {
             icon: '🎉',
             theme,
           });
-          onUpdate();
+          // Notify backend about the new recording
+          try {
+            const backendResponse = await axios.post(
+              'https://api.edukona.com/create-recording/',
+              {
+                s3_path: s3Key,
+                title: title,
+              },
+              {
+                headers: {
+                  Authorization: `Token ${localStorage.getItem('token')}`,
+                },
+              }
+            );
+            console.log('Backend recording creation success:', backendResponse.data);
+            onUpdate(); // Refresh recordings if necessary
+          } catch (backendError) {
+            console.error('Error creating recording in backend:', backendError);
+            toast.error('Failed to save recording metadata');
+          }
         }
-      })
-      .catch((error) => console.log(error));
+      });
+    } catch (error) {
+      console.error('Error during upload:', error);
+      setIsUploading(false);
+      setButtonText('Start Recording');
+      toast.error('Upload failed');
+    }
+
     setTitle(null);
   };
 
@@ -100,7 +174,7 @@ const RecordButton = ({ onUpdate }) => {
     if (devices.length > 0 && !selectedDeviceId) {
       setSelectedDeviceId(devices[0].deviceId);
     }
-  }, [devices, selectedDeviceId]); // Dependencies include devices and selectedDeviceId
+  }, [devices, selectedDeviceId]);
 
   const startRecording = async () => {
     try {
@@ -153,7 +227,7 @@ const RecordButton = ({ onUpdate }) => {
   };
 
   return (
-    <div style={{ display: 'flex', alignItems: 'center', marginBottom: '1rem' }}>
+    <div style={{ display: 'flex', alignItems: 'center', marginBottom: '1rem', flexWrap: 'wrap' }}>
       <FormControl variant="outlined" style={{ minWidth: 200, marginRight: '1rem' }}>
         <InputLabel id="microphone-select-label">Microphone</InputLabel>
         <Select
@@ -171,17 +245,28 @@ const RecordButton = ({ onUpdate }) => {
           ))}
         </Select>
       </FormControl>
-      <Button
-        onClick={handleClick}
-        variant={isRecording ? 'contained' : 'outlined'}
-        color={isRecording ? 'error' : 'primary'}
-        disabled={isUploading}
-      >
-        {buttonText}
-      </Button>
+      {/* Conditionally render the Start/Stop Recording button */}
+      {!isUploading && (
+        <Button
+          onClick={handleClick}
+          variant={isRecording ? 'contained' : 'outlined'}
+          color={isRecording ? 'error' : 'primary'}
+          disabled={isUploading}
+          // style={{ marginRight: '1rem\m', marginTop: '1rem' }}
+        >
+          {buttonText}
+        </Button>
+      )}
       <RecordingTimer active={isRecording} />
+      {/* Show the upload progress indicator when uploading */}
+      {isUploading && (
+        <div style={{ width: '100%', marginTop: '1rem' }}>
+          <Typography variant="body1">Uploading: {uploadProgress}%</Typography>
+          <LinearProgress variant="determinate" value={uploadProgress} />
+        </div>
+      )}
       <Dialog open={titleOpen}>
-        <DialogTitle>Enter a title for new recording</DialogTitle>
+        <DialogTitle>Enter a title for the new recording</DialogTitle>
         <DialogContent>
           <TextField
             autoFocus
@@ -195,17 +280,17 @@ const RecordButton = ({ onUpdate }) => {
             onChange={(e) => setTitle(e.target.value)}
           />
           <Button onClick={() => setCancelOpen(true)}>Cancel</Button>
-          <Button disabled={title === null} onClick={handleUpload}>
+          <Button disabled={!title} onClick={handleUpload}>
             Upload Recording
           </Button>
         </DialogContent>
       </Dialog>
       <Dialog open={cancelOpen}>
-        <DialogTitle>Enter a title for new recording</DialogTitle>
+        <DialogTitle>Cancel Upload</DialogTitle>
         <DialogContent>
-          <Typography variant="h6">Are you sure you want to cancel? Your recording will be lost.</Typography>
-          <Button onClick={handleCancelUpload}>Cancel Audio upload</Button>
-          <Button onClick={() => setCancelOpen(false)}>Back to title creation</Button>
+          <Typography variant="body1">Are you sure you want to cancel? Your recording will be lost.</Typography>
+          <Button onClick={handleCancelUpload}>Cancel Audio Upload</Button>
+          <Button onClick={() => setCancelOpen(false)}>Back to Title Creation</Button>
         </DialogContent>
       </Dialog>
     </div>
