@@ -14,12 +14,10 @@ export function signUp(firstName, lastName, password, email, role) {
   //defines data to be sent back in API request
   // Username is replaced with first name and last name.
   const data = {
-    user: {
-      firstName: firstName,
-      lastName: lastName,
-      password: password,
-      email: email,
-    },
+    first_name: firstName,
+    last_name: lastName,
+    email: email,
+    password: password,
   };
   //API request using instructor URL and data from SignUpForm.js
   axios
