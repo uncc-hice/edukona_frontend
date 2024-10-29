@@ -26,6 +26,7 @@ import { toast } from 'react-toastify';
 import { Delete } from '@mui/icons-material';
 import RecordingTitle from '../../blocks/RecordingTitle';
 import { Main } from '../../layouts';
+import { useNavigate } from 'react-router-dom';
 
 const InstructorRecordings = () => {
   const [recordings, setRecordings] = useState([]);
@@ -34,6 +35,8 @@ const InstructorRecordings = () => {
   const [openDialogue, setOpenDialogue] = useState(false);
   const token = useRef(localStorage.getItem('token'));
   const theme = localStorage.getItem('themeMode');
+  const navigate = useNavigate();
+
 
   const fetchRecordings = () =>
     axios
@@ -48,6 +51,39 @@ const InstructorRecordings = () => {
   const handleOpenDialogue = (recordingId) => {
     setSelectedRecording(recordingId);
     setOpenDialogue(true);
+  };
+
+  const startQuiz = async (quizId) => {
+    if (!token) {
+      console.log('No token found');
+      return;
+    }
+    try {
+      const response = await axios.post(
+        'https://api.edukona.com/quiz-session/',
+        {
+          quiz_id: quizId,
+        },
+        {
+          headers: {
+            'Content-Type': 'application/json',
+            Authorization: `Token ${token.current}`,
+          },
+        }
+      );
+
+      // Assuming the response contains a session code in the format: { code: 'someCode' }
+      const sessionCode = response.data.code;
+
+      if (!(response.status === 400)) {
+        navigate(`/session/${sessionCode}`);
+      }
+
+      // Example of using URL parameters
+    } catch (error) {
+      console.error('Error starting the quiz:', error);
+      // Handle error (e.g., showing an error message to the user)
+    }
   };
 
   const handleDeleteRecording = () => {
@@ -89,6 +125,7 @@ const InstructorRecordings = () => {
       )
       .then((res) => {
         console.log(res.data);
+        startQuiz(res.data.quiz_id);
       })
       .catch((error) => console.error(error));
   };
@@ -204,7 +241,7 @@ const InstructorRecordings = () => {
                     <Button onClick={() => handleOpenDialogue(recording.id)}>
                       <Delete color="action" />
                     </Button>
-                    <Button onClick={() => handleCreateQuiz(recording.id)}>Create Quiz</Button>
+                    <Button onClick={() => handleCreateQuiz(recording.id)}>Create and Start Quiz</Button>
                   </TableCell>
                 </TableRow>
               ))}

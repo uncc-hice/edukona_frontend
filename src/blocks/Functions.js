@@ -6,18 +6,18 @@
 import axios from 'axios';
 //Login function for app
 
-export function signUp(username, password, email, role) {
+export function signUp(firstName, lastName, password, email, role) {
   //TODO: Eventually we will need to update instructor to ${role} when we are accepting students
   const endpoint = role === 'instructor' ? 'sign-up-instructor/' : 'sign-up-student/';
   const axiosUrl = `https://api.edukona.com/${endpoint}`;
 
   //defines data to be sent back in API request
+  // Username is replaced with first name and last name.
   const data = {
-    user: {
-      username: username,
-      password: password,
-      email: email,
-    },
+    first_name: firstName,
+    last_name: lastName,
+    email: email,
+    password: password,
   };
   //API request using instructor URL and data from SignUpForm.js
   axios
