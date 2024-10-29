@@ -37,7 +37,6 @@ const InstructorRecordings = () => {
   const theme = localStorage.getItem('themeMode');
   const navigate = useNavigate();
 
-
   const fetchRecordings = () =>
     axios
       .get(`https://api.edukona.com/instructor-recordings/`, {
