@@ -3,7 +3,7 @@ import { Typography, Container, Button, Paper } from '@mui/material';
 import { useNavigate, useParams } from 'react-router-dom';
 import StudentGrid from '../blocks/StudentGrid.jsx';
 import useWebSocket from 'react-use-websocket';
-import Dashboard from '../layouts/Dashboard/Dashboard.js';
+import Main from '../layouts/Main';
 
 const fetchStudents = async (code, token) => {
   console.log('token', token);
@@ -66,7 +66,7 @@ const QuizSession = () => {
   };
 
   return (
-    <Dashboard>
+    <Main>
       <Container>
         <div
           style={{
@@ -90,7 +90,7 @@ const QuizSession = () => {
           </Button>
         </Paper>
       </Container>
-    </Dashboard>
+    </Main>
   );
 };
 
