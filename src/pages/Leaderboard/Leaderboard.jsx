@@ -35,8 +35,7 @@ const getSortedData = (grades) => {
 
 const Leaderboard = ({ grades }) => {
   // Get sorted data and filter entries with score 100
-  const sortedData = getSortedData(grades).filter((entry) => entry.score === 100);
-
+  const sortedData = getSortedData(grades).filter((entry) => parseInt(entry.score) === 100);
   return (
     <Container maxWidth="sm" sx={{ mt: 5 }}>
       <Typography variant="h3" align="center" gutterBottom>
@@ -71,7 +70,7 @@ const Leaderboard = ({ grades }) => {
                   </Grid>
                   <Grid item xs={2}>
                     <Typography variant="h6" fontWeight="bold">
-                      {entry.score}
+                      {parseInt(entry.score)}%
                     </Typography>
                   </Grid>
                 </Grid>
