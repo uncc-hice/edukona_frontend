@@ -341,7 +341,7 @@ function EditQuizView() {
               <Button
                 size={'large'}
                 variant={'contained'}
-                style={newButtonStyle}
+                style={{ newButtonStyle, backgroundColor: 'red' }}
                 onClick={() => handleOpen(question.id)}
               >
                 Delete
