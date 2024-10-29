@@ -2,6 +2,7 @@ import React, { useState, useEffect, useCallback } from 'react';
 import axios from 'axios';
 import { useParams } from 'react-router-dom';
 import {
+  Box,
   Button,
   Dialog,
   DialogActions,
@@ -10,9 +11,10 @@ import {
   DialogTitle,
   Grid,
   TextField,
+  Typography,
 } from '@mui/material';
 import { toast } from 'react-toastify';
-import Dashboard from '../layouts/Dashboard/Dashboard';
+import Main from '../layouts/Main';
 
 function EditQuizView() {
   const { quizId } = useParams();
@@ -160,7 +162,6 @@ function EditQuizView() {
     border: '1px solid #ddd',
     padding: '20px',
     borderRadius: '8px',
-    backgroundColor: '#f9f9f9',
   };
 
   const labelStyle = {
@@ -206,7 +207,6 @@ function EditQuizView() {
     padding: '20px',
     border: '1px solid #ddd',
     borderRadius: '8px',
-    backgroundColor: '#f1f1f1',
   };
 
   const questionItemButtonStyle = {
@@ -232,23 +232,28 @@ function EditQuizView() {
     backgroundColor: '#28a745',
   };
 
+  const newButtonStyle = {
+    margin: '10px',
+  };
+
   return (
-    <Dashboard>
-      <div style={containerStyle}>
-        <h2
+    <Main>
+      <Box style={containerStyle}>
+        <Typography
           style={{
             marginBottom: '20px',
             marginLeft: '20px',
             fontFamily: 'Roboto, sans-serif',
             fontSize: '30px',
           }}
+          variant={'h4'}
         >
           Quiz Dashboard
-        </h2>
+        </Typography>
         <form onSubmit={handleSubmit} style={formContainerStyle}>
           <Grid container spacing={2}>
             <Grid item xs={12} sm={6}>
-              <label style={labelStyle}>
+              <label>
                 Question Text:
                 <TextField
                   variant="outlined"
@@ -265,7 +270,7 @@ function EditQuizView() {
               </label>
             </Grid>
             <Grid item xs={12} sm={6}>
-              <label style={labelStyle}>
+              <label>
                 Points:
                 <TextField
                   variant="outlined"
@@ -282,7 +287,7 @@ function EditQuizView() {
               </label>
             </Grid>
             <Grid item xs={12} sm={6}>
-              <label style={labelStyle}>
+              <label>
                 Correct Answer:
                 <TextField
                   variant="outlined"
@@ -299,7 +304,7 @@ function EditQuizView() {
               </label>
             </Grid>
             <Grid item xs={12} sm={6}>
-              <label style={labelStyle}>
+              <label>
                 Incorrect Answer 1:
                 <TextField
                   variant="outlined"
@@ -316,7 +321,7 @@ function EditQuizView() {
               </label>
             </Grid>
             <Grid item xs={12} sm={6}>
-              <label style={labelStyle}>
+              <label>
                 Incorrect Answer 2:
                 <TextField
                   variant="outlined"
@@ -333,7 +338,7 @@ function EditQuizView() {
               </label>
             </Grid>
             <Grid item xs={12} sm={6}>
-              <label style={labelStyle}>
+              <label>
                 Incorrect Answer 3:
                 <TextField
                   variant="outlined"
@@ -350,11 +355,11 @@ function EditQuizView() {
               </label>
             </Grid>
           </Grid>
-          <div style={buttonGroupStyle}>
-            <Button type="submit" style={greenButtonStyle}>
+          <div>
+            <Button size={'large'} variant={'contained'} style={newButtonStyle} type={'submit'}>
               Save Question
             </Button>
-            <Button type="button" onClick={resetForm} style={cancelButtonStyle}>
+            <Button size={'large'} variant={'contained'} style={newButtonStyle} onClick={resetForm}>
               Cancel
             </Button>
           </div>
@@ -368,10 +373,20 @@ function EditQuizView() {
               <p style={labelStyle}>Points: {question.points}</p>
               <p style={labelStyle}>Correct Answer: {question.correct_answer}</p>
               <p style={labelStyle}>Incorrect Answers: {question.incorrect_answer_list.join(', ')}</p>
-              <Button onClick={() => handleEditQuestion(question)} style={questionItemButtonStyle}>
+              <Button
+                size={'large'}
+                variant={'contained'}
+                style={newButtonStyle}
+                onClick={() => handleEditQuestion(question)}
+              >
                 Edit
               </Button>
-              <Button onClick={() => handleOpen(question.id)} style={deleteButtonStyle}>
+              <Button
+                size={'large'}
+                variant={'contained'}
+                style={newButtonStyle}
+                onClick={() => handleOpen(question.id)}
+              >
                 Delete
               </Button>
             </div>
@@ -398,8 +413,8 @@ function EditQuizView() {
             </Button>
           </DialogActions>
         </Dialog>
-      </div>
-    </Dashboard>
+      </Box>
+    </Main>
   );
 }
 
