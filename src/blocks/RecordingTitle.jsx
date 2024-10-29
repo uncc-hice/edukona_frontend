@@ -2,6 +2,7 @@ import { Button, Typography } from '@mui/material';
 import { toast } from 'react-toastify';
 
 const RecordingTitle = ({ title, id }) => {
+  const theme = localStorage.getItem('themeMode');
   const handleClick = () => {
     navigator.permissions.query({ name: 'clipboard-write' }).then((result) => {
       if (result.state === 'granted' || result.state === 'prompt') {
@@ -9,6 +10,7 @@ const RecordingTitle = ({ title, id }) => {
           success: 'Copied recording id to clipboard',
           pending: 'Copying recording id to clipboard',
           error: "Couldn't copy recording id to clipboard",
+          theme,
         });
       }
     });

@@ -26,6 +26,7 @@ function EditQuizView() {
   const [selectedQuestionId, setSelectedQuestionId] = useState(null);
 
   const token = localStorage.getItem('token');
+  const theme = localStorage.getItem('themeMode');
 
   const fetchQuestions = useCallback(async () => {
     try {
@@ -102,6 +103,7 @@ function EditQuizView() {
       });
       toast.success('Question successfully deleted!', {
         icon: '🗑️',
+        theme,
       });
       await fetchQuestions();
     } catch (error) {
