@@ -22,6 +22,7 @@ import { toast } from 'react-toastify';
 
 const QuizListRow = ({ quiz, onUpdate }) => {
   const token = useRef(localStorage.getItem('token'));
+  const theme = localStorage.getItem('themeMode');
   const [sessionsOpen, setSessionsOpen] = useState(false);
   const [open, setOpen] = useState(false);
   const [loading, setLoading] = useState(false);
@@ -87,6 +88,7 @@ const QuizListRow = ({ quiz, onUpdate }) => {
           pending: 'Deleting session',
           success: 'Succesfully deleted session',
           error: 'Failed to delete session',
+          theme,
         }
       )
       .then(() => {
@@ -150,6 +152,7 @@ const QuizListRow = ({ quiz, onUpdate }) => {
       if (response.status === 200) {
         toast.success('Quiz successfully deleted!', {
           icon: '🗑️',
+          theme,
         });
         onUpdate();
       }
