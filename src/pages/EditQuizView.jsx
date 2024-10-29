@@ -176,28 +176,6 @@ function EditQuizView() {
     width: '100%',
   };
 
-  const buttonGroupStyle = {
-    marginTop: '20px',
-  };
-
-  const buttonStyle = {
-    marginRight: '10px',
-    padding: '10px 20px',
-    border: 'none',
-    borderRadius: '4px',
-    backgroundColor: '#007bff',
-    color: 'white',
-    cursor: 'pointer',
-    textTransform: 'capitalize',
-    fontSize: '18px', // Increase font size
-    marginLeft: '20px', // Add left margin
-  };
-
-  const cancelButtonStyle = {
-    ...buttonStyle,
-    backgroundColor: '#6c757d',
-  };
-
   const questionsContainerStyle = {
     marginTop: '20px',
   };
@@ -207,29 +185,6 @@ function EditQuizView() {
     padding: '20px',
     border: '1px solid #ddd',
     borderRadius: '8px',
-  };
-
-  const questionItemButtonStyle = {
-    marginRight: '10px',
-    padding: '8px 16px',
-    border: 'none',
-    borderRadius: '4px',
-    backgroundColor: '#28a745',
-    color: 'white',
-    cursor: 'pointer',
-    textTransform: 'capitalize',
-    fontSize: '18px', // Increase font size
-    marginLeft: '20px', // Add left margin
-  };
-
-  const deleteButtonStyle = {
-    ...questionItemButtonStyle,
-    backgroundColor: '#dc3545',
-  };
-
-  const greenButtonStyle = {
-    ...buttonStyle,
-    backgroundColor: '#28a745',
   };
 
   const newButtonStyle = {
