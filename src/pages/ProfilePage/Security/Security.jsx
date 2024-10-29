@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useState } from 'react';
 import Box from '@mui/material/Box';
 import Divider from '@mui/material/Divider';
 import Typography from '@mui/material/Typography';
@@ -6,8 +6,27 @@ import Button from '@mui/material/Button';
 import Grid from '@mui/material/Grid';
 import Main from '../../../layouts/Main/Main';
 import Page from '../Components/Page/Page';
+import { DialogActions, DialogContent, DialogTitle, Dialog } from '@mui/material';
+import { useNavigate } from 'react-router-dom';
 
 const Security = () => {
+  const [openDialog, setOpenDialog] = useState(false);
+  const navigate = useNavigate();
+
+  const handleOpen = () => {
+    setOpenDialog(true);
+  }
+
+  const handleClose = () => {
+    setOpenDialog(false);
+  }
+
+  const triggerDeleteAccount = () => {
+    setOpenDialog(false);
+    localStorage.clear();
+    navigate('/');
+  }
+
   return (
     <Main>
       <Page>
@@ -26,9 +45,19 @@ const Security = () => {
         </Box>
         <Grid container spacing={4}>
           <Grid item xs={12}>
-            <Button size={'large'} variant={'contained'} type={'submit'}>
+            <Button size={'large'} variant={'contained'} type={'submit'} onClick={handleOpen}>
               Delete Account
             </Button>
+            <Dialog open={openDialog} onClose={handleClose}>
+              <DialogTitle>Delete Account</DialogTitle>
+              <DialogContent>
+                Would you like to delete your account? This action is permanent and cannot be undone.
+              </DialogContent>
+              <DialogActions>
+                <Button onClick={handleClose} autoFocus>Cancel</Button>
+                <Button onClick={triggerDeleteAccount} color={"error"} variant={"outlined"}> Delete Account </Button>
+              </DialogActions>
+            </Dialog>
           </Grid>
         </Grid>
       </Page>
