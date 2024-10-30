@@ -9,6 +9,8 @@ import {
   FormControl,
   InputLabel,
   CircularProgress,
+  Grid,
+  Typography,
 } from '@mui/material';
 import './SettingsPage.css';
 import { useNavigate, useParams } from 'react-router-dom';
@@ -115,31 +117,44 @@ const SettingsPage = () => {
 
   return (
     <Dashboard>
-      <div className="settings-container">
-        <div className="settings-panel">
-          <h2>Behavioral Settings</h2>
+      <Grid container spacing={2} direction={'column'} alignItems={'left'} padding={8} columns={12}>
+        <Grid item>
+          <Typography variant="h4">Settings</Typography>
+        </Grid>
+        <Grid item>
           <FormControlLabel
             control={<Switch checked={settings.live_bar_chart} onChange={handleToggle} name="live_bar_chart" />}
             label="Live Bar Chart Display"
           />
+        </Grid>
+        <Grid item>
           <FormControlLabel
             control={<Switch checked={settings.timer} onChange={handleToggle} name="timer" />}
             label="Question Timer"
           />
-          <TextField
-            label="Timer Duration"
-            name="timer_duration"
-            value={settings.timer_duration}
-            onChange={handleChange}
-            variant="outlined"
-            size="small"
-          />
+        </Grid>
+        {settings.timer && (
+          <Grid item>
+            <TextField
+              label="Timer Duration"
+              name="timer_duration"
+              value={settings.timer_duration}
+              onChange={handleChange}
+              variant="outlined"
+              size="small"
+              sx={{ width: 0.5 }}
+            />
+          </Grid>
+        )}
+        <Grid item>
           <FormControlLabel
             control={<Switch checked={settings.skip_question} onChange={handleToggle} name="skip_question" />}
             label="Skip Question Power-Up"
           />
-          {settings.skip_question && (
-            <>
+        </Grid>
+        {settings.skip_question && (
+          <>
+            <Grid item>
               <TextField
                 label="Skips Per Student"
                 type="number"
@@ -148,19 +163,25 @@ const SettingsPage = () => {
                 onChange={handleChange}
                 variant="outlined"
                 size="small"
+                sx={{ width: 0.5 }}
               />
-              <FormControl variant="outlined" size="small" className="MuiFormControl-root">
+            </Grid>
+            <Grid item>
+              <FormControl variant="outlined" size="small" sx={{ width: 0.5 }}>
                 <InputLabel>Skip Question Logic</InputLabel>
                 <Select
                   label="Skip Question Logic"
                   name="skip_question_logic"
                   value={settings.skip_question_logic}
                   onChange={handleChange}
+                  small
                 >
                   <MenuItem value="streak">Streak</MenuItem>
                   <MenuItem value="random">Random</MenuItem>
                 </Select>
               </FormControl>
+            </Grid>
+            <Grid item columns={6}>
               {settings.skip_question_logic === 'streak' ? (
                 <TextField
                   label="Skip Question Streak Count"
@@ -170,6 +191,7 @@ const SettingsPage = () => {
                   onChange={handleChange}
                   variant="outlined"
                   size="small"
+                  sx={{ width: 0.5 }}
                 />
               ) : (
                 <TextField
@@ -180,17 +202,18 @@ const SettingsPage = () => {
                   onChange={handleChange}
                   variant="outlined"
                   size="small"
+                  sx={{ width: 0.5 }}
                 />
               )}
-            </>
-          )}
-        </div>
-        <div>
-          <Button type="button" onClick={handleBackButton}>
-            Save and Back
+            </Grid>
+          </>
+        )}
+        <Grid item>
+          <Button type="button" onClick={handleBackButton} variant="outlined">
+            Save Changes and Return
           </Button>
-        </div>
-      </div>
+        </Grid>
+      </Grid>
     </Dashboard>
   );
 };
