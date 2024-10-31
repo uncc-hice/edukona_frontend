@@ -12,7 +12,7 @@ import {
   LinearProgress,
 } from '@mui/material';
 import axios from 'axios';
-import { useEffect, useRef, useState } from 'react';
+import { useEffect, useRef, useState, useCallback } from 'react';
 import { toast } from 'react-toastify';
 import RecordingTimer from './RecordingTimer';
 import AWS from 'aws-sdk';
@@ -37,14 +37,14 @@ const RecordButton = ({ onUpdate }) => {
   const [buttonText, setButtonText] = useState('Start Recording');
   const [titleOpen, setTitleOpen] = useState(false);
   const [cancelOpen, setCancelOpen] = useState(false);
-  const [title, setTitle] = useState(null);
+  const [title, setTitle] = useState('Untitled Recording');
   const audioBlob = useRef(null);
   const stream = useRef(null);
   const recorder = useRef(null);
   const chunks = useRef([]);
   const theme = localStorage.getItem('themeMode');
 
-  const handleUpload = async () => {
+  const handleUpload = useCallback(async () => {
     setTitleOpen(false);
     setIsUploading(true);
     setButtonText('Uploading Audio');
@@ -144,7 +144,7 @@ const RecordButton = ({ onUpdate }) => {
     }
 
     setTitle(null);
-  };
+  }, [title, onUpdate, theme]);
 
   const handleCancelUpload = () => {
     setButtonText('Start Recording');
@@ -226,6 +226,34 @@ const RecordButton = ({ onUpdate }) => {
     }
   };
 
+  useEffect(() => {
+    if (titleOpen) {
+      const now = new Date();
+      const timeString = now.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
+      const default_text = `${now.toISOString().split('T')[0]} ${timeString} Recording`;
+      setTitle(default_text);
+      console.log('Title set to:', default_text);
+    }
+  }, [titleOpen]);
+
+  useEffect(() => {
+    const handleKeyDown = (event) => {
+      if (event.key === 'Enter' && titleOpen && title) {
+        event.preventDefault();
+        event.stopPropagation();
+        handleUpload();
+      }
+    };
+
+    if (titleOpen) {
+      window.addEventListener('keydown', handleKeyDown);
+    }
+
+    return () => {
+      window.removeEventListener('keydown', handleKeyDown);
+    };
+  }, [titleOpen, title, handleUpload]);
+
   return (
     <div style={{ display: 'flex', alignItems: 'center', marginBottom: '1rem', flexWrap: 'wrap' }}>
       <FormControl variant="outlined" style={{ minWidth: 200, marginRight: '1rem' }}>
@@ -278,9 +306,10 @@ const RecordButton = ({ onUpdate }) => {
             fullWidth
             variant="standard"
             onChange={(e) => setTitle(e.target.value)}
+            value={title}
           />
           <Button onClick={() => setCancelOpen(true)}>Cancel</Button>
-          <Button disabled={!title} onClick={handleUpload}>
+          <Button disabled={!title} onClick={handleUpload} autoFocus>
             Upload Recording
           </Button>
         </DialogContent>
