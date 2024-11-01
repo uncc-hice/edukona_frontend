@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect } from 'react';
 import { Grid, Box } from '@mui/material';
 import StudentAnswerOption from './StudentAnswerOption';
 
@@ -13,7 +13,6 @@ const StudentAnswersGrid = ({
   setSelectedAnswer,
 }) => {
   const { id: questionId } = question;
-  const [prevSelectedAnswer, setPrevSelectedAnswer] = useState('');
   const sid = localStorage.getItem('sid');
 
   useEffect(() => {
@@ -23,7 +22,7 @@ const StudentAnswersGrid = ({
       setSelectedAnswer(storedSubmission);
       setIsSubmitted(true);
     }
-  }, [questionId, setIsSubmitted, code, sid, question.duration, prevSelectedAnswer, setSelectedAnswer]);
+  }, [questionId, setIsSubmitted, code, sid, question.duration, setSelectedAnswer]);
 
   const handleSubmitAnswer = async (answer) => {
     if (answer === selectedAnswer) {
