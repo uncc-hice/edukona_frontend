@@ -1,3 +1,5 @@
+// app.js
+
 import './App.css';
 import React, { useState, useEffect, useContext } from 'react';
 import { BrowserRouter as Router, Route, Routes, Navigate } from 'react-router-dom';
