@@ -7,7 +7,7 @@ import { Box } from '@mui/system';
 import axios from 'axios';
 
 const LoginForm = ({ toggleForm }) => {
-  const [username, setUsername] = useState('');
+  const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [error, setError] = useState('');
   const navigate = useNavigate();
@@ -54,7 +54,7 @@ const LoginForm = ({ toggleForm }) => {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-    login(username, password, setError, navigate);
+    login(email, password, setError, navigate);
   };
 
   return (
@@ -69,13 +69,14 @@ const LoginForm = ({ toggleForm }) => {
               margin="normal"
               required
               fullWidth
-              id="username"
-              label="Username"
-              name="username"
-              autoComplete="username"
+              id="email"
+              label="Email"
+              name="email"
+              type="email"
+              autoComplete="email"
               autoFocus
-              value={username}
-              onChange={(e) => setUsername(e.target.value)}
+              value={email}
+              onChange={(e) => setEmail(e.target.value)}
             />
             <TextField
               margin="normal"

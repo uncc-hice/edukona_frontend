@@ -13,12 +13,12 @@ export const UserProvider = ({ children }) => {
   const [token, setToken] = useState(storedToken);
 
   // Function to log in the user
-  const login = (username, password, setError, navigate) => {
+  const login = (email, password, setError, navigate) => {
     const axiosUrl = 'https://api.edukona.com/login/';
 
-    //declares user data (password and username)
+    //declares user data (password and email)
     const data = {
-      username: username,
+      email: email,
       password: password,
     };
 
@@ -43,7 +43,7 @@ export const UserProvider = ({ children }) => {
       .catch((error) => {
         console.error('Error: ', error.response.status);
         if (error.response.status === 400 || error.response.status === 401) {
-          setError('Invalid username or password.');
+          setError('Invalid email or password.');
         } else {
           setError("Sorry, we couldn't log you in due to an internal server error.");
         }
