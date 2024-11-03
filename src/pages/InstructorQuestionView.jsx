@@ -53,6 +53,7 @@ const InstructorQuestionView = () => {
 
   // New function to handle skipping the question
   const handleSkipQuestion = useCallback(() => {
+    setResponseData({});
     if (currentQuestion && currentQuestion.id) {
       sendMessage(
         JSON.stringify({
