@@ -11,6 +11,7 @@ const StudentAnswersGrid = ({
   isSubmitted,
   selectedAnswer,
   setSelectedAnswer,
+  gridLocked,
 }) => {
   const { id: questionId } = question;
   const sid = localStorage.getItem('sid');
@@ -72,9 +73,10 @@ const StudentAnswersGrid = ({
             <StudentAnswerOption
               answer={answer}
               index={index}
-              onClick={() => handleSubmitAnswer(answer)}
+              onClick={() => !gridLocked && handleSubmitAnswer(answer)}
               selected={answer === selectedAnswer}
               submitted={isSubmitted}
+              disabled={gridLocked}
             />
           </Grid>
         ))}

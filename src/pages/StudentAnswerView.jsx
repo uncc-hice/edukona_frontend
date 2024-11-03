@@ -18,6 +18,7 @@ const StudentAnswerView = () => {
   const [quizEnded, setQuizEnded] = useState(false);
   const [skipPowerUp, setSkipPowerUp] = useState(false);
   const [selectedAnswer, setSelectedAnswer] = useState('');
+  const [gridLocked, setGridLocked] = useState(false);
 
   let url = `wss://api.edukona.com/ws/student/join/${code}/`;
   const sid = localStorage.getItem('sid');
@@ -33,6 +34,7 @@ const StudentAnswerView = () => {
       setLoading(false); // Stop loading when the question is received
       setSelectedAnswer('');
       checkSubmissionStatus(receivedData.question.id); // Check if already submitted
+      setGridLocked(false);
     } else if (receivedData.type === 'quiz_ended') {
       setQuizEnded(true);
       setLoading(false);
@@ -72,6 +74,7 @@ const StudentAnswerView = () => {
       });
     } else if (receivedData.type === 'question_locked') {
       toast.error('Could not submit answer: Question locked.', { theme });
+      setGridLocked(true);
     } else if (receivedData.message === 'User response created successfully') {
       setIsSubmitted(true);
       setSelectedAnswer(receivedData.selected_answer);
@@ -137,6 +140,7 @@ const StudentAnswerView = () => {
             quizSession={quizSession}
             selectedAnswer={selectedAnswer}
             setSelectedAnswer={setSelectedAnswer}
+            gridLocked={gridLocked}
           />
           <Box textAlign="right" p={2}>
             {skipPowerUp && !isSubmitted && (
