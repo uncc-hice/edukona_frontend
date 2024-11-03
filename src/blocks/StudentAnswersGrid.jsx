@@ -1,11 +1,18 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect } from 'react';
 import { Grid, Box } from '@mui/material';
 import StudentAnswerOption from './StudentAnswerOption';
 
-const StudentAnswersGrid = ({ answers, question, code, sendMessage, setIsSubmitted, isSubmitted, isLocked }) => {
+const StudentAnswersGrid = ({
+  answers,
+  question,
+  code,
+  sendMessage,
+  setIsSubmitted,
+  isSubmitted,
+  selectedAnswer,
+  setSelectedAnswer,
+}) => {
   const { id: questionId } = question;
-  const [selectedAnswer, setSelectedAnswer] = useState('');
-  const [prevSelectedAnswer, setPrevSelectedAnswer] = useState('');
   const sid = localStorage.getItem('sid');
 
   useEffect(() => {
@@ -15,16 +22,9 @@ const StudentAnswersGrid = ({ answers, question, code, sendMessage, setIsSubmitt
       setSelectedAnswer(storedSubmission);
       setIsSubmitted(true);
     }
-    if (isLocked === true) {
-      setSelectedAnswer(prevSelectedAnswer);
-    }
-  }, [questionId, setIsSubmitted, code, sid, question.duration, isLocked, prevSelectedAnswer]);
+  }, [questionId, setIsSubmitted, code, sid, question.duration, setSelectedAnswer]);
 
   const handleSubmitAnswer = async (answer) => {
-    if (isLocked === true) {
-      setSelectedAnswer(prevSelectedAnswer);
-      return;
-    }
     if (answer === selectedAnswer) {
       return;
     }
@@ -51,11 +51,6 @@ const StudentAnswersGrid = ({ answers, question, code, sendMessage, setIsSubmitt
         })
       );
 
-      setSelectedAnswer((prevAnswer) => {
-        setPrevSelectedAnswer(prevAnswer);
-        return answer;
-      });
-      setIsSubmitted(true);
       localStorage.setItem(`submitted_${questionId}_${code}_${sid}`, answer); // Store the submission state persistently
       // Optionally handle response data like 'is_correct'
     } catch (error) {

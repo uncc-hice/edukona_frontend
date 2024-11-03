@@ -17,7 +17,7 @@ const StudentAnswerView = () => {
   const [isSubmitted, setIsSubmitted] = useState(false);
   const [quizEnded, setQuizEnded] = useState(false);
   const [skipPowerUp, setSkipPowerUp] = useState(false);
-  const [isLocked, setIsLocked] = useState(false);
+  const [selectedAnswer, setSelectedAnswer] = useState('');
 
   let url = `wss://api.edukona.com/ws/student/join/${code}/`;
   const sid = localStorage.getItem('sid');
@@ -26,12 +26,12 @@ const StudentAnswerView = () => {
     const theme = localStorage.getItem('themeMode');
     const receivedData = JSON.parse(event.data);
     if (receivedData.type === 'next_question') {
-      setIsLocked(false);
       setIsSubmitted(false);
       setQuestion(receivedData.question);
       setAnswers(receivedData.order);
       setQuizSession(receivedData.quiz_session);
       setLoading(false); // Stop loading when the question is received
+      setSelectedAnswer('');
       checkSubmissionStatus(receivedData.question.id); // Check if already submitted
     } else if (receivedData.type === 'quiz_ended') {
       setQuizEnded(true);
@@ -71,8 +71,10 @@ const StudentAnswerView = () => {
         },
       });
     } else if (receivedData.type === 'question_locked') {
-      setIsLocked(true);
       toast.error('Could not submit answer: Question locked.', { theme });
+    } else if (receivedData.message === 'User response created successfully') {
+      setIsSubmitted(true);
+      setSelectedAnswer(receivedData.selected_answer);
     }
   };
 
@@ -133,7 +135,8 @@ const StudentAnswerView = () => {
             isSubmitted={isSubmitted}
             setIsSubmitted={setIsSubmitted} // Pass setIsSubmitted to child
             quizSession={quizSession}
-            isLocked={isLocked}
+            selectedAnswer={selectedAnswer}
+            setSelectedAnswer={setSelectedAnswer}
           />
           <Box textAlign="right" p={2}>
             {skipPowerUp && !isSubmitted && (
