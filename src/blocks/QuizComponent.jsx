@@ -56,7 +56,13 @@ const QuizComponent = ({
         {/* Timer */}
         {timerEnabled && (
           <Box ml={4}>
-            <Timer key={resetTimer} initialTime={timerDuration} onTimerEnd={onTimerEnd} />
+            <Timer
+              key={resetTimer}
+              initialTime={timerDuration}
+              onTimerEnd={onTimerEnd}
+              sendMessage={sendMessage}
+              questionId={question.id}
+            />
           </Box>
         )}
       </Box>

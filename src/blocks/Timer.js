@@ -2,10 +2,12 @@ import React, { useEffect, useRef, useState } from 'react';
 import { buildStyles, CircularProgressbarWithChildren } from 'react-circular-progressbar';
 import 'react-circular-progressbar/dist/styles.css';
 import { Button } from '@mui/material';
+import { Add } from '@mui/icons-material';
 
-const Timer = React.memo(({ initialTime, onTimerEnd }) => {
+const Timer = React.memo(({ initialTime, onTimerEnd, sendMessage, questionId }) => {
   const [timeLeft, setTimeLeft] = useState(initialTime);
   const intervalRef = useRef(null);
+  const [timerActive, setTimerActive] = useState(true);
 
   useEffect(() => {
     setTimeLeft(initialTime);
@@ -13,11 +15,12 @@ const Timer = React.memo(({ initialTime, onTimerEnd }) => {
     if (intervalRef.current) {
       clearInterval(intervalRef.current);
     }
-
     intervalRef.current = setInterval(() => {
+      setTimerActive(true);
       setTimeLeft((prevTime) => {
         if (prevTime <= 1) {
           clearInterval(intervalRef.current);
+          setTimerActive(false);
           onTimerEnd();
           return 0;
         }
@@ -30,10 +33,29 @@ const Timer = React.memo(({ initialTime, onTimerEnd }) => {
     };
   }, [initialTime, onTimerEnd]);
 
+  const initializeTimer = () => {
+    intervalRef.current = setInterval(() => {
+      setTimerActive(true);
+      setTimeLeft((prevTime) => {
+        if (prevTime <= 1) {
+          clearInterval(intervalRef.current);
+          setTimerActive(false);
+          onTimerEnd();
+          return 0;
+        }
+        return prevTime - 1;
+      });
+    }, 1000);
+  };
+
   const addTime = (seconds) => {
+    sendMessage(JSON.stringify({ type: 'increase_duration', question_id: questionId, extension: seconds }));
     setTimeLeft((prevTime) => {
       return prevTime + seconds;
     });
+    if (!timerActive) {
+      initializeTimer();
+    }
   };
 
   const percentage = (timeLeft / initialTime) * 100;
@@ -44,40 +66,27 @@ const Timer = React.memo(({ initialTime, onTimerEnd }) => {
     return '#ff3f34'; // Red
   };
 
-  const buttonStyle = {
-    position: 'absolute',
-    bottom: 0,
-    left: 0,
-    display: 'flex',
-    gap: '5px',
-    paddingLeft: '8px',
-  };
-
   return (
-    <div style={{ width: 80, height: 80 }}>
-      <CircularProgressbarWithChildren
-        value={percentage}
-        styles={buildStyles({
-          rotation: 0,
-          strokeLinecap: 'round',
-          pathTransitionDuration: 0.5,
-          pathColor: getPathColor(percentage),
-          trailColor: '#d6d6d6',
-        })}
-      >
-        <div style={{ fontSize: 16 }}>
-          <strong>{timeLeft}s</strong>
-        </div>
-      </CircularProgressbarWithChildren>
-      <div style={buttonStyle}>
-        <Button onClick={() => addTime(15)} style={{ width: -80, height: -80 }} variant="contained" color="primary">
-          Add 15 seconds
-        </Button>
-
-        <Button onClick={() => addTime(30)} style={{ width: -80, height: -80 }} variant="contained" color="primary">
-          Add 30 seconds
-        </Button>
+    <div style={{ display: 'flex', flexDirection: 'row', alignItems: 'center', gap: '8px' }}>
+      <div style={{ width: 80, height: 80, margin: '0 auto', marginTop: '10px' }}>
+        <CircularProgressbarWithChildren
+          value={percentage}
+          styles={buildStyles({
+            rotation: 0,
+            strokeLinecap: 'round',
+            pathTransitionDuration: 0.5,
+            pathColor: getPathColor(percentage),
+            trailColor: '#d 6d6d6',
+          })}
+        >
+          <div style={{ fontSize: 16 }}>
+            <strong>{timeLeft}s</strong>
+          </div>
+        </CircularProgressbarWithChildren>
       </div>
+      <Button onClick={() => addTime(15)} style={{ height: 60 }} variant="contained" color="primary">
+        <Add /> 15 seconds
+      </Button>
     </div>
   );
 });
