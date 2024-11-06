@@ -57,7 +57,9 @@ const LoginForm = ({ signUpRoute }) => {
     login(email, password, setError, navigate);
   };
 
-  const directToSignUp = () => { navigate(signUpRoute); };
+  const directToSignUp = () => {
+    navigate(signUpRoute);
+  };
 
   return (
     <Container component="main" maxWidth="xs" style={{ height: '100vh' }}>
