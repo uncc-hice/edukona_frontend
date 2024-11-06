@@ -15,7 +15,7 @@ import {
 import './SettingsPage.css';
 import { useNavigate, useParams } from 'react-router-dom';
 import axios from 'axios';
-import Dashboard from '../../layouts/Dashboard/Dashboard';
+import ShrinkedDashboard from '../../layouts/Dashboard/ShrinkedDashboard';
 
 const SettingsPage = () => {
   const [settings, setSettings] = useState(null);
@@ -107,16 +107,16 @@ const SettingsPage = () => {
 
   if (!settings) {
     return (
-      <Dashboard>
+      <ShrinkedDashboard>
         <div className="settings-container">
           <CircularProgress />
         </div>
-      </Dashboard>
+      </ShrinkedDashboard>
     );
   }
 
   return (
-    <Dashboard>
+    <ShrinkedDashboard>
       <Grid container spacing={2} direction={'column'} alignItems={'left'} padding={8} columns={12}>
         <Grid item>
           <Typography variant="h4">Settings</Typography>
@@ -127,25 +127,6 @@ const SettingsPage = () => {
             label="Live Bar Chart Display"
           />
         </Grid>
-        <Grid item>
-          <FormControlLabel
-            control={<Switch checked={settings.timer} onChange={handleToggle} name="timer" />}
-            label="Question Timer"
-          />
-        </Grid>
-        {settings.timer && (
-          <Grid item>
-            <TextField
-              label="Timer Duration"
-              name="timer_duration"
-              value={settings.timer_duration}
-              onChange={handleChange}
-              variant="outlined"
-              size="small"
-              sx={{ width: 0.5 }}
-            />
-          </Grid>
-        )}
         <Grid item>
           <FormControlLabel
             control={<Switch checked={settings.skip_question} onChange={handleToggle} name="skip_question" />}
@@ -214,7 +195,7 @@ const SettingsPage = () => {
           </Button>
         </Grid>
       </Grid>
-    </Dashboard>
+    </ShrinkedDashboard>
   );
 };
 
