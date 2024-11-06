@@ -67,7 +67,7 @@ function App() {
           <Route path="/" element={<Landing />} />
           <Route
             path="/login"
-            element={isLoggedIn ? <Navigate to="/dashboard" /> : <LoginForm toggleForm={toggleForm} />}
+            element={isLoggedIn ? <Navigate to="/dashboard" /> : <LoginForm signUpRoute={"/signup"} />}
           />
           <Route
             path="/signup"
