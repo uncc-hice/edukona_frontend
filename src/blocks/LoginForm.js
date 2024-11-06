@@ -6,7 +6,7 @@ import { UserContext } from '../UserContext';
 import { Box } from '@mui/system';
 import axios from 'axios';
 
-const LoginForm = ({ toggleForm }) => {
+const LoginForm = ({ signUpRoute }) => {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [error, setError] = useState('');
@@ -57,6 +57,10 @@ const LoginForm = ({ toggleForm }) => {
     login(email, password, setError, navigate);
   };
 
+  const directToSignUp = () => {
+    navigate(signUpRoute);
+  };
+
   return (
     <Container component="main" maxWidth="xs" style={{ height: '100vh' }}>
       <Grid container direction="column" justifyContent="center" alignItems="center" style={{ minHeight: '100vh' }}>
@@ -96,7 +100,7 @@ const LoginForm = ({ toggleForm }) => {
             </Button>
             <Grid container justifyContent="center">
               <Grid item>
-                <Button onClick={toggleForm} sx={{ mt: 3, mb: 2 }}>
+                <Button onClick={directToSignUp} sx={{ mt: 3, mb: 2 }}>
                   Don't have an account? Sign Up
                 </Button>
               </Grid>
