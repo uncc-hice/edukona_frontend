@@ -15,7 +15,7 @@ import {
 import './SettingsPage.css';
 import { useNavigate, useParams } from 'react-router-dom';
 import axios from 'axios';
-import ShrinkedDashboard from '../../layouts/Dashboard/ShrinkedDashboard';
+import Main from '../../layouts/Main/Main';
 
 const SettingsPage = () => {
   const [settings, setSettings] = useState(null);
@@ -107,16 +107,16 @@ const SettingsPage = () => {
 
   if (!settings) {
     return (
-      <ShrinkedDashboard>
+      <Main>
         <div className="settings-container">
           <CircularProgress />
         </div>
-      </ShrinkedDashboard>
+      </Main>
     );
   }
 
   return (
-    <ShrinkedDashboard>
+    <Main>
       <Grid container spacing={2} direction={'column'} alignItems={'left'} padding={8} columns={12}>
         <Grid item>
           <Typography variant="h4">Settings</Typography>
@@ -195,7 +195,7 @@ const SettingsPage = () => {
           </Button>
         </Grid>
       </Grid>
-    </ShrinkedDashboard>
+    </Main>
   );
 };
 
