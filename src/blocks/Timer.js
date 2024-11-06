@@ -7,7 +7,6 @@ import { Add } from '@mui/icons-material';
 const Timer = React.memo(({ initialTime, onTimerEnd, sendMessage, questionId }) => {
   const [timeLeft, setTimeLeft] = useState(initialTime);
   const intervalRef = useRef(null);
-  const [timerActive, setTimerActive] = useState(true);
 
   useEffect(() => {
     setTimeLeft(initialTime);
@@ -16,11 +15,9 @@ const Timer = React.memo(({ initialTime, onTimerEnd, sendMessage, questionId }) 
       clearInterval(intervalRef.current);
     }
     intervalRef.current = setInterval(() => {
-      setTimerActive(true);
       setTimeLeft((prevTime) => {
         if (prevTime <= 1) {
           clearInterval(intervalRef.current);
-          setTimerActive(false);
           onTimerEnd();
           return 0;
         }
@@ -32,21 +29,6 @@ const Timer = React.memo(({ initialTime, onTimerEnd, sendMessage, questionId }) 
       clearInterval(intervalRef.current);
     };
   }, [initialTime, onTimerEnd]);
-
-  const initializeTimer = () => {
-    intervalRef.current = setInterval(() => {
-      setTimerActive(true);
-      setTimeLeft((prevTime) => {
-        if (prevTime <= 1) {
-          clearInterval(intervalRef.current);
-          setTimerActive(false);
-          onTimerEnd();
-          return 0;
-        }
-        return prevTime - 1;
-      });
-    }, 1000);
-  };
 
   const addTime = (seconds) => {
     if (timeLeft > 0) {
