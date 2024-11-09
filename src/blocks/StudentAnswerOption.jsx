@@ -16,14 +16,19 @@ const StyledButtonBase = styled(ButtonBase)(({ theme, index, selected, submitted
   flexDirection: 'column',
   justifyContent: 'center',
   borderRadius: theme.shape.borderRadius,
-  '&:hover': {
-    opacity: 0.9,
-    boxShadow: theme.shadows[4],
+  '@media (hover: hover)': {
+    '&:hover': {
+      opacity: 0.9,
+      boxShadow: theme.shadows[4],
+    },
   },
   color: theme.palette.getContrastText(getColor(index)),
   ...(!selected &&
     submitted && {
       opacity: 0.3, // Adjust as needed to indicate disabled state visually
+      '&:hover, &:active, &:focus, &:focus-within': {
+        opacity: 0.3,
+      },
     }),
   ...(selected && {
     boxShadow: '0px 8px 16px rgba(0, 0, 0, 0.4)',
