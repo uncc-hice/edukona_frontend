@@ -255,7 +255,7 @@ const InstructorRecordings = () => {
                             <TableRow>
                               <TableCell sx={{ width: '25%' }}>
                                 <Button color="primary" onClick={() => fetchQuizzes(recording.id)}>
-                                  {recording.title}
+                                  {recording.title === '' ? recording.id.substr(0, 7) : recording.title}
                                 </Button>
                               </TableCell>
                               <TableCell align="center" sx={{ width: '25%' }}>
