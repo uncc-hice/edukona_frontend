@@ -18,13 +18,17 @@ import {
   DialogActions,
   Snackbar,
   Alert,
+  Accordion,
+  AccordionSummary,
+  AccordionDetails,
+  CircularProgress,
 } from '@mui/material';
 import axios from 'axios';
 import RecordButton from '../../blocks/RecordButton';
+import QuizListRow from '../../blocks/QuizListRow';
 import useWebSocket from 'react-use-websocket';
 import { toast } from 'react-toastify';
 import { Delete } from '@mui/icons-material';
-import RecordingTitle from '../../blocks/RecordingTitle';
 import { Main } from '../../layouts';
 import { useNavigate } from 'react-router-dom';
 
@@ -36,6 +40,13 @@ const InstructorRecordings = () => {
   const token = useRef(localStorage.getItem('token'));
   const theme = localStorage.getItem('themeMode');
   const navigate = useNavigate();
+  const [quizzes, setQuizzes] = useState([]);
+  const [loadingQuizzes, setLoadingQuizzes] = useState(false);
+  const [expanded, setExpanded] = useState(false);
+
+  useEffect(() => {
+    console.log(recordings);
+  }, [recordings]);
 
   const fetchRecordings = () =>
     axios
@@ -172,6 +183,32 @@ const InstructorRecordings = () => {
     fetchRecordings();
   }, [token]);
 
+  const fetchQuizzes = async (id) => {
+    const config = {
+      headers: {
+        Authorization: `Token ${token.current}`,
+      },
+    };
+
+    setLoadingQuizzes(true);
+    try {
+      const response = await axios.get(`https://api.edukona.com/recordings/${id}/quizzes`, config);
+      setQuizzes(response.data);
+    } catch (error) {
+      console.error('Error fetching quizzes:', error);
+    } finally {
+      console.log(quizzes);
+      setLoadingQuizzes(false);
+    }
+  };
+
+  const handleAccordionChange = (recordingId) => (event, isExpanded) => {
+    setExpanded(isExpanded ? recordingId : null);
+    if (isExpanded) {
+      fetchQuizzes(recordingId);
+    }
+  };
+
   return (
     <Main>
       <Container sx={{ padding: '40px' }}>
@@ -185,23 +222,23 @@ const InstructorRecordings = () => {
           <Table>
             <TableHead>
               <TableRow>
-                <TableCell>
+                <TableCell sx={{ width: '25%' }}>
                   <Typography variant="h6" align="center">
                     Title
                   </Typography>
                 </TableCell>
-                <TableCell>
+                <TableCell sx={{ width: '25%' }}>
                   <Typography variant="h6" align="center">
                     Uploaded At
                   </Typography>
                 </TableCell>
-                <TableCell>
+                <TableCell sx={{ width: '25%' }}>
                   <Typography variant="h6" align="center">
                     Transcript Status
                   </Typography>
                 </TableCell>
-                <TableCell>
-                  <Typography varient="h6" align="center">
+                <TableCell sx={{ width: '25%' }}>
+                  <Typography variant="h6" align="center">
                     Actions
                   </Typography>
                 </TableCell>
@@ -210,37 +247,66 @@ const InstructorRecordings = () => {
             <TableBody>
               {recordings.map((recording) => (
                 <TableRow key={recording.id}>
-                  <TableCell align="center">
-                    <RecordingTitle id={recording.id} title={recording.title} />
-                  </TableCell>
-                  <TableCell align="center">
-                    {new Date(recording.uploaded_at).toLocaleDateString(undefined, {
-                      year: 'numeric',
-                      month: 'long',
-                      day: 'numeric',
-                      hour: 'numeric',
-                      minute: 'numeric',
-                    })}
-                  </TableCell>
-                  <TableCell align="center">
-                    <Box
-                      component="span"
-                      sx={{
-                        width: 16,
-                        height: 16,
-                        display: 'inline-block',
-                        borderRadius: '50%',
-                        bgcolor: recording.transcript.toLowerCase() === 'completed' ? 'green' : 'red',
-                        marginRight: 1,
-                      }}
-                    />
-                    {recording.transcript.charAt(0).toUpperCase() + recording.transcript.slice(1)}
-                  </TableCell>
-                  <TableCell>
-                    <Button onClick={() => handleOpenDialogue(recording.id)}>
-                      <Delete color="action" />
-                    </Button>
-                    <Button onClick={() => handleCreateQuiz(recording.id)}>Create and Start Quiz</Button>
+                  <TableCell colSpan={4}>
+                    <Accordion expanded={expanded === recording.id} onChange={handleAccordionChange(recording.id)}>
+                      <AccordionSummary>
+                        <Table>
+                          <TableBody>
+                            <TableRow>
+                              <TableCell sx={{ width: '25%' }}>
+                                <Button color="primary" onClick={() => fetchQuizzes(recording.id)}>
+                                  {recording.title}
+                                </Button>
+                              </TableCell>
+                              <TableCell align="center" sx={{ width: '25%' }}>
+                                {new Date(recording.uploaded_at).toLocaleDateString(undefined, {
+                                  year: 'numeric',
+                                  month: 'long',
+                                  day: 'numeric',
+                                  hour: 'numeric',
+                                  minute: 'numeric',
+                                })}
+                              </TableCell>
+                              <TableCell align="center" sx={{ width: '25%' }}>
+                                <Box
+                                  component="span"
+                                  sx={{
+                                    width: 16,
+                                    height: 16,
+                                    display: 'inline-block',
+                                    borderRadius: '50%',
+                                    bgcolor: recording.transcript.toLowerCase() === 'completed' ? 'green' : 'red',
+                                    marginRight: 1,
+                                  }}
+                                />
+                                {recording.transcript.charAt(0).toUpperCase() + recording.transcript.slice(1)}
+                              </TableCell>
+                              <TableCell sx={{ width: '25%' }}>
+                                <Button onClick={() => handleOpenDialogue(recording.id)}>
+                                  <Delete color="action" />
+                                </Button>
+                                <Button onClick={() => handleCreateQuiz(recording.id)}>Create and Start Quiz</Button>
+                              </TableCell>
+                            </TableRow>
+                          </TableBody>
+                        </Table>
+                      </AccordionSummary>
+                      <AccordionDetails>
+                        {loadingQuizzes ? (
+                          <CircularProgress />
+                        ) : quizzes.length === 0 ? (
+                          <Typography>No quizzes available</Typography>
+                        ) : (
+                          <Table>
+                            <TableBody>
+                              {quizzes.map((quiz) => (
+                                <QuizListRow key={quiz.id} quiz={quiz} />
+                              ))}
+                            </TableBody>
+                          </Table>
+                        )}
+                      </AccordionDetails>
+                    </Accordion>
                   </TableCell>
                 </TableRow>
               ))}
