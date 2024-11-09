@@ -3,6 +3,7 @@ import { TextField, Button, Typography, Container, Grid, Tabs, Tab } from '@mui/
 import { signUp } from './Functions';
 import { Link } from 'react-router-dom';
 import { Footer } from '../layouts/Main/components';
+import { toast } from 'react-toastify';
 
 const SignUpForm = ({ toggleForm }) => {
   const [firstName, setFirstName] = useState('');
@@ -20,7 +21,7 @@ const SignUpForm = ({ toggleForm }) => {
     }
 
     if (password !== confirmPassword) {
-      setError('Passwords do not match. Please try again.');
+      toast('Passwords do not match. Please try again.');
       return false;
     }
 
@@ -37,12 +38,16 @@ const SignUpForm = ({ toggleForm }) => {
     signUp(firstName, lastName, password, email, role);
   };
 
+  const nameStyle = {
+    marginBottom: '4px',
+  };
+
+  const otherFields = {
+    marginBottom: '15px',
+  };
+
   return (
     <Container>
-      <Tabs value={role} onChange={(e, newValue) => setRole(newValue)} centered>
-        <Tab label="Instructor" value="instructor" />
-        <Tab label="Student" value="student" />
-      </Tabs>
       <Grid justifyContent="center" style={{ height: '100vh' }} direction="column">
         <Grid style={{ textAlign: 'left' }} item xs={12} sm={8} md={6}>
           <Typography variant="h6" component="h3" align="left" color="gray" gutterBottom>
@@ -63,8 +68,8 @@ const SignUpForm = ({ toggleForm }) => {
         {/* Added first name and last name input boxes here */}
         <form onSubmit={handleSubmit}>
           <Grid container spacing={2}>
-            <Grid item xs={5} spacing={3}>
-              <p>Enter your First Name</p>
+            <Grid item xs={5} spacing={6}>
+              <p style={nameStyle}>Enter your First Name</p>
               <TextField
                 fullWidth
                 id="firstName"
@@ -74,8 +79,8 @@ const SignUpForm = ({ toggleForm }) => {
                 onChange={(e) => setFirstName(e.target.value)}
               />
             </Grid>
-            <Grid item xs={5} spacing={3}>
-              <p>Enter your Last Name</p>
+            <Grid item xs={5} spacing={6}>
+              <p style={nameStyle}>Enter your Last Name</p>
               <TextField
                 fullWidth
                 id="lastName"
@@ -85,41 +90,51 @@ const SignUpForm = ({ toggleForm }) => {
                 onChange={(e) => setLastName(e.target.value)}
               />
             </Grid>
+            <Grid item xs={2.7} sm={2} md={1.9}>
+              <p>Select your Role</p>
+              <Tabs
+                style={{ display: 'flex', flexWrap: 'wrap' }}
+                fullwidth
+                value={role}
+                onChange={(e, newValue) => setRole(newValue)}
+                centered
+              >
+                <Tab label="Instructor" value="instructor" />
+                <Tab label="Student" value="student" />
+              </Tabs>
+            </Grid>
             <Grid item xs={12}>
-              <p>Enter your Email</p>
+              <p style={otherFields}>Enter your Email</p>
               <TextField
                 fullWidth
                 id="email"
                 label="Email *"
                 type="email"
                 variant="outlined"
-                margin="normal"
                 value={email}
                 onChange={(e) => setEmail(e.target.value)}
               />
             </Grid>
             <Grid item xs={12}>
-              <p>Enter your Password</p>
+              <p style={otherFields}>Enter your Password</p>
               <TextField
                 fullWidth
                 id="password"
                 label="Password *"
                 type="password"
                 variant="outlined"
-                margin="normal"
                 value={password}
                 onChange={(e) => setPassword(e.target.value)}
               />
             </Grid>
             <Grid item xs={12}>
-              <p>Confirm your Password</p>
+              <p style={otherFields}>Confirm your Password</p>
               <TextField
                 fullWidth
                 id="confirmPassword"
                 label="Confirm Password *"
                 type="password"
                 variant="outlined"
-                margin="normal"
                 value={confirmPassword}
                 onChange={(e) => setConfirmPassword(e.target.value)}
               />
@@ -158,8 +173,8 @@ const SignUpForm = ({ toggleForm }) => {
           </Link>
           .
         </Typography>
+        <Footer />
       </Grid>
-      <Footer />
     </Container>
   );
 };
