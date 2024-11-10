@@ -42,11 +42,8 @@ const InstructorRecordings = () => {
   const navigate = useNavigate();
   const [quizzes, setQuizzes] = useState([]);
   const [loadingQuizzes, setLoadingQuizzes] = useState(false);
-  const [expanded, setExpanded] = useState(false);
-
-  useEffect(() => {
-    console.log(recordings);
-  }, [recordings]);
+  const [expanded, setExpanded] = useState(null);
+  const [refresh, setRefresh] = useState(false);
 
   const fetchRecordings = () =>
     axios
@@ -134,7 +131,6 @@ const InstructorRecordings = () => {
         }
       )
       .then((res) => {
-        console.log(res.data);
         startQuiz(res.data.quiz_id);
       })
       .catch((error) => console.error(error));
@@ -148,10 +144,10 @@ const InstructorRecordings = () => {
         prevRecordings.map((recording) =>
           recording.id === receivedData.recording_id
             ? {
-                ...recording,
-                transcript: receivedData.transcript_status,
-                transcript_url: receivedData.transcript_url,
-              }
+              ...recording,
+              transcript: receivedData.transcript_status,
+              transcript_url: receivedData.transcript_url,
+            }
             : recording
         )
       );
@@ -197,16 +193,15 @@ const InstructorRecordings = () => {
     } catch (error) {
       console.error('Error fetching quizzes:', error);
     } finally {
-      console.log(quizzes);
       setLoadingQuizzes(false);
     }
   };
 
   const handleAccordionChange = (recordingId) => (event, isExpanded) => {
-    setExpanded(isExpanded ? recordingId : null);
-    if (isExpanded) {
-      fetchQuizzes(recordingId);
-    }
+    // setExpanded(isExpanded ? recordingId : null);
+    // if (isExpanded) {
+    //   fetchQuizzes(recordingId);
+    // }
   };
 
   const handleTitleClick = (recordingId, recordingTitle) => {
@@ -224,6 +219,11 @@ const InstructorRecordings = () => {
     } else {
       fetchQuizzes(recordingId);
     }
+    setExpanded(expanded === recordingId ? null : recordingId);
+  }
+
+  const onUpdate = () => {
+    setRefresh(!refresh);
   }
 
   return (
@@ -266,12 +266,18 @@ const InstructorRecordings = () => {
                 <TableRow key={recording.id}>
                   <TableCell colSpan={4}>
                     <Accordion expanded={expanded === recording.id} onChange={handleAccordionChange(recording.id)}>
-                      <AccordionSummary>
+                      <AccordionSummary onClick={(e) => e.stopPropagation() && console.log("ACC")}>
                         <Table>
                           <TableBody>
                             <TableRow>
                               <TableCell sx={{ width: '25%' }}>
-                                <Button color="primary" onClick={() => handleTitleClick(recording.id, recording.title)}>
+                                <Button
+                                  color="primary"
+                                  onClick={(e) => {
+                                    e.stopPropagation();
+                                    handleTitleClick(recording.id, recording.title);
+                                  }}
+                                >
                                   {recording.title === '' ? recording.id.substr(0, 7) + '...' : recording.title}
                                 </Button>
                               </TableCell>
@@ -299,10 +305,24 @@ const InstructorRecordings = () => {
                                 {recording.transcript.charAt(0).toUpperCase() + recording.transcript.slice(1)}
                               </TableCell>
                               <TableCell sx={{ width: '25%' }}>
-                                <Button onClick={() => handleOpenDialogue(recording.id)}>
+                                <Button
+                                  onClick={(e) => {
+                                    e.stopPropagation();
+                                    handleOpenDialogue(recording.id);
+                                    onUpdate();
+                                  }}
+                                >
                                   <Delete color="action" />
                                 </Button>
-                                <Button onClick={() => handleCreateQuiz(recording.id)}>Create and Start Quiz</Button>
+                                <Button
+                                  onClick={(e) => {
+                                    e.stopPropagation();
+                                    console.log('Create quiz for recording:', recording.id);
+                                    handleCreateQuiz(recording.id);
+                                  }}
+                                >
+                                  Create and Start Quiz
+                                </Button>
                               </TableCell>
                             </TableRow>
                           </TableBody>
@@ -317,7 +337,7 @@ const InstructorRecordings = () => {
                           <Table>
                             <TableBody>
                               {quizzes.map((quiz) => (
-                                <QuizListRow key={quiz.id} quiz={quiz} />
+                                <QuizListRow key={quiz.id} quiz={quiz} onUpdate={onUpdate} />
                               ))}
                             </TableBody>
                           </Table>
@@ -346,7 +366,7 @@ const InstructorRecordings = () => {
             <Button onClick={() => setOpenDialogue(false)} color="primary">
               Cancel
             </Button>
-            <Button onClick={handleDeleteRecording} color="primary" autoFocus>
+            <Button onClick={() => handleDeleteRecording() && onUpdate()} color="primary" autoFocus>
               Confirm
             </Button>
           </DialogActions>
