@@ -209,6 +209,23 @@ const InstructorRecordings = () => {
     }
   };
 
+  const handleTitleClick = (recordingId, recordingTitle) => {
+    if (recordingTitle === '') {
+      navigator.permissions.query({ name: 'clipboard-write' }).then((result) => {
+        if (result.state === 'granted' || result.state === 'prompt') {
+          toast.promise(navigator.clipboard.writeText(recordingId), {
+            success: 'Copied recording id to clipboard',
+            pending: 'Copying recording id to clipboard',
+            error: "Couldn't copy recording id to clipboard",
+            theme,
+          });
+        }
+      });
+    } else {
+      fetchQuizzes(recordingId);
+    }
+  }
+
   return (
     <Main>
       <Container sx={{ padding: '40px' }}>
@@ -254,8 +271,8 @@ const InstructorRecordings = () => {
                           <TableBody>
                             <TableRow>
                               <TableCell sx={{ width: '25%' }}>
-                                <Button color="primary" onClick={() => fetchQuizzes(recording.id)}>
-                                  {recording.title === '' ? recording.id.substr(0, 7) : recording.title}
+                                <Button color="primary" onClick={() => handleTitleClick(recording.id, recording.title)}>
+                                  {recording.title === '' ? recording.id.substr(0, 7) + '...' : recording.title}
                                 </Button>
                               </TableCell>
                               <TableCell align="center" sx={{ width: '25%' }}>
