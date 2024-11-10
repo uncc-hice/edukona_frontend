@@ -125,7 +125,7 @@ const InstructorRecordings = () => {
         ),
         {
           pending: 'Creating quiz',
-          success: 'Succesfully created quiz!',
+          success: 'Successfully created quiz!',
           error: 'Failed to create quiz!',
           theme,
         }
@@ -263,13 +263,17 @@ const InstructorRecordings = () => {
             </TableHead>
             <TableBody>
               {recordings.map((recording) => (
-                <TableRow key={recording.id}>
+                <TableRow key={recording.id} sx={{ cursor: 'default' }}>
                   <TableCell colSpan={4}>
-                    <Accordion expanded={expanded === recording.id} onChange={handleAccordionChange(recording.id)}>
-                      <AccordionSummary onClick={(e) => e.stopPropagation() && console.log('ACC')}>
+                    <Accordion
+                      expanded={expanded === recording.id}
+                      onChange={handleAccordionChange(recording.id)}
+                      sx={{ cursor: 'default' }}
+                    >
+                      <AccordionSummary sx={{ cursor: 'default' }}>
                         <Table>
                           <TableBody>
-                            <TableRow>
+                            <TableRow sx={{ cursor: 'default' }}>
                               <TableCell sx={{ width: '25%' }}>
                                 <Button
                                   color="primary"
