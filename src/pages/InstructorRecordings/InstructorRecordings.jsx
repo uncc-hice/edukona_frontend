@@ -18,6 +18,10 @@ import {
   DialogActions,
   Snackbar,
   Alert,
+  Accordion,
+  AccordionSummary,
+  AccordionDetails,
+  CircularProgress,
   Select,
   MenuItem,
   InputLabel,
@@ -25,10 +29,10 @@ import {
 } from '@mui/material';
 import axios from 'axios';
 import RecordButton from '../../blocks/RecordButton';
+import QuizListRow from '../../blocks/QuizListRow';
 import useWebSocket from 'react-use-websocket';
 import { toast } from 'react-toastify';
 import { Delete } from '@mui/icons-material';
-import RecordingTitle from '../../blocks/RecordingTitle';
 import { Main } from '../../layouts';
 import { useNavigate } from 'react-router-dom';
 
@@ -46,6 +50,10 @@ const InstructorRecordings = () => {
   const token = useRef(localStorage.getItem('token'));
   const theme = localStorage.getItem('themeMode');
   const navigate = useNavigate();
+  const [quizzes, setQuizzes] = useState([]);
+  const [loadingQuizzes, setLoadingQuizzes] = useState(false);
+  const [expanded, setExpanded] = useState(null);
+  const [refresh, setRefresh] = useState(false);
 
   const fetchRecordings = () =>
     axios
@@ -98,11 +106,6 @@ const InstructorRecordings = () => {
   const handleNewRecordingDetails = (e) =>
     setNewRecordingDetails((prev) => ({ ...prev, [e.target.name]: e.target.value }));
 
-  const handleOpenNewRecording = (recordingId) => {
-    setSelectedRecording((prev) => recordingId);
-    setOpenNewRecording(true);
-  };
-
   const handleDeleteRecording = () => {
     axios
       .delete(`https://api.edukona.com/instructor-recordings/${selectedRecording}/delete-recording`, {
@@ -135,7 +138,7 @@ const InstructorRecordings = () => {
         ),
         {
           pending: 'Creating quiz',
-          success: 'Succesfully created quiz!',
+          success: 'Successfully created quiz!',
           error: 'Failed to create quiz!',
           theme,
         }
@@ -190,6 +193,53 @@ const InstructorRecordings = () => {
     fetchRecordings();
   }, [token]);
 
+  const fetchQuizzes = async (id) => {
+    const config = {
+      headers: {
+        Authorization: `Token ${token.current}`,
+      },
+    };
+
+    setLoadingQuizzes(true);
+    try {
+      const response = await axios.get(`https://api.edukona.com/recordings/${id}/quizzes`, config);
+      setQuizzes(response.data);
+    } catch (error) {
+      console.error('Error fetching quizzes:', error);
+    } finally {
+      setLoadingQuizzes(false);
+    }
+  };
+
+  const handleAccordionChange = (recordingId) => (event, isExpanded) => {
+    // setExpanded(isExpanded ? recordingId : null);
+    // if (isExpanded) {
+    //   fetchQuizzes(recordingId);
+    // }
+  };
+
+  const handleTitleClick = (recordingId, recordingTitle) => {
+    if (recordingTitle === '') {
+      navigator.permissions.query({ name: 'clipboard-write' }).then((result) => {
+        if (result.state === 'granted' || result.state === 'prompt') {
+          toast.promise(navigator.clipboard.writeText(recordingId), {
+            success: 'Copied recording id to clipboard',
+            pending: 'Copying recording id to clipboard',
+            error: "Couldn't copy recording id to clipboard",
+            theme,
+          });
+        }
+      });
+    } else {
+      fetchQuizzes(recordingId);
+    }
+    setExpanded(expanded === recordingId ? null : recordingId);
+  };
+
+  const onUpdate = () => {
+    setRefresh(!refresh);
+  };
+
   return (
     <Main>
       <Container sx={{ padding: '40px' }}>
@@ -203,23 +253,23 @@ const InstructorRecordings = () => {
           <Table>
             <TableHead>
               <TableRow>
-                <TableCell>
+                <TableCell sx={{ width: '25%' }}>
                   <Typography variant="h6" align="center">
                     Title
                   </Typography>
                 </TableCell>
-                <TableCell>
+                <TableCell sx={{ width: '25%' }}>
                   <Typography variant="h6" align="center">
                     Uploaded At
                   </Typography>
                 </TableCell>
-                <TableCell>
+                <TableCell sx={{ width: '25%' }}>
                   <Typography variant="h6" align="center">
                     Transcript Status
                   </Typography>
                 </TableCell>
-                <TableCell>
-                  <Typography varient="h6" align="center">
+                <TableCell sx={{ width: '25%' }}>
+                  <Typography variant="h6" align="center">
                     Actions
                   </Typography>
                 </TableCell>
@@ -227,38 +277,92 @@ const InstructorRecordings = () => {
             </TableHead>
             <TableBody>
               {recordings.map((recording) => (
-                <TableRow key={recording.id}>
-                  <TableCell align="center">
-                    <RecordingTitle id={recording.id} title={recording.title} />
-                  </TableCell>
-                  <TableCell align="center">
-                    {new Date(recording.uploaded_at).toLocaleDateString(undefined, {
-                      year: 'numeric',
-                      month: 'long',
-                      day: 'numeric',
-                      hour: 'numeric',
-                      minute: 'numeric',
-                    })}
-                  </TableCell>
-                  <TableCell align="center">
-                    <Box
-                      component="span"
-                      sx={{
-                        width: 16,
-                        height: 16,
-                        display: 'inline-block',
-                        borderRadius: '50%',
-                        bgcolor: recording.transcript.toLowerCase() === 'completed' ? 'green' : 'red',
-                        marginRight: 1,
-                      }}
-                    />
-                    {recording.transcript.charAt(0).toUpperCase() + recording.transcript.slice(1)}
-                  </TableCell>
-                  <TableCell>
-                    <Button onClick={() => handleOpenDialogue(recording.id)}>
-                      <Delete color="action" />
-                    </Button>
-                    <Button onClick={() => handleOpenNewRecording(recording.id)}>Create and Start Quiz</Button>
+                <TableRow key={recording.id} sx={{ cursor: 'default' }}>
+                  <TableCell colSpan={4}>
+                    <Accordion
+                      expanded={expanded === recording.id}
+                      onChange={handleAccordionChange(recording.id)}
+                      sx={{ cursor: 'default' }}
+                    >
+                      <AccordionSummary sx={{ cursor: 'default' }}>
+                        <Table>
+                          <TableBody>
+                            <TableRow sx={{ cursor: 'default' }}>
+                              <TableCell sx={{ width: '25%' }}>
+                                <Button
+                                  color="primary"
+                                  onClick={(e) => {
+                                    e.stopPropagation();
+                                    handleTitleClick(recording.id, recording.title);
+                                  }}
+                                >
+                                  {recording.title === '' ? recording.id.substr(0, 7) + '...' : recording.title}
+                                </Button>
+                              </TableCell>
+                              <TableCell align="center" sx={{ width: '25%' }}>
+                                {new Date(recording.uploaded_at).toLocaleDateString(undefined, {
+                                  year: 'numeric',
+                                  month: 'long',
+                                  day: 'numeric',
+                                  hour: 'numeric',
+                                  minute: 'numeric',
+                                })}
+                              </TableCell>
+                              <TableCell align="center" sx={{ width: '25%' }}>
+                                <Box
+                                  component="span"
+                                  sx={{
+                                    width: 16,
+                                    height: 16,
+                                    display: 'inline-block',
+                                    borderRadius: '50%',
+                                    bgcolor: recording.transcript.toLowerCase() === 'completed' ? 'green' : 'red',
+                                    marginRight: 1,
+                                  }}
+                                />
+                                {recording.transcript.charAt(0).toUpperCase() + recording.transcript.slice(1)}
+                              </TableCell>
+                              <TableCell sx={{ width: '25%' }}>
+                                <Button
+                                  onClick={(e) => {
+                                    e.stopPropagation();
+                                    handleOpenDialogue(recording.id);
+                                    onUpdate();
+                                  }}
+                                >
+                                  <Delete color="action" />
+                                </Button>
+                                <Button
+                                  onClick={(e) => {
+                                    e.stopPropagation();
+                                    console.log('Create quiz for recording:', recording.id);
+                                    setSelectedRecording(recording.id);
+                                    setOpenNewRecording(true);
+                                  }}
+                                >
+                                  Create and Start Quiz
+                                </Button>
+                              </TableCell>
+                            </TableRow>
+                          </TableBody>
+                        </Table>
+                      </AccordionSummary>
+                      <AccordionDetails>
+                        {loadingQuizzes ? (
+                          <CircularProgress />
+                        ) : quizzes.length === 0 ? (
+                          <Typography>No quizzes available</Typography>
+                        ) : (
+                          <Table>
+                            <TableBody>
+                              {quizzes.map((quiz) => (
+                                <QuizListRow key={quiz.id} quiz={quiz} onUpdate={onUpdate} />
+                              ))}
+                            </TableBody>
+                          </Table>
+                        )}
+                      </AccordionDetails>
+                    </Accordion>
                   </TableCell>
                 </TableRow>
               ))}
@@ -281,7 +385,7 @@ const InstructorRecordings = () => {
             <Button onClick={() => setOpenDialogue(false)} color="primary">
               Cancel
             </Button>
-            <Button onClick={handleDeleteRecording} color="primary" autoFocus>
+            <Button onClick={() => handleDeleteRecording() && onUpdate()} color="primary" autoFocus>
               Confirm
             </Button>
           </DialogActions>
@@ -300,6 +404,7 @@ const InstructorRecordings = () => {
             },
           }}
         >
+          <DialogTitle> New Quiz Settings</DialogTitle>
           <DialogContent
             style={{ paddingTop: '20px', display: 'flex', gap: '8px', flexDirection: 'column', alignItems: 'center' }}
           >

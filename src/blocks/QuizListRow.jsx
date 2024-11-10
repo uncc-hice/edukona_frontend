@@ -29,7 +29,7 @@ const QuizListRow = ({ quiz, onUpdate }) => {
   const sessionsCache = useRef(null);
   const [sessions, setSessions] = useState(null);
   const [selectedSession, setSelectedSession] = useState(null);
-  const [sessionModalOpen, setSessionModalOpen] = useState(null);
+  const [sessionModalOpen, setSessionModalOpen] = useState(false);
   const [error, setError] = useState(null);
   const navigate = useNavigate();
   const createdAt = useRef(

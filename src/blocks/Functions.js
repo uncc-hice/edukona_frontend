@@ -4,6 +4,7 @@
 //having trouble with header for response
 
 import axios from 'axios';
+import { toast } from 'react-toastify';
 //Login function for app
 
 export function signUp(firstName, lastName, password, email, role) {
@@ -30,7 +31,8 @@ export function signUp(firstName, lastName, password, email, role) {
     })
     //catches error and displays in console
     .catch((error) => {
-      console.error('Error: ', error);
+      //console.error('Error: ', error);
+      toast('Sign up failed.');
     });
 }
 
