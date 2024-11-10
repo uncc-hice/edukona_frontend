@@ -47,8 +47,8 @@ const SignUpForm = ({ toggleForm }) => {
   };
 
   return (
-    <Container>
-      <Grid justifyContent="center" style={{ height: '100vh' }} direction="column">
+    <Container sx={{ mt: 3 }}>
+      <Grid container justifyContent="center" style={{ minHeight: '100vh' }} direction="column">
         <Grid style={{ textAlign: 'left' }} item xs={12} sm={8} md={6}>
           <Typography variant="h6" component="h3" align="left" color="gray" gutterBottom>
             Sign Up
@@ -68,7 +68,7 @@ const SignUpForm = ({ toggleForm }) => {
         {/* Added first name and last name input boxes here */}
         <form onSubmit={handleSubmit}>
           <Grid container spacing={2}>
-            <Grid item xs={5} spacing={6}>
+            <Grid item xs={12} sm={4}>
               <p style={nameStyle}>Enter your First Name</p>
               <TextField
                 fullWidth
@@ -79,7 +79,7 @@ const SignUpForm = ({ toggleForm }) => {
                 onChange={(e) => setFirstName(e.target.value)}
               />
             </Grid>
-            <Grid item xs={5} spacing={6}>
+            <Grid item xs={12} sm={4}>
               <p style={nameStyle}>Enter your Last Name</p>
               <TextField
                 fullWidth
@@ -90,15 +90,9 @@ const SignUpForm = ({ toggleForm }) => {
                 onChange={(e) => setLastName(e.target.value)}
               />
             </Grid>
-            <Grid item xs={2.7} sm={2} md={1.9}>
-              <p>Select your Role</p>
-              <Tabs
-                style={{ display: 'flex', flexWrap: 'wrap' }}
-                fullwidth
-                value={role}
-                onChange={(e, newValue) => setRole(newValue)}
-                centered
-              >
+            <Grid item xs={12} sm={4} sx={{ pl: { sm: 1 } }}>
+              <p style={nameStyle}>Select your Role</p>
+              <Tabs variant="fullWidth" value={role} onChange={(e, newValue) => setRole(newValue)} centered>
                 <Tab label="Instructor" value="instructor" />
                 <Tab label="Student" value="student" />
               </Tabs>
@@ -139,34 +133,38 @@ const SignUpForm = ({ toggleForm }) => {
                 onChange={(e) => setConfirmPassword(e.target.value)}
               />
             </Grid>
+            <Grid container item xs={12} spacing={2} sx={{ mt: 2 }} alignItems="center">
+              <Grid item xs={12} sm={8}>
+                <Typography component="h4" align="left" color="gray" gutterBottom>
+                  Already have an account?{' '}
+                  <Link
+                    to="https://edukona.com/login"
+                    style={{
+                      textDecoration: 'none',
+                      color: 'blue',
+                      marginBottom: '15px',
+                    }}
+                  >
+                    Login
+                  </Link>
+                  .
+                </Typography>
+              </Grid>
+              <Grid item xs={12} sm={4}>
+                <Button
+                  type="submit"
+                  variant="contained"
+                  color="primary"
+                  fullWidth
+                  sx={{ fontWeight: 'bold', minWidth: '100px' }}
+                >
+                  Sign Up
+                </Button>
+              </Grid>
+            </Grid>
           </Grid>
-          <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
-            <Typography component="h4" align="center" color="gray" gutterBottom>
-              Already have an account?{' '}
-              <Link
-                to="https://edukona.com/login"
-                style={{
-                  textDecoration: 'none',
-                  color: 'blue',
-                  marginBottom: '15px',
-                }}
-              >
-                Login
-              </Link>
-              .
-            </Typography>
-            <Button
-              type="submit"
-              variant="contained"
-              color="primary"
-              style={{ width: '10%', fontWeight: 'bold' }}
-              sx={{ mt: 1 }}
-            >
-              Sign Up
-            </Button>
-          </div>
         </form>
-        <Typography component="h4" align="center" color="gray" gutterBottom>
+        <Typography component="h4" align="center" color="gray" gutterBottom sx={{ mt: 2 }}>
           By clicking "Sign up" button you agree with our{' '}
           <Link to="https://edukona.com/terms-of-use" style={{ textDecoration: 'none', color: 'blue' }}>
             company terms and conditions
