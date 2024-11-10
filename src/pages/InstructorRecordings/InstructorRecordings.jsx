@@ -300,12 +300,13 @@ const InstructorRecordings = () => {
             },
           }}
         >
-          <DialogTitle id="new-recording-title">{'Create new Recording'}</DialogTitle>
           <DialogContent
-            style={{ paddingTop: '20px', display: 'flex', gap: '5px', flexDirection: 'column', alignItems: 'center' }}
+            style={{ paddingTop: '20px', display: 'flex', gap: '8px', flexDirection: 'column', alignItems: 'center' }}
           >
-            <FormControl fullWidth>
-              <InputLabel id="num_questions_label">Number of Questions</InputLabel>
+            <FormControl fullWidth style={{ marginBottom: '10px' }}>
+              <InputLabel style={{ fontSize: '14.8px' }} id="num_questions_label">
+                Number of Questions
+              </InputLabel>
               <Select
                 label="Number of Questions"
                 name="num_questions"
@@ -314,9 +315,9 @@ const InstructorRecordings = () => {
                 value={newRecordingDetails.num_questions}
                 onChange={handleNewRecordingDetails}
               >
-                <MenuItem value={3}>Three</MenuItem>
-                <MenuItem value={5}>Five</MenuItem>
-                <MenuItem value={10}>Ten</MenuItem>
+                <MenuItem value={3}>3</MenuItem>
+                <MenuItem value={5}>5</MenuItem>
+                <MenuItem value={10}>10</MenuItem>
               </Select>
             </FormControl>
             <FormControl fullWidth>
@@ -329,9 +330,9 @@ const InstructorRecordings = () => {
                 value={newRecordingDetails.question_duration}
                 onChange={handleNewRecordingDetails}
               >
-                <MenuItem value={15}>Fifteen Seconds</MenuItem>
-                <MenuItem value={30}>Thirty Seconds</MenuItem>
-                <MenuItem value={60}>One Minute</MenuItem>
+                <MenuItem value={15}>15 Seconds</MenuItem>
+                <MenuItem value={30}>30 Seconds</MenuItem>
+                <MenuItem value={60}>1 Minute</MenuItem>
               </Select>
             </FormControl>
           </DialogContent>
