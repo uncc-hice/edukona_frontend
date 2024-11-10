@@ -144,10 +144,10 @@ const InstructorRecordings = () => {
         prevRecordings.map((recording) =>
           recording.id === receivedData.recording_id
             ? {
-              ...recording,
-              transcript: receivedData.transcript_status,
-              transcript_url: receivedData.transcript_url,
-            }
+                ...recording,
+                transcript: receivedData.transcript_status,
+                transcript_url: receivedData.transcript_url,
+              }
             : recording
         )
       );
@@ -220,11 +220,11 @@ const InstructorRecordings = () => {
       fetchQuizzes(recordingId);
     }
     setExpanded(expanded === recordingId ? null : recordingId);
-  }
+  };
 
   const onUpdate = () => {
     setRefresh(!refresh);
-  }
+  };
 
   return (
     <Main>
@@ -266,7 +266,7 @@ const InstructorRecordings = () => {
                 <TableRow key={recording.id}>
                   <TableCell colSpan={4}>
                     <Accordion expanded={expanded === recording.id} onChange={handleAccordionChange(recording.id)}>
-                      <AccordionSummary onClick={(e) => e.stopPropagation() && console.log("ACC")}>
+                      <AccordionSummary onClick={(e) => e.stopPropagation() && console.log('ACC')}>
                         <Table>
                           <TableBody>
                             <TableRow>
