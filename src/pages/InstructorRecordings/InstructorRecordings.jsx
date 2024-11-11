@@ -404,7 +404,6 @@ const InstructorRecordings = () => {
             },
           }}
         >
-          <DialogTitle> New Quiz Settings</DialogTitle>
           <DialogContent
             style={{ paddingTop: '20px', display: 'flex', gap: '8px', flexDirection: 'column', alignItems: 'center' }}
           >
