@@ -22,9 +22,8 @@ import {
   AccordionSummary,
   AccordionDetails,
   CircularProgress,
-  Select,
-  MenuItem,
-  InputLabel,
+  Slider,
+  Grid,
   FormControl,
 } from '@mui/material';
 import axios from 'axios';
@@ -405,39 +404,62 @@ const InstructorRecordings = () => {
           }}
         >
           <DialogContent
-            style={{ paddingTop: '20px', display: 'flex', gap: '8px', flexDirection: 'column', alignItems: 'center' }}
+            style={{
+              paddingTop: '20px',
+              display: 'flex',
+              gap: '8px',
+              flexDirection: 'column',
+              alignItems: 'center',
+              padding: '25px',
+            }}
           >
             <FormControl fullWidth style={{ marginBottom: '10px' }}>
-              <InputLabel style={{ fontSize: '14.8px' }} id="num_questions_label">
+              <Typography id="num_questions_label" gutterBottom>
                 Number of Questions
-              </InputLabel>
-              <Select
-                label="Number of Questions"
-                name="num_questions"
-                id="num_questions"
-                labelId="num_questions_label"
-                value={newRecordingDetails.num_questions}
-                onChange={handleNewRecordingDetails}
-              >
-                <MenuItem value={3}>3</MenuItem>
-                <MenuItem value={5}>5</MenuItem>
-                <MenuItem value={10}>10</MenuItem>
-              </Select>
+              </Typography>
+              <Grid container alignItems="center" spacing={2}>
+                <Grid item xs>
+                  <Slider
+                    name="num_questions"
+                    id="num_questions"
+                    value={newRecordingDetails.num_questions}
+                    onChange={handleNewRecordingDetails}
+                    aria-labelledby="num_questions_label"
+                    valueLabelDisplay="auto"
+                    step={1}
+                    marks
+                    min={3}
+                    max={10}
+                  />
+                </Grid>
+                <Grid item>
+                  <Typography>{newRecordingDetails.num_questions}</Typography>
+                </Grid>
+              </Grid>
             </FormControl>
             <FormControl fullWidth>
-              <InputLabel id="question_duration_label">Question Duration</InputLabel>
-              <Select
-                label="Question Duration"
-                name="question_duration"
-                id="question_duration"
-                labelId="question_duration_label"
-                value={newRecordingDetails.question_duration}
-                onChange={handleNewRecordingDetails}
-              >
-                <MenuItem value={15}>15 Seconds</MenuItem>
-                <MenuItem value={30}>30 Seconds</MenuItem>
-                <MenuItem value={60}>1 Minute</MenuItem>
-              </Select>
+              <Typography id="question_duration_label" gutterBottom>
+                Question Duration (seconds)
+              </Typography>
+              <Grid container alignItems="center" spacing={2}>
+                <Grid item xs>
+                  <Slider
+                    name="question_duration"
+                    id="question_duration"
+                    value={newRecordingDetails.question_duration}
+                    onChange={handleNewRecordingDetails}
+                    aria-labelledby="question_duration_label"
+                    valueLabelDisplay="auto"
+                    step={15}
+                    marks
+                    min={15}
+                    max={60}
+                  />
+                </Grid>
+                <Grid item>
+                  <Typography>{newRecordingDetails.question_duration}</Typography>
+                </Grid>
+              </Grid>
             </FormControl>
           </DialogContent>
           <DialogActions>
