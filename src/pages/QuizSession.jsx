@@ -4,6 +4,7 @@ import { useNavigate, useParams } from 'react-router-dom';
 import StudentGrid from '../blocks/StudentGrid.jsx';
 import useWebSocket from 'react-use-websocket';
 import Main from '../layouts/Main';
+import { QRCode } from 'react-qr-code';
 
 const fetchStudents = async (code, token) => {
   console.log('token', token);
@@ -68,17 +69,16 @@ const QuizSession = () => {
   return (
     <Main>
       <Container>
+        <QRCode value={`https://edukona.com/join?code=${code}`} size={100} />
         <div
           style={{
             display: 'flex',
             justifyContent: 'space-between',
-            alignItems: 'center',
-            marginTop: '20px',
+            alignItems: 'end',
+            marginTop: '5px',
           }}
         >
-          <Typography variant="h4" gutterBottom>
-            Code: {code}
-          </Typography>
+          <Typography variant="h4">Code: {code}</Typography>
           <Typography variant="h6" style={{ marginLeft: 'auto' }}>
             Students: {students.length}
           </Typography>
