@@ -22,6 +22,10 @@ import {
   AccordionSummary,
   AccordionDetails,
   CircularProgress,
+  Select,
+  MenuItem,
+  InputLabel,
+  FormControl,
 } from '@mui/material';
 import axios from 'axios';
 import RecordButton from '../../blocks/RecordButton';
@@ -33,6 +37,12 @@ import { Main } from '../../layouts';
 import { useNavigate } from 'react-router-dom';
 
 const InstructorRecordings = () => {
+  const [openNewRecording, setOpenNewRecording] = useState(false);
+  const [newRecordingDetails, setNewRecordingDetails] = useState({
+    recording_id: '',
+    num_questions: 5,
+    question_duration: 30,
+  });
   const [recordings, setRecordings] = useState([]);
   const [open, setOpen] = useState(false);
   const [selectedRecording, setSelectedRecording] = useState(null);
@@ -93,6 +103,9 @@ const InstructorRecordings = () => {
     }
   };
 
+  const handleNewRecordingDetails = (e) =>
+    setNewRecordingDetails((prev) => ({ ...prev, [e.target.name]: e.target.value }));
+
   const handleDeleteRecording = () => {
     axios
       .delete(`https://api.edukona.com/instructor-recordings/${selectedRecording}/delete-recording`, {
@@ -110,12 +123,12 @@ const InstructorRecordings = () => {
     setOpenDialogue(false);
   };
 
-  const handleCreateQuiz = (recordingId) => {
+  const handleCreateQuiz = () => {
     toast
       .promise(
         axios.post(
           'https://jtsw0t0x32.execute-api.us-west-2.amazonaws.com/Prod/create_quiz_from_transcript',
-          JSON.stringify({ recording_id: recordingId }),
+          { ...newRecordingDetails, recording_id: selectedRecording },
           {
             headers: {
               Authorization: `Token ${token.current}`,
@@ -131,6 +144,7 @@ const InstructorRecordings = () => {
         }
       )
       .then((res) => {
+        console.log(res.data);
         startQuiz(res.data.quiz_id);
       })
       .catch((error) => console.error(error));
@@ -322,7 +336,8 @@ const InstructorRecordings = () => {
                                   onClick={(e) => {
                                     e.stopPropagation();
                                     console.log('Create quiz for recording:', recording.id);
-                                    handleCreateQuiz(recording.id);
+                                    setSelectedRecording(recording.id);
+                                    setOpenNewRecording(true);
                                   }}
                                 >
                                   Create and Start Quiz
@@ -372,6 +387,65 @@ const InstructorRecordings = () => {
             </Button>
             <Button onClick={() => handleDeleteRecording() && onUpdate()} color="primary" autoFocus>
               Confirm
+            </Button>
+          </DialogActions>
+        </Dialog>
+        <Dialog
+          open={openNewRecording}
+          onClose={() => setOpenNewRecording(false)}
+          aria-labelledby="new-recording-dialogue"
+          aria-describedby="new-recording-dialogue"
+          PaperProps={{
+            component: 'form',
+            onSubmit: (event) => {
+              event.preventDefault();
+              handleCreateQuiz();
+              setOpenNewRecording(false);
+            },
+          }}
+        >
+          <DialogContent
+            style={{ paddingTop: '20px', display: 'flex', gap: '8px', flexDirection: 'column', alignItems: 'center' }}
+          >
+            <FormControl fullWidth style={{ marginBottom: '10px' }}>
+              <InputLabel style={{ fontSize: '14.8px' }} id="num_questions_label">
+                Number of Questions
+              </InputLabel>
+              <Select
+                label="Number of Questions"
+                name="num_questions"
+                id="num_questions"
+                labelId="num_questions_label"
+                value={newRecordingDetails.num_questions}
+                onChange={handleNewRecordingDetails}
+              >
+                <MenuItem value={3}>3</MenuItem>
+                <MenuItem value={5}>5</MenuItem>
+                <MenuItem value={10}>10</MenuItem>
+              </Select>
+            </FormControl>
+            <FormControl fullWidth>
+              <InputLabel id="question_duration_label">Question Duration</InputLabel>
+              <Select
+                label="Question Duration"
+                name="question_duration"
+                id="question_duration"
+                labelId="question_duration_label"
+                value={newRecordingDetails.question_duration}
+                onChange={handleNewRecordingDetails}
+              >
+                <MenuItem value={15}>15 Seconds</MenuItem>
+                <MenuItem value={30}>30 Seconds</MenuItem>
+                <MenuItem value={60}>1 Minute</MenuItem>
+              </Select>
+            </FormControl>
+          </DialogContent>
+          <DialogActions>
+            <Button onClick={() => setOpenNewRecording(false)} color="primary">
+              Cancel
+            </Button>
+            <Button type="submit" color="primary" autoFocus>
+              Create Quiz
             </Button>
           </DialogActions>
         </Dialog>
