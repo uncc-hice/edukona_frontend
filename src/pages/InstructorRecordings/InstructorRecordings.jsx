@@ -337,9 +337,7 @@ const InstructorRecordings = () => {
                           handleTitleClick(recording.id, recording.title);
                         }}
                       >
-                        {recording.title === ''
-                          ? recording.id.substr(0, 7) + '...'
-                          : recording.title}
+                        {recording.title === '' ? recording.id.substr(0, 7) + '...' : recording.title}
                       </Button>
                     </TableCell>
                     <TableCell>
@@ -359,15 +357,11 @@ const InstructorRecordings = () => {
                           height: 16,
                           display: 'inline-block',
                           borderRadius: '50%',
-                          bgcolor:
-                            recording.transcript.toLowerCase() === 'completed'
-                              ? 'green'
-                              : 'red',
+                          bgcolor: recording.transcript.toLowerCase() === 'completed' ? 'green' : 'red',
                           marginRight: 1,
                         }}
                       />
-                      {recording.transcript.charAt(0).toUpperCase() +
-                        recording.transcript.slice(1)}
+                      {recording.transcript.charAt(0).toUpperCase() + recording.transcript.slice(1)}
                     </TableCell>
                     <TableCell>
                       <CustomizedMenus
