@@ -260,28 +260,6 @@ const InstructorRecordings = () => {
     setRefresh(!refresh);
   };
 
-  const handleUpdateTitle = () => {
-    axios
-      .patch(
-        `https://api.edukona.com/instructor-recordings/${selectedRecording}/update-title`,
-        { title: newTitle },
-        {
-          headers: {
-            Authorization: `Token ${token.current}`,
-          },
-        }
-      )
-      .then((res) => {
-        toast.success('Title updated successfully!', { theme });
-        fetchRecordings();
-      })
-      .catch((error) => {
-        console.error(error);
-        toast.error('Failed to update title.', { theme });
-      });
-    setOpenEditTitleDialog(false);
-  };
-
   return (
     <Main>
       <Container sx={{ padding: '40px' }}>
