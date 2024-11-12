@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import { Typography, Container, Button, Paper } from '@mui/material';
+import { Typography, Container, Button, Paper, Grid } from '@mui/material';
 import { useNavigate, useParams } from 'react-router-dom';
 import StudentGrid from '../blocks/StudentGrid.jsx';
 import useWebSocket from 'react-use-websocket';
@@ -69,26 +69,36 @@ const QuizSession = () => {
   return (
     <Main>
       <Container>
-        <QRCode value={`https://edukona.com/join?code=${code}`} size={100} />
-        <div
-          style={{
-            display: 'flex',
-            justifyContent: 'space-between',
-            alignItems: 'end',
-            marginTop: '5px',
-          }}
-        >
-          <Typography variant="h4">Code: {code}</Typography>
-          <Typography variant="h6" style={{ marginLeft: 'auto' }}>
-            Students: {students.length}
-          </Typography>
-        </div>
-        <Paper style={{ padding: '20px', marginTop: '20px', marginBottom: '20px' }}>
-          <StudentGrid students={students} onDelete={onDelete} />
-          <Button variant="contained" color="primary" style={{ marginTop: '20px' }} onClick={startQuiz}>
-            Start Quiz
-          </Button>
-        </Paper>
+        <Grid container width={'100%'} columnSpacing={5} rowSpacing={1} marginBottom={'20px'}>
+          <Grid container item xs={10}>
+            <Grid item xs={6} textAlign={'left'}>
+              <Typography variant="h4">Code: {code}</Typography>
+            </Grid>
+            <Grid item xs={6} textAlign={'right'}>
+              <Typography variant="h6" style={{ marginLeft: 'auto' }}>
+                Students: {students.length}
+              </Typography>
+            </Grid>
+          </Grid>
+          <Grid item xs={10}>
+            <Paper style={{ padding: '40px' }}>
+              <StudentGrid students={students} onDelete={onDelete} />
+              <Button variant="contained" color="primary" style={{ marginTop: '20px' }} onClick={startQuiz}>
+                Start Quiz
+              </Button>
+            </Paper>
+          </Grid>
+          <Grid container item xs={2}>
+            <Grid item xs={12}>
+              <QRCode value={`https://edukona.com/join?code=${code}`} size={150} />
+            </Grid>
+            <Grid item xs={12} textAlign={'center'}>
+              <Typography variant="h6" fontWeight={'bold'}>
+                Scan to Join
+              </Typography>
+            </Grid>
+          </Grid>
+        </Grid>
       </Container>
     </Main>
   );
