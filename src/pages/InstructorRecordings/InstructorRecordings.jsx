@@ -18,23 +18,25 @@ import {
   DialogActions,
   Snackbar,
   Alert,
-  Accordion,
-  AccordionSummary,
-  AccordionDetails,
   CircularProgress,
   Select,
   MenuItem,
   InputLabel,
   FormControl,
+  TextField,
+  Collapse,
+  IconButton,
 } from '@mui/material';
 import axios from 'axios';
 import RecordButton from '../../blocks/RecordButton';
 import QuizListRow from '../../blocks/QuizListRow';
 import useWebSocket from 'react-use-websocket';
 import { toast } from 'react-toastify';
-import { Delete } from '@mui/icons-material';
 import { Main } from '../../layouts';
 import { useNavigate } from 'react-router-dom';
+import CustomizedMenus from '../../blocks/CustomizedMenus';
+import KeyboardArrowDownIcon from '@mui/icons-material/KeyboardArrowDown';
+import KeyboardArrowUpIcon from '@mui/icons-material/KeyboardArrowUp';
 
 const InstructorRecordings = () => {
   const [openNewRecording, setOpenNewRecording] = useState(false);
@@ -47,6 +49,8 @@ const InstructorRecordings = () => {
   const [open, setOpen] = useState(false);
   const [selectedRecording, setSelectedRecording] = useState(null);
   const [openDialogue, setOpenDialogue] = useState(false);
+  const [openEditTitleDialog, setOpenEditTitleDialog] = useState(false);
+  const [newTitle, setNewTitle] = useState('');
   const token = useRef(localStorage.getItem('token'));
   const theme = localStorage.getItem('themeMode');
   const navigate = useNavigate();
@@ -89,17 +93,13 @@ const InstructorRecordings = () => {
         }
       );
 
-      // Assuming the response contains a session code in the format: { code: 'someCode' }
       const sessionCode = response.data.code;
 
-      if (!(response.status === 400)) {
+      if (response.status !== 400) {
         navigate(`/session/${sessionCode}`);
       }
-
-      // Example of using URL parameters
     } catch (error) {
       console.error('Error starting the quiz:', error);
-      // Handle error (e.g., showing an error message to the user)
     }
   };
 
@@ -153,7 +153,6 @@ const InstructorRecordings = () => {
   const handleIncomingMessage = (event) => {
     const receivedData = JSON.parse(event.data);
     if (receivedData.type === 'transcript_completed') {
-      // Update the specific recording by mapping over the recordings
       setRecordings((prevRecordings) =>
         prevRecordings.map((recording) =>
           recording.id === receivedData.recording_id
@@ -180,13 +179,12 @@ const InstructorRecordings = () => {
     setOpen(true);
   };
 
-  // Establish WebSocket connection with the token
   useWebSocket(`wss://api.edukona.com/ws/recordings/?token=${token.current}`, {
     onOpen: () => console.log('WebSocket connected'),
     onClose: () => console.log('WebSocket disconnected'),
     onError: websocketError,
     onMessage: handleIncomingMessage,
-    shouldReconnect: (closeEvent) => true, // Automatically reconnect
+    shouldReconnect: (closeEvent) => true,
   });
 
   useEffect(() => {
@@ -211,11 +209,33 @@ const InstructorRecordings = () => {
     }
   };
 
-  const handleAccordionChange = (recordingId) => (event, isExpanded) => {
-    // setExpanded(isExpanded ? recordingId : null);
-    // if (isExpanded) {
-    //   fetchQuizzes(recordingId);
-    // }
+  const handleGenerateSummary = (recordingId) => {
+    toast
+      .promise(
+        axios.post(
+          'https://6y2dyfv9k1.execute-api.us-west-2.amazonaws.com/Prod/create_summary_from_transcript',
+          { recording_id: recordingId },
+          {
+            headers: {
+              Authorization: `Token ${token.current}`,
+              'Content-Type': 'application/json',
+            },
+          }
+        ),
+        {
+          pending: 'Generating summary...',
+          success: 'Summary generated successfully!',
+          error: 'Failed to generate summary.',
+          theme,
+        }
+      )
+      .then((res) => {
+        console.log('Summary generated:', res.data);
+        // Optionally, handle the response, e.g., display the summary or update state
+      })
+      .catch((error) => {
+        console.error('Error generating summary:', error);
+      });
   };
 
   const handleTitleClick = (recordingId, recordingTitle) => {
@@ -240,6 +260,28 @@ const InstructorRecordings = () => {
     setRefresh(!refresh);
   };
 
+  const handleUpdateTitle = () => {
+    axios
+      .patch(
+        `https://api.edukona.com/instructor-recordings/${selectedRecording}/update-title`,
+        { title: newTitle },
+        {
+          headers: {
+            Authorization: `Token ${token.current}`,
+          },
+        }
+      )
+      .then((res) => {
+        toast.success('Title updated successfully!', { theme });
+        fetchRecordings();
+      })
+      .catch((error) => {
+        console.error(error);
+        toast.error('Failed to update title.', { theme });
+      });
+    setOpenEditTitleDialog(false);
+  };
+
   return (
     <Main>
       <Container sx={{ padding: '40px' }}>
@@ -253,125 +295,128 @@ const InstructorRecordings = () => {
           <Table>
             <TableHead>
               <TableRow>
-                <TableCell sx={{ width: '25%' }}>
-                  <Typography variant="h6" align="center">
-                    Title
-                  </Typography>
+                <TableCell />
+                <TableCell>
+                  <Typography variant="h6">Title</Typography>
                 </TableCell>
-                <TableCell sx={{ width: '25%' }}>
-                  <Typography variant="h6" align="center">
-                    Uploaded At
-                  </Typography>
+                <TableCell>
+                  <Typography variant="h6">Uploaded At</Typography>
                 </TableCell>
-                <TableCell sx={{ width: '25%' }}>
-                  <Typography variant="h6" align="center">
-                    Transcript Status
-                  </Typography>
+                <TableCell>
+                  <Typography variant="h6">Transcript Status</Typography>
                 </TableCell>
-                <TableCell sx={{ width: '25%' }}>
-                  <Typography variant="h6" align="center">
-                    Actions
-                  </Typography>
+                <TableCell>
+                  <Typography variant="h6">Actions</Typography>
                 </TableCell>
               </TableRow>
             </TableHead>
             <TableBody>
               {recordings.map((recording) => (
-                <TableRow key={recording.id} sx={{ cursor: 'default' }}>
-                  <TableCell colSpan={4}>
-                    <Accordion
-                      expanded={expanded === recording.id}
-                      onChange={handleAccordionChange(recording.id)}
-                      sx={{ cursor: 'default' }}
-                    >
-                      <AccordionSummary sx={{ cursor: 'default' }}>
-                        <Table>
-                          <TableBody>
-                            <TableRow sx={{ cursor: 'default' }}>
-                              <TableCell sx={{ width: '25%' }}>
-                                <Button
-                                  color="primary"
-                                  onClick={(e) => {
-                                    e.stopPropagation();
-                                    handleTitleClick(recording.id, recording.title);
-                                  }}
-                                >
-                                  {recording.title === '' ? recording.id.substr(0, 7) + '...' : recording.title}
-                                </Button>
-                              </TableCell>
-                              <TableCell align="center" sx={{ width: '25%' }}>
-                                {new Date(recording.uploaded_at).toLocaleDateString(undefined, {
-                                  year: 'numeric',
-                                  month: 'long',
-                                  day: 'numeric',
-                                  hour: 'numeric',
-                                  minute: 'numeric',
-                                })}
-                              </TableCell>
-                              <TableCell align="center" sx={{ width: '25%' }}>
-                                <Box
-                                  component="span"
-                                  sx={{
-                                    width: 16,
-                                    height: 16,
-                                    display: 'inline-block',
-                                    borderRadius: '50%',
-                                    bgcolor: recording.transcript.toLowerCase() === 'completed' ? 'green' : 'red',
-                                    marginRight: 1,
-                                  }}
-                                />
-                                {recording.transcript.charAt(0).toUpperCase() + recording.transcript.slice(1)}
-                              </TableCell>
-                              <TableCell sx={{ width: '25%' }}>
-                                <Button
-                                  onClick={(e) => {
-                                    e.stopPropagation();
-                                    handleOpenDialogue(recording.id);
-                                    onUpdate();
-                                  }}
-                                >
-                                  <Delete color="action" />
-                                </Button>
-                                <Button
-                                  onClick={(e) => {
-                                    e.stopPropagation();
-                                    console.log('Create quiz for recording:', recording.id);
-                                    setSelectedRecording(recording.id);
-                                    setOpenNewRecording(true);
-                                  }}
-                                >
-                                  Create and Start Quiz
-                                </Button>
-                              </TableCell>
-                            </TableRow>
-                          </TableBody>
-                        </Table>
-                      </AccordionSummary>
-                      <AccordionDetails>
-                        {loadingQuizzes ? (
-                          <CircularProgress />
-                        ) : quizzes.length === 0 ? (
-                          <Typography>No quizzes available</Typography>
-                        ) : (
-                          <Table>
-                            <TableBody>
-                              {quizzes.map((quiz) => (
-                                <QuizListRow key={quiz.id} quiz={quiz} onUpdate={onUpdate} />
-                              ))}
-                            </TableBody>
-                          </Table>
-                        )}
-                      </AccordionDetails>
-                    </Accordion>
-                  </TableCell>
-                </TableRow>
+                <React.Fragment key={recording.id}>
+                  <TableRow sx={{ '& > *': { borderBottom: 'unset' } }}>
+                    <TableCell>
+                      <IconButton
+                        aria-label="expand row"
+                        size="small"
+                        onClick={() => {
+                          const isExpanded = expanded === recording.id;
+                          if (!isExpanded) {
+                            fetchQuizzes(recording.id);
+                          }
+                          setExpanded(isExpanded ? null : recording.id);
+                        }}
+                      >
+                        {expanded === recording.id ? <KeyboardArrowUpIcon /> : <KeyboardArrowDownIcon />}
+                      </IconButton>
+                    </TableCell>
+                    <TableCell>
+                      <Button
+                        color="primary"
+                        onClick={(e) => {
+                          e.stopPropagation();
+                          handleTitleClick(recording.id, recording.title);
+                        }}
+                      >
+                        {recording.title === ''
+                          ? recording.id.substr(0, 7) + '...'
+                          : recording.title}
+                      </Button>
+                    </TableCell>
+                    <TableCell>
+                      {new Date(recording.uploaded_at).toLocaleDateString(undefined, {
+                        year: 'numeric',
+                        month: 'long',
+                        day: 'numeric',
+                        hour: 'numeric',
+                        minute: 'numeric',
+                      })}
+                    </TableCell>
+                    <TableCell>
+                      <Box
+                        component="span"
+                        sx={{
+                          width: 16,
+                          height: 16,
+                          display: 'inline-block',
+                          borderRadius: '50%',
+                          bgcolor:
+                            recording.transcript.toLowerCase() === 'completed'
+                              ? 'green'
+                              : 'red',
+                          marginRight: 1,
+                        }}
+                      />
+                      {recording.transcript.charAt(0).toUpperCase() +
+                        recording.transcript.slice(1)}
+                    </TableCell>
+                    <TableCell>
+                      <CustomizedMenus
+                        recording={recording}
+                        handleOpenDialogue={handleOpenDialogue}
+                        setSelectedRecording={setSelectedRecording}
+                        setOpenNewRecording={setOpenNewRecording}
+                        handleGenerateSummary={handleGenerateSummary}
+                      />
+                    </TableCell>
+                  </TableRow>
+                  <TableRow>
+                    <TableCell style={{ paddingBottom: 0, paddingTop: 0 }} colSpan={5}>
+                      <Collapse in={expanded === recording.id} timeout="auto" unmountOnExit>
+                        <Box margin={1}>
+                          {loadingQuizzes ? (
+                            <CircularProgress />
+                          ) : quizzes.length === 0 ? (
+                            <Typography>No quizzes available</Typography>
+                          ) : (
+                            <Table size="small" aria-label="quizzes">
+                              <TableHead>
+                                <TableRow>
+                                  {/* Define columns for the quizzes */}
+                                  <TableCell>Quiz Title</TableCell>
+                                  <TableCell>Created At</TableCell>
+                                  {/* Add other columns as needed */}
+                                </TableRow>
+                              </TableHead>
+                              <TableBody>
+                                {quizzes.map((quiz) => (
+                                  <QuizListRow key={quiz.id} quiz={quiz} onUpdate={onUpdate} />
+                                ))}
+                              </TableBody>
+                            </Table>
+                          )}
+                        </Box>
+                      </Collapse>
+                    </TableCell>
+                  </TableRow>
+                </React.Fragment>
               ))}
             </TableBody>
           </Table>
         </TableContainer>
+        {/* Dialog for delete confirmation */}
         <Dialog
           open={openDialogue}
-          onClose={handleClose}
+          onClose={() => setOpenDialogue(false)}
           aria-labelledby="alert-dialog-title"
           aria-describedby="alert-dialog-description"
         >
@@ -385,11 +430,12 @@ const InstructorRecordings = () => {
             <Button onClick={() => setOpenDialogue(false)} color="primary">
               Cancel
             </Button>
-            <Button onClick={() => handleDeleteRecording() && onUpdate()} color="primary" autoFocus>
+            <Button onClick={handleDeleteRecording} color="primary" autoFocus>
               Confirm
             </Button>
           </DialogActions>
         </Dialog>
+        {/* Dialog for creating a new quiz */}
         <Dialog
           open={openNewRecording}
           onClose={() => setOpenNewRecording(false)}
@@ -405,12 +451,16 @@ const InstructorRecordings = () => {
           }}
         >
           <DialogContent
-            style={{ paddingTop: '20px', display: 'flex', gap: '8px', flexDirection: 'column', alignItems: 'center' }}
+            style={{
+              paddingTop: '20px',
+              display: 'flex',
+              gap: '8px',
+              flexDirection: 'column',
+              alignItems: 'center',
+            }}
           >
             <FormControl fullWidth style={{ marginBottom: '10px' }}>
-              <InputLabel style={{ fontSize: '14.8px' }} id="num_questions_label">
-                Number of Questions
-              </InputLabel>
+              <InputLabel id="num_questions_label">Number of Questions</InputLabel>
               <Select
                 label="Number of Questions"
                 name="num_questions"
@@ -446,6 +496,33 @@ const InstructorRecordings = () => {
             </Button>
             <Button type="submit" color="primary" autoFocus>
               Create Quiz
+            </Button>
+          </DialogActions>
+        </Dialog>
+        {/* Dialog for editing the title */}
+        <Dialog
+          open={openEditTitleDialog}
+          onClose={() => setOpenEditTitleDialog(false)}
+          aria-labelledby="edit-title-dialog"
+        >
+          <DialogTitle id="edit-title-dialog">Edit Title</DialogTitle>
+          <DialogContent>
+            <FormControl fullWidth>
+              <TextField
+                id="new-title"
+                value={newTitle}
+                onChange={(e) => setNewTitle(e.target.value)}
+                label="New Title"
+                variant="outlined"
+              />
+            </FormControl>
+          </DialogContent>
+          <DialogActions>
+            <Button onClick={() => setOpenEditTitleDialog(false)} color="primary">
+              Cancel
+            </Button>
+            <Button onClick={handleUpdateTitle} color="primary">
+              Save
             </Button>
           </DialogActions>
         </Dialog>
