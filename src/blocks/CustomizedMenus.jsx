@@ -49,7 +49,7 @@ const StyledMenu = styled((props) => (
 }));
 
 export default function CustomizedMenus(props) {
-  const { recording, handleOpenDialogue, setSelectedRecording, setOpenNewRecording, handleGenerateSummary } = props;
+  const { recording, handleOpenDialogue, setSelectedRecording, setOpenNewRecording } = props;
 
   const [anchorEl, setAnchorEl] = React.useState(null);
   const open = Boolean(anchorEl);
