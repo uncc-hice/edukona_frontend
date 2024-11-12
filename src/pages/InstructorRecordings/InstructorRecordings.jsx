@@ -510,14 +510,14 @@ const InstructorRecordings = () => {
               />
             </FormControl>
           </DialogContent>
-          <DialogActions>
-            <Button onClick={() => setOpenEditTitleDialog(false)} color="primary">
-              Cancel
-            </Button>
-            <Button onClick={handleUpdateTitle} color="primary">
-              Save
-            </Button>
-          </DialogActions>
+          {/*<DialogActions>*/}
+          {/*  <Button onClick={() => setOpenEditTitleDialog(false)} color="primary">*/}
+          {/*    Cancel*/}
+          {/*  </Button>*/}
+          {/*  <Button onClick={handleUpdateTitle} color="primary">*/}
+          {/*    Save*/}
+          {/*  </Button>*/}
+          {/*</DialogActions>*/}
         </Dialog>
       </Container>
     </Main>
