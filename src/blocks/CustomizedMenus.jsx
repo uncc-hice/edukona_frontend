@@ -3,11 +3,9 @@ import { styled, alpha } from '@mui/material/styles';
 import Button from '@mui/material/Button';
 import Menu from '@mui/material/Menu';
 import MenuItem from '@mui/material/MenuItem';
-import EditIcon from '@mui/icons-material/Edit';
 import Divider from '@mui/material/Divider';
 import DeleteIcon from '@mui/icons-material/Delete';
 import QuizIcon from '@mui/icons-material/Quiz';
-import SummarizeIcon from '@mui/icons-material/Summarize';
 import KeyboardArrowDownIcon from '@mui/icons-material/KeyboardArrowDown';
 
 const StyledMenu = styled((props) => (
@@ -106,10 +104,6 @@ export default function CustomizedMenus(props) {
         <MenuItem onClick={handleCreateAndStartQuiz} disableRipple>
           <QuizIcon />
           Create and Start Quiz
-        </MenuItem>
-        <MenuItem onClick={handleGenerateSummaryClick} disableRipple>
-          <SummarizeIcon />
-          Generate Summary
         </MenuItem>
         <Divider sx={{ my: 0.5 }} />
         <MenuItem onClick={handleDeleteRecording} disableRipple>
