@@ -51,15 +51,7 @@ const StyledMenu = styled((props) => (
 }));
 
 export default function CustomizedMenus(props) {
-  const {
-    recording,
-    handleOpenDialogue,
-    setSelectedRecording,
-    setOpenNewRecording,
-    setOpenEditTitleDialog,
-    setNewTitle,
-    handleGenerateSummary,
-  } = props;
+  const { recording, handleOpenDialogue, setSelectedRecording, setOpenNewRecording, handleGenerateSummary } = props;
 
   const [anchorEl, setAnchorEl] = React.useState(null);
   const open = Boolean(anchorEl);
@@ -85,13 +77,6 @@ export default function CustomizedMenus(props) {
   const handleGenerateSummaryClick = (event) => {
     event.stopPropagation();
     handleGenerateSummary(recording.id); // Call the function from props
-    handleClose(event);
-  };
-
-  const handleEditTitle = (event) => {
-    event.stopPropagation();
-    setOpenEditTitleDialog(true);
-    setNewTitle(recording.title);
     handleClose(event);
   };
 
@@ -133,10 +118,6 @@ export default function CustomizedMenus(props) {
           Generate Summary
         </MenuItem>
         <Divider sx={{ my: 0.5 }} />
-        <MenuItem onClick={handleEditTitle} disableRipple>
-          <EditIcon />
-          Edit Title
-        </MenuItem>
         <MenuItem onClick={handleDeleteRecording} disableRipple>
           <DeleteIcon />
           Delete Recording
