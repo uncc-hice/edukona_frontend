@@ -18,14 +18,15 @@ import {
   DialogActions,
   Snackbar,
   Alert,
+  Accordion,
+  AccordionSummary,
+  AccordionDetails,
   CircularProgress,
   Select,
   MenuItem,
   InputLabel,
   FormControl,
   TextField,
-  Collapse,
-  IconButton,
 } from '@mui/material';
 import axios from 'axios';
 import RecordButton from '../../blocks/RecordButton';
@@ -35,8 +36,6 @@ import { toast } from 'react-toastify';
 import { Main } from '../../layouts';
 import { useNavigate } from 'react-router-dom';
 import CustomizedMenus from '../../blocks/CustomizedMenus';
-import KeyboardArrowDownIcon from '@mui/icons-material/KeyboardArrowDown';
-import KeyboardArrowUpIcon from '@mui/icons-material/KeyboardArrowUp';
 
 const InstructorRecordings = () => {
   const [openNewRecording, setOpenNewRecording] = useState(false);
@@ -209,6 +208,13 @@ const InstructorRecordings = () => {
     }
   };
 
+  const handleAccordionChange = (recordingId) => (event, isExpanded) => {
+    setExpanded(isExpanded ? recordingId : null);
+    if (isExpanded) {
+      fetchQuizzes(recordingId);
+    }
+  };
+
   const handleGenerateSummary = (recordingId) => {
     toast
       .promise(
@@ -273,54 +279,66 @@ const InstructorRecordings = () => {
           <Table>
             <TableHead>
               <TableRow>
-                <TableCell />
-                <TableCell>
-                  <Typography variant="h6">Title</Typography>
+                <TableCell sx={{ width: '25%' }}>
+                  <Typography variant="h6" align="center">
+                    Title
+                  </Typography>
                 </TableCell>
-                <TableCell>
-                  <Typography variant="h6">Uploaded At</Typography>
+                <TableCell sx={{ width: '25%' }}>
+                  <Typography variant="h6" align="center">
+                    Uploaded At
+                  </Typography>
                 </TableCell>
-                <TableCell>
-                  <Typography variant="h6">Transcript Status</Typography>
+                <TableCell sx={{ width: '25%' }}>
+                  <Typography variant="h6" align="center">
+                    Transcript Status
+                  </Typography>
                 </TableCell>
-                <TableCell>
-                  <Typography variant="h6">Actions</Typography>
+                <TableCell sx={{ width: '25%' }}>
+                  <Typography variant="h6" align="center">
+                    Actions
+                  </Typography>
                 </TableCell>
               </TableRow>
             </TableHead>
             <TableBody>
               {recordings.map((recording) => (
                 <React.Fragment key={recording.id}>
-                  <TableRow sx={{ '& > *': { borderBottom: 'unset' } }}>
-                    <TableCell>
-                      <IconButton
-                        aria-label="expand row"
-                        size="small"
-                        onClick={() => {
-                          const isExpanded = expanded === recording.id;
-                          if (!isExpanded) {
-                            fetchQuizzes(recording.id);
-                          }
-                          setExpanded(isExpanded ? null : recording.id);
-                        }}
-                      >
-                        {expanded === recording.id ? <KeyboardArrowUpIcon /> : <KeyboardArrowDownIcon />}
-                      </IconButton>
+                  {/* First Row: Recording Details */}
+                  <TableRow sx={{ cursor: 'default' }}>
+                    {/* Adjusted alignment to center */}
+                    <TableCell align="center" sx={{ width: '25%' }}>
+                      {/* Center the content inside */}
+                      <Box textAlign="center">
+                        {/* Accordion Summary */}
+                        <Accordion
+                          expanded={expanded === recording.id}
+                          onChange={handleAccordionChange(recording.id)}
+                          sx={{ boxShadow: 'none' }}
+                        >
+                          <AccordionSummary
+                            onClick={(e) => {
+                              e.stopPropagation();
+                              handleAccordionChange(recording.id)(e, expanded !== recording.id);
+                            }}
+                            aria-controls={`panel-${recording.id}-content`}
+                            id={`panel-${recording.id}-header`}
+                            sx={{ padding: 0 }}
+                          >
+                            <Button
+                              color="primary"
+                              onClick={(e) => {
+                                e.stopPropagation();
+                                handleTitleClick(recording.id, recording.title);
+                              }}
+                            >
+                              {recording.title === '' ? recording.id.substr(0, 7) + '...' : recording.title}
+                            </Button>
+                          </AccordionSummary>
+                        </Accordion>
+                      </Box>
                     </TableCell>
-                    <TableCell>
-                      <Button
-                        color="primary"
-                        onClick={(e) => {
-                          e.stopPropagation();
-                          handleTitleClick(recording.id, recording.title);
-                        }}
-                      >
-                        {recording.title === ''
-                          ? recording.id.substr(0, 7) + '...'
-                          : recording.title}
-                      </Button>
-                    </TableCell>
-                    <TableCell>
+                    <TableCell align="center" sx={{ width: '25%' }}>
                       {new Date(recording.uploaded_at).toLocaleDateString(undefined, {
                         year: 'numeric',
                         month: 'long',
@@ -329,7 +347,7 @@ const InstructorRecordings = () => {
                         minute: 'numeric',
                       })}
                     </TableCell>
-                    <TableCell>
+                    <TableCell align="center" sx={{ width: '25%' }}>
                       <Box
                         component="span"
                         sx={{
@@ -337,55 +355,52 @@ const InstructorRecordings = () => {
                           height: 16,
                           display: 'inline-block',
                           borderRadius: '50%',
-                          bgcolor:
-                            recording.transcript.toLowerCase() === 'completed'
-                              ? 'green'
-                              : 'red',
+                          bgcolor: recording.transcript.toLowerCase() === 'completed' ? 'green' : 'red',
                           marginRight: 1,
                         }}
                       />
-                      {recording.transcript.charAt(0).toUpperCase() +
-                        recording.transcript.slice(1)}
+                      {recording.transcript.charAt(0).toUpperCase() + recording.transcript.slice(1)}
                     </TableCell>
-                    <TableCell>
-                      <CustomizedMenus
-                        recording={recording}
-                        handleOpenDialogue={handleOpenDialogue}
-                        setSelectedRecording={setSelectedRecording}
-                        setOpenNewRecording={setOpenNewRecording}
-                        handleGenerateSummary={handleGenerateSummary}
-                      />
-                    </TableCell>
-                  </TableRow>
-                  <TableRow>
-                    <TableCell style={{ paddingBottom: 0, paddingTop: 0 }} colSpan={5}>
-                      <Collapse in={expanded === recording.id} timeout="auto" unmountOnExit>
-                        <Box margin={1}>
-                          {loadingQuizzes ? (
-                            <CircularProgress />
-                          ) : quizzes.length === 0 ? (
-                            <Typography>No quizzes available</Typography>
-                          ) : (
-                            <Table size="small" aria-label="quizzes">
-                              <TableHead>
-                                <TableRow>
-                                  {/* Define columns for the quizzes */}
-                                  <TableCell>Quiz Title</TableCell>
-                                  <TableCell>Created At</TableCell>
-                                  {/* Add other columns as needed */}
-                                </TableRow>
-                              </TableHead>
-                              <TableBody>
-                                {quizzes.map((quiz) => (
-                                  <QuizListRow key={quiz.id} quiz={quiz} onUpdate={onUpdate} />
-                                ))}
-                              </TableBody>
-                            </Table>
-                          )}
-                        </Box>
-                      </Collapse>
+                    {/* Adjusted alignment to center */}
+                    <TableCell align="center" sx={{ width: '25%' }}>
+                      {/* Center the CustomizedMenus component */}
+                      <Box textAlign="center">
+                        <CustomizedMenus
+                          recording={recording}
+                          handleOpenDialogue={handleOpenDialogue}
+                          setSelectedRecording={setSelectedRecording}
+                          setOpenNewRecording={setOpenNewRecording}
+                          setOpenEditTitleDialog={setOpenEditTitleDialog}
+                          handleGenerateSummary={handleGenerateSummary}
+                          setNewTitle={setNewTitle}
+                        />
+                      </Box>
                     </TableCell>
                   </TableRow>
+                  {/* Second Row: Accordion Details */}
+                  {expanded === recording.id && (
+                    <TableRow>
+                      <TableCell colSpan={4} style={{ paddingBottom: 0, paddingTop: 0 }}>
+                        <Accordion expanded={expanded === recording.id} sx={{ boxShadow: 'none' }}>
+                          <AccordionDetails>
+                            {loadingQuizzes ? (
+                              <CircularProgress />
+                            ) : quizzes.length === 0 ? (
+                              <Typography>No quizzes available</Typography>
+                            ) : (
+                              <Table>
+                                <TableBody>
+                                  {quizzes.map((quiz) => (
+                                    <QuizListRow key={quiz.id} quiz={quiz} onUpdate={onUpdate} />
+                                  ))}
+                                </TableBody>
+                              </Table>
+                            )}
+                          </AccordionDetails>
+                        </Accordion>
+                      </TableCell>
+                    </TableRow>
+                  )}
                 </React.Fragment>
               ))}
             </TableBody>
