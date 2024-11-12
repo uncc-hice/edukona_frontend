@@ -402,6 +402,8 @@ const InstructorRecordings = () => {
               setOpenNewRecording(false);
             },
           }}
+          maxWidth="sm"
+          fullWidth
         >
           <DialogContent
             style={{
