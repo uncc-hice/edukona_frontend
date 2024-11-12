@@ -74,11 +74,6 @@ export default function CustomizedMenus(props) {
     handleClose(event);
   };
 
-  const handleGenerateSummaryClick = (event) => {
-    event.stopPropagation();
-    handleGenerateSummary(recording.id); // Call the function from props
-    handleClose(event);
-  };
 
   const handleDeleteRecording = (event) => {
     event.stopPropagation();
