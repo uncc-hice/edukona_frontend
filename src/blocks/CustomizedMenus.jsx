@@ -74,7 +74,6 @@ export default function CustomizedMenus(props) {
     handleClose(event);
   };
 
-
   const handleDeleteRecording = (event) => {
     event.stopPropagation();
     handleOpenDialogue(recording.id);
