@@ -215,35 +215,6 @@ const InstructorRecordings = () => {
     }
   };
 
-  const handleGenerateSummary = (recordingId) => {
-    toast
-      .promise(
-        axios.post(
-          'https://6y2dyfv9k1.execute-api.us-west-2.amazonaws.com/Prod/create_summary_from_transcript',
-          { recording_id: recordingId },
-          {
-            headers: {
-              Authorization: `Token ${token.current}`,
-              'Content-Type': 'application/json',
-            },
-          }
-        ),
-        {
-          pending: 'Generating summary...',
-          success: 'Summary generated successfully!',
-          error: 'Failed to generate summary.',
-          theme,
-        }
-      )
-      .then((res) => {
-        console.log('Summary generated:', res.data);
-        // Optionally, handle the response, e.g., display the summary or update state
-      })
-      .catch((error) => {
-        console.error('Error generating summary:', error);
-      });
-  };
-
   const handleTitleClick = (recordingId, recordingTitle) => {
     if (recordingTitle === '') {
       navigator.permissions.query({ name: 'clipboard-write' }).then((result) => {
@@ -371,7 +342,6 @@ const InstructorRecordings = () => {
                           setSelectedRecording={setSelectedRecording}
                           setOpenNewRecording={setOpenNewRecording}
                           setOpenEditTitleDialog={setOpenEditTitleDialog}
-                          handleGenerateSummary={handleGenerateSummary}
                           setNewTitle={setNewTitle}
                         />
                       </Box>
@@ -491,33 +461,6 @@ const InstructorRecordings = () => {
               Create Quiz
             </Button>
           </DialogActions>
-        </Dialog>
-        {/* Dialog for editing the title */}
-        <Dialog
-          open={openEditTitleDialog}
-          onClose={() => setOpenEditTitleDialog(false)}
-          aria-labelledby="edit-title-dialog"
-        >
-          <DialogTitle id="edit-title-dialog">Edit Title</DialogTitle>
-          <DialogContent>
-            <FormControl fullWidth>
-              <TextField
-                id="new-title"
-                value={newTitle}
-                onChange={(e) => setNewTitle(e.target.value)}
-                label="New Title"
-                variant="outlined"
-              />
-            </FormControl>
-          </DialogContent>
-          {/*<DialogActions>*/}
-          {/*  <Button onClick={() => setOpenEditTitleDialog(false)} color="primary">*/}
-          {/*    Cancel*/}
-          {/*  </Button>*/}
-          {/*  <Button onClick={handleUpdateTitle} color="primary">*/}
-          {/*    Save*/}
-          {/*  </Button>*/}
-          {/*</DialogActions>*/}
         </Dialog>
       </Container>
     </Main>
