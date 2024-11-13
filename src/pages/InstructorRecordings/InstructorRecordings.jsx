@@ -22,9 +22,8 @@ import {
   AccordionSummary,
   AccordionDetails,
   CircularProgress,
-  Select,
-  MenuItem,
-  InputLabel,
+  Slider,
+  Grid,
   FormControl,
   TextField,
 } from '@mui/material';
@@ -41,7 +40,7 @@ const InstructorRecordings = () => {
   const [openNewRecording, setOpenNewRecording] = useState(false);
   const [newRecordingDetails, setNewRecordingDetails] = useState({
     recording_id: '',
-    num_questions: 5,
+    num_of_questions: 5,
     question_duration: 30,
   });
   const [recordings, setRecordings] = useState([]);
@@ -412,6 +411,8 @@ const InstructorRecordings = () => {
               setOpenNewRecording(false);
             },
           }}
+          maxWidth="sm"
+          fullWidth
         >
           <DialogContent
             style={{
@@ -420,37 +421,56 @@ const InstructorRecordings = () => {
               gap: '8px',
               flexDirection: 'column',
               alignItems: 'center',
+              padding: '25px',
             }}
           >
             <FormControl fullWidth style={{ marginBottom: '10px' }}>
-              <InputLabel id="num_questions_label">Number of Questions</InputLabel>
-              <Select
-                label="Number of Questions"
-                name="num_questions"
-                id="num_questions"
-                labelId="num_questions_label"
-                value={newRecordingDetails.num_questions}
-                onChange={handleNewRecordingDetails}
-              >
-                <MenuItem value={3}>3</MenuItem>
-                <MenuItem value={5}>5</MenuItem>
-                <MenuItem value={10}>10</MenuItem>
-              </Select>
+              <Typography id="num_of_questions_label" gutterBottom>
+                Number of Questions
+              </Typography>
+              <Grid container alignItems="center" spacing={2}>
+                <Grid item xs>
+                  <Slider
+                    name="num_of_questions"
+                    id="num_of_questions"
+                    value={newRecordingDetails.num_of_questions}
+                    onChange={handleNewRecordingDetails}
+                    aria-labelledby="num_of_questions_label"
+                    valueLabelDisplay="auto"
+                    step={1}
+                    marks
+                    min={3}
+                    max={10}
+                  />
+                </Grid>
+                <Grid item>
+                  <Typography>{newRecordingDetails.num_of_questions}</Typography>
+                </Grid>
+              </Grid>
             </FormControl>
             <FormControl fullWidth>
-              <InputLabel id="question_duration_label">Question Duration</InputLabel>
-              <Select
-                label="Question Duration"
-                name="question_duration"
-                id="question_duration"
-                labelId="question_duration_label"
-                value={newRecordingDetails.question_duration}
-                onChange={handleNewRecordingDetails}
-              >
-                <MenuItem value={15}>15 Seconds</MenuItem>
-                <MenuItem value={30}>30 Seconds</MenuItem>
-                <MenuItem value={60}>1 Minute</MenuItem>
-              </Select>
+              <Typography id="question_duration_label" gutterBottom>
+                Question Duration (seconds)
+              </Typography>
+              <Grid container alignItems="center" spacing={2}>
+                <Grid item xs>
+                  <Slider
+                    name="question_duration"
+                    id="question_duration"
+                    value={newRecordingDetails.question_duration}
+                    onChange={handleNewRecordingDetails}
+                    aria-labelledby="question_duration_label"
+                    valueLabelDisplay="auto"
+                    step={15}
+                    marks
+                    min={15}
+                    max={60}
+                  />
+                </Grid>
+                <Grid item>
+                  <Typography>{newRecordingDetails.question_duration}</Typography>
+                </Grid>
+              </Grid>
             </FormControl>
           </DialogContent>
           <DialogActions>
