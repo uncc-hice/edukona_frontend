@@ -39,7 +39,7 @@ const InstructorRecordings = () => {
   const [openNewRecording, setOpenNewRecording] = useState(false);
   const [newRecordingDetails, setNewRecordingDetails] = useState({
     recording_id: '',
-    num_questions: 5,
+    num_of_questions: 5,
     question_duration: 30,
   });
   const [recordings, setRecordings] = useState([]);
@@ -416,17 +416,17 @@ const InstructorRecordings = () => {
             }}
           >
             <FormControl fullWidth style={{ marginBottom: '10px' }}>
-              <Typography id="num_questions_label" gutterBottom>
+              <Typography id="num_of_questions_label" gutterBottom>
                 Number of Questions
               </Typography>
               <Grid container alignItems="center" spacing={2}>
                 <Grid item xs>
                   <Slider
-                    name="num_questions"
-                    id="num_questions"
-                    value={newRecordingDetails.num_questions}
+                    name="num_of_questions"
+                    id="num_of_questions"
+                    value={newRecordingDetails.num_of_questions}
                     onChange={handleNewRecordingDetails}
-                    aria-labelledby="num_questions_label"
+                    aria-labelledby="num_of_questions_label"
                     valueLabelDisplay="auto"
                     step={1}
                     marks
@@ -435,7 +435,7 @@ const InstructorRecordings = () => {
                   />
                 </Grid>
                 <Grid item>
-                  <Typography>{newRecordingDetails.num_questions}</Typography>
+                  <Typography>{newRecordingDetails.num_of_questions}</Typography>
                 </Grid>
               </Grid>
             </FormControl>
