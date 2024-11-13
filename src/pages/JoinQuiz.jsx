@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { Button, Container, Grid, TextField } from '@mui/material';
 import useWebSocket from 'react-use-websocket';
@@ -7,6 +7,11 @@ const JoinQuiz = () => {
   const [quizCode, setQuizCode] = useState('');
   const [username, setUsername] = useState('');
   const navigate = useNavigate();
+
+  useEffect(() => {
+    const params = new URLSearchParams(window.location.search);
+    setQuizCode(params.get('code'));
+  }, []);
 
   const handleIncomingMessage = (event) => {
     const data = JSON.parse(event.data);
