@@ -48,8 +48,8 @@ const InstructorRecordings = () => {
   const [open, setOpen] = useState(false);
   const [selectedRecording, setSelectedRecording] = useState(null);
   const [openDialogue, setOpenDialogue] = useState(false);
-  const [openEditTitleDialog, setOpenEditTitleDialog] = useState(false);
-  const [newTitle, setNewTitle] = useState('');
+  const [setOpenEditTitleDialog] = useState(false);
+  const [setNewTitle] = useState('');
   const token = useRef(localStorage.getItem('token'));
   const theme = localStorage.getItem('themeMode');
   const navigate = useNavigate();
