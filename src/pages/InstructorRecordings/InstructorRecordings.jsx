@@ -25,7 +25,6 @@ import {
   Slider,
   Grid,
   FormControl,
-  TextField,
 } from '@mui/material';
 import axios from 'axios';
 import RecordButton from '../../blocks/RecordButton';
