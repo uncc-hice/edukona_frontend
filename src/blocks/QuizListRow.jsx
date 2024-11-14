@@ -141,24 +141,17 @@ const QuizListRow = ({ quiz, onUpdate }) => {
 
   const deleteQuiz = async () => {
     setOpen(false);
-    try {
-      const response = await axios.delete(`https://api.edukona.com/quiz/${quiz.id}`, {
-        headers: {
-          'Content-Type': 'application/json',
-          Authorization: `Token ${token.current}`,
-        },
-      });
-
-      if (response.status === 200) {
-        toast.success('Quiz successfully deleted!', {
-          icon: '🗑️',
-          theme,
-        });
-        onUpdate();
-      }
-    } catch (error) {
-      console.error('An error occurred while deleting the quiz:', error.message);
-    }
+    toast.promise(
+      axios
+        .delete(`https://api.edukona.com/quiz/${quiz.id}`, {
+          headers: {
+            'Content-Type': 'application/json',
+            Authorization: `Token ${token.current}`,
+          },
+        })
+        .then(() => onUpdate()),
+      { pending: 'Deleting quiz...', success: 'Quiz successfully deleted!', error: 'Failed to delete quiz' }
+    );
   };
 
   console.log(quiz);
