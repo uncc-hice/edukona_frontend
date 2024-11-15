@@ -25,6 +25,7 @@ import {
   Slider,
   Grid,
   FormControl,
+  TextField,
 } from '@mui/material';
 import axios from 'axios';
 import RecordButton from '../../blocks/RecordButton';
@@ -46,8 +47,8 @@ const InstructorRecordings = () => {
   const [open, setOpen] = useState(false);
   const [selectedRecording, setSelectedRecording] = useState(null);
   const [openDialogue, setOpenDialogue] = useState(false);
-  const [setOpenEditTitleDialog] = useState(false);
-  const [setNewTitle] = useState('');
+  const [openEditTitleDialog, setOpenEditTitleDialog] = useState(false);
+  const [newTitle, setNewTitle] = useState('');
   const token = useRef(localStorage.getItem('token'));
   const theme = localStorage.getItem('themeMode');
   const navigate = useNavigate();
@@ -204,6 +205,28 @@ const InstructorRecordings = () => {
     } finally {
       setLoadingQuizzes(false);
     }
+  };
+
+  const handleUpdateTitle = () => {
+    axios
+      .patch(
+        `https://api.edukona.com/instructor-recordings/${selectedRecording}/update-title`,
+        { title: newTitle },
+        {
+          headers: {
+            Authorization: `Token ${token.current}`,
+          },
+        }
+      )
+      .then((res) => {
+        toast.success('Title updated successfully!', { theme });
+        fetchRecordings();
+      })
+      .catch((error) => {
+        console.error(error);
+        toast.error('Failed to update title.', { theme });
+      });
+    setOpenEditTitleDialog(false);
   };
 
   const handleAccordionChange = (recordingId) => (event, isExpanded) => {
@@ -478,6 +501,32 @@ const InstructorRecordings = () => {
             </Button>
             <Button type="submit" color="primary" autoFocus>
               Create Quiz
+            </Button>
+          </DialogActions>
+        </Dialog>
+        <Dialog
+          open={openEditTitleDialog}
+          onClose={() => setOpenEditTitleDialog(false)}
+          aria-labelledby="edit-title-dialog"
+        >
+          <DialogTitle id="edit-title-dialog">Edit Title</DialogTitle>
+          <DialogContent>
+            <FormControl fullWidth>
+              <TextField
+                id="new-title"
+                value={newTitle}
+                onChange={(e) => setNewTitle(e.target.value)}
+                label="New Title"
+                variant="outlined"
+              />
+            </FormControl>
+          </DialogContent>
+          <DialogActions>
+            <Button onClick={() => setOpenEditTitleDialog(false)} color="primary">
+              Cancel
+            </Button>
+            <Button onClick={handleUpdateTitle} color="primary">
+              Save
             </Button>
           </DialogActions>
         </Dialog>

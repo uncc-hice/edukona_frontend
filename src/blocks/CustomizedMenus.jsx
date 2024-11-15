@@ -3,6 +3,7 @@ import { styled, alpha } from '@mui/material/styles';
 import Button from '@mui/material/Button';
 import Menu from '@mui/material/Menu';
 import MenuItem from '@mui/material/MenuItem';
+import EditIcon from '@mui/icons-material/Edit';
 import Divider from '@mui/material/Divider';
 import DeleteIcon from '@mui/icons-material/Delete';
 import QuizIcon from '@mui/icons-material/Quiz';
@@ -49,7 +50,14 @@ const StyledMenu = styled((props) => (
 }));
 
 export default function CustomizedMenus(props) {
-  const { recording, handleOpenDialogue, setSelectedRecording, setOpenNewRecording } = props;
+  const {
+    recording,
+    handleOpenDialogue,
+    setSelectedRecording,
+    setOpenNewRecording,
+    setOpenEditTitleDialog,
+    setNewTitle,
+  } = props;
 
   const [anchorEl, setAnchorEl] = React.useState(null);
   const open = Boolean(anchorEl);
@@ -69,6 +77,13 @@ export default function CustomizedMenus(props) {
   const handleCreateAndStartQuiz = (event) => {
     event.stopPropagation();
     setOpenNewRecording(true);
+    handleClose(event);
+  };
+
+  const handleEditTitle = (event) => {
+    event.stopPropagation();
+    setOpenEditTitleDialog(true);
+    setNewTitle(recording.title);
     handleClose(event);
   };
 
@@ -106,6 +121,10 @@ export default function CustomizedMenus(props) {
           Create and Start Quiz
         </MenuItem>
         <Divider sx={{ my: 0.5 }} />
+        <MenuItem onClick={handleEditTitle} disableRipple>
+          <EditIcon />
+          Edit Title
+        </MenuItem>
         <MenuItem onClick={handleDeleteRecording} disableRipple>
           <DeleteIcon />
           Delete Recording
