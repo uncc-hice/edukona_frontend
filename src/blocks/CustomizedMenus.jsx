@@ -77,7 +77,7 @@ export default function CustomizedMenus(props) {
     event.stopPropagation();
     handleGenerateSummary(recording.id);
     handleClose(event);
-  }
+  };
 
   const handleDeleteRecording = (event) => {
     event.stopPropagation();
