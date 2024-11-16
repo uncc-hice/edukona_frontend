@@ -6,6 +6,7 @@ import MenuItem from '@mui/material/MenuItem';
 import Divider from '@mui/material/Divider';
 import DeleteIcon from '@mui/icons-material/Delete';
 import QuizIcon from '@mui/icons-material/Quiz';
+import SummarizeIcon from '@mui/icons-material/Summarize';
 import KeyboardArrowDownIcon from '@mui/icons-material/KeyboardArrowDown';
 
 const StyledMenu = styled((props) => (
@@ -49,7 +50,7 @@ const StyledMenu = styled((props) => (
 }));
 
 export default function CustomizedMenus(props) {
-  const { recording, handleOpenDialogue, setSelectedRecording, setOpenNewRecording } = props;
+  const { recording, handleOpenDialogue, setSelectedRecording, setOpenNewRecording, handleGenerateSummary } = props;
 
   const [anchorEl, setAnchorEl] = React.useState(null);
   const open = Boolean(anchorEl);
@@ -69,6 +70,12 @@ export default function CustomizedMenus(props) {
   const handleCreateAndStartQuiz = (event) => {
     event.stopPropagation();
     setOpenNewRecording(true);
+    handleClose(event);
+  };
+
+  const handleSummary = (event) => {
+    event.stopPropagation();
+    handleGenerateSummary(recording.id);
     handleClose(event);
   };
 
@@ -104,6 +111,10 @@ export default function CustomizedMenus(props) {
         <MenuItem onClick={handleCreateAndStartQuiz} disableRipple>
           <QuizIcon />
           Create and Start Quiz
+        </MenuItem>
+        <MenuItem onClick={handleSummary} disableRipple>
+          <SummarizeIcon />
+          Generate Summary
         </MenuItem>
         <Divider sx={{ my: 0.5 }} />
         <MenuItem onClick={handleDeleteRecording} disableRipple>

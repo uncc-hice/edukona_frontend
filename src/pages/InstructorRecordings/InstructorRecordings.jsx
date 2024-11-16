@@ -120,6 +120,35 @@ const InstructorRecordings = () => {
     setOpenDialogue(false);
   };
 
+  const handleGenerateSummary = (recordingId) => {
+    toast
+      .promise(
+        axios.post(
+          'https://6y2dyfv9k1.execute-api.us-west-2.amazonaws.com/Prod/create_summary_from_transcript',
+          { recording_id: recordingId },
+          {
+            headers: {
+              Authorization: `Token ${token.current}`,
+              'Content-Type': 'application/json',
+            },
+          }
+        ),
+        {
+          pending: 'Generating summary...',
+          success: 'Summary generated successfully!',
+          error: 'Failed to generate summary.',
+          theme,
+        }
+      )
+      .then((res) => {
+        console.log('Summary generated:', res.data);
+        // Optionally, handle the response, e.g., display the summary or update state
+      })
+      .catch((error) => {
+        console.error('Error generating summary:', error);
+      });
+  };
+
   const handleCreateQuiz = () => {
     toast
       .promise(
@@ -340,6 +369,7 @@ const InstructorRecordings = () => {
                           setSelectedRecording={setSelectedRecording}
                           setOpenNewRecording={setOpenNewRecording}
                           setOpenEditTitleDialog={setOpenEditTitleDialog}
+                          handleGenerateSummary={handleGenerateSummary}
                           setNewTitle={setNewTitle}
                         />
                       </Box>
