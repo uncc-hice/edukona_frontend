@@ -129,7 +129,7 @@ const QuizListRow = ({ quiz, onUpdate }) => {
             title={'Actions'}
             quizId={quiz.id}
             numQuestions={quiz.num_questions}
-            deleteQuiz={deleteQuiz}
+            deleteQuiz={() => setOpen(true)}
             token={token}
           />
         </TableCell>
