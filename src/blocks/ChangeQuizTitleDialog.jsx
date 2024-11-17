@@ -6,7 +6,6 @@ import { toast } from 'react-toastify';
 const ChangeQuizTitleDialog = ({ open, setOpen, currentTitle, quizId, token, onUpdate }) => {
   const [title, setTitle] = useState(currentTitle);
 
-  console.log(token);
   const updateTitle = () =>
     toast.promise(
       axios
