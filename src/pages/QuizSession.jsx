@@ -89,10 +89,8 @@ const QuizSession = () => {
             </Paper>
           </Grid>
           <Grid container item xs={2}>
-            <Grid item xs={12}>
-              <QRCode value={`https://edukona.com/join?code=${code}`} size={150} />
-            </Grid>
             <Grid item xs={12} textAlign={'center'}>
+              <QRCode value={`https://edukona.com/join?code=${code}`} size={150} />
               <Typography variant="h6" fontWeight={'bold'}>
                 Scan to Join
               </Typography>

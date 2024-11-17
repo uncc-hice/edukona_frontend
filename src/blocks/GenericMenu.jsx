@@ -1,13 +1,8 @@
-import * as React from 'react';
 import { styled, alpha } from '@mui/material/styles';
 import Button from '@mui/material/Button';
 import Menu from '@mui/material/Menu';
-import MenuItem from '@mui/material/MenuItem';
-import Divider from '@mui/material/Divider';
-import DeleteIcon from '@mui/icons-material/Delete';
-import QuizIcon from '@mui/icons-material/Quiz';
-import SummarizeIcon from '@mui/icons-material/Summarize';
 import KeyboardArrowDownIcon from '@mui/icons-material/KeyboardArrowDown';
+import { useState } from 'react';
 
 const StyledMenu = styled((props) => (
   <Menu
@@ -49,40 +44,18 @@ const StyledMenu = styled((props) => (
   },
 }));
 
-export default function CustomizedMenus(props) {
-  const { recording, handleOpenDialogue, setSelectedRecording, setOpenNewRecording, handleGenerateSummary } = props;
-
-  const [anchorEl, setAnchorEl] = React.useState(null);
+export default function GenericMenu({ children, title }) {
+  const [anchorEl, setAnchorEl] = useState(null);
   const open = Boolean(anchorEl);
 
   const handleClick = (event) => {
     event.stopPropagation(); // Prevent accordion from toggling
     setAnchorEl(event.currentTarget);
-    setSelectedRecording(recording.id); // Set the selected recording ID
   };
 
   const handleClose = (event) => {
     event.stopPropagation(); // Prevent accordion from toggling
     setAnchorEl(null);
-  };
-
-  // Handle menu item actions
-  const handleCreateAndStartQuiz = (event) => {
-    event.stopPropagation();
-    setOpenNewRecording(true);
-    handleClose(event);
-  };
-
-  const handleSummary = (event) => {
-    event.stopPropagation();
-    handleGenerateSummary(recording.id);
-    handleClose(event);
-  };
-
-  const handleDeleteRecording = (event) => {
-    event.stopPropagation();
-    handleOpenDialogue(recording.id);
-    handleClose(event);
   };
 
   return (
@@ -97,7 +70,7 @@ export default function CustomizedMenus(props) {
         onClick={handleClick}
         endIcon={<KeyboardArrowDownIcon />}
       >
-        Action
+        {title}
       </Button>
       <StyledMenu
         id="customized-menu"
@@ -108,19 +81,7 @@ export default function CustomizedMenus(props) {
         open={open}
         onClose={handleClose}
       >
-        <MenuItem onClick={handleCreateAndStartQuiz} disableRipple>
-          <QuizIcon />
-          Create and Start Quiz
-        </MenuItem>
-        <MenuItem onClick={handleSummary} disableRipple>
-          <SummarizeIcon />
-          Generate Summary
-        </MenuItem>
-        <Divider sx={{ my: 0.5 }} />
-        <MenuItem onClick={handleDeleteRecording} disableRipple>
-          <DeleteIcon />
-          Delete Recording
-        </MenuItem>
+        {children}
       </StyledMenu>
     </div>
   );
