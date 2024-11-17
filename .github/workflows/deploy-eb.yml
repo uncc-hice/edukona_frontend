@@ -119,7 +119,7 @@ jobs:
 
       - name: Deploy to Elastic Beanstalk
         run: |
-          eb deploy ${{ env.EBS_ENV_NAME }} --staged --label ${{ github.event.label.name }}
+          eb deploy ${{ env.EBS_ENV_NAME }} --label ${{ github.event.label.name }}
 
       - name: Notify Slack preview-deployments channel
         if: ${{ success() }}
