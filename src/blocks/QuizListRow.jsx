@@ -127,10 +127,11 @@ const QuizListRow = ({ quiz, onUpdate }) => {
         <TableCell>
           <QuizListRowMenu
             title={'Actions'}
-            quizId={quiz.id}
+            quiz={quiz}
             numQuestions={quiz.num_questions}
             deleteQuiz={() => setOpen(true)}
-            token={token}
+            token={token.current}
+            onUpdate={onUpdate}
           />
         </TableCell>
       </TableRow>
