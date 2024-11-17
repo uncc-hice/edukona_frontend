@@ -329,7 +329,16 @@ function EditQuizView() {
               </h3>
               <p style={labelStyle}>Points: {question.points}</p>
               <p style={labelStyle}>Correct Answer: {question.correct_answer}</p>
-              <p style={labelStyle}>Incorrect Answers: {question.incorrect_answer_list.join(', ')}</p>
+              <div style={{ display: 'flex', flexDirection: 'column', gap: '2px', justifyContent: 'start' }}>
+                <p style={labelStyle}>
+                  <strong>Incorrect Answers:</strong>
+                  {question.incorrect_answer_list.map((incorrectAnswer) => (
+                    <p>
+                      Answer: {incorrectAnswer.answer} <br /> Feedback: {incorrectAnswer.feedback}
+                    </p>
+                  ))}
+                </p>
+              </div>
               <Button
                 size={'large'}
                 variant={'contained'}
