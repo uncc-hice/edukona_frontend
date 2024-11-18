@@ -117,7 +117,7 @@ const RecordButton = ({ onUpdate }) => {
           // Notify backend about the new recording
           try {
             const backendResponse = await axios.post(
-              'https://api.edukona.com/create-recording/',
+              'https://api.edukona.com/recordings/create-recording/',
               {
                 s3_path: s3Key,
                 title: title,
