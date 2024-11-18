@@ -1,35 +1,22 @@
-import React, { useEffect, useState, useCallback } from 'react';
-import { Table, TableBody, TableContainer, Paper } from '@mui/material';
-import axios from 'axios';
+import React, { useEffect, useState } from 'react';
+import { Table, TableBody, TableContainer, Paper, CircularProgress } from '@mui/material';
 import QuizListRow from './QuizListRow';
+import { fetchQuizzes } from '../services/apiService';
 
 const QuizList = () => {
-  const [quizzes, setQuizzes] = useState([]);
-  const token = localStorage.getItem('token');
-
-  const fetchQuizzes = useCallback(async () => {
-    try {
-      const response = await axios.get('https://api.edukona.com/instructor/quizzes/', {
-        headers: {
-          'Content-Type': 'application/json',
-          Authorization: `Token ${token}`,
-        },
-      });
-
-      const data = response.data;
-      setQuizzes(data['quizzes']);
-    } catch (error) {
-      console.error('An error occurred while fetching the quizzes:', error.message);
-    }
-  }, [token]);
+  const [quizzes, setQuizzes] = useState(null);
 
   const onUpdate = () => {
-    fetchQuizzes();
+    fetchQuizzes().then((res) => setQuizzes(res.data.quizzes));
   };
 
   useEffect(() => {
-    fetchQuizzes();
-  }, [fetchQuizzes]);
+    fetchQuizzes().then((res) => setQuizzes(res.data.quizzes));
+  }, []);
+
+  if (quizzes === null) {
+    return <CircularProgress />;
+  }
 
   return (
     <TableContainer component={Paper}>
