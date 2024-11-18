@@ -113,7 +113,6 @@ const QuizListRow = ({ quiz, onUpdate }) => {
     );
   };
 
-  console.log(quiz);
   return (
     <React.Fragment>
       <TableRow key={quiz.id}>
