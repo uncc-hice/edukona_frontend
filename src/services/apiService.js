@@ -9,6 +9,17 @@ const api = axios.create({
   headers: { Authorization: `Token ${token}` },
 });
 
+api.interceptors.response.use(
+  (res) => res,
+  (err) => {
+    if (err.response && err.response.status === 401) {
+      localStorage.removeItem('token');
+      window.location.href = '/login';
+      return Promise.resolve(err);
+    }
+  }
+);
+
 export const fetchQuizzes = () =>
   api
     .get('instructor/quizzes/', {
