@@ -57,7 +57,7 @@ const InstructorRecordings = () => {
 
   const fetchRecordings = () =>
     axios
-      .get(`https://api.edukona.com/instructor-recordings/`, {
+      .get(`https://api.edukona.com/recordings/`, {
         headers: {
           Authorization: `Token ${token.current}`,
         },
@@ -104,7 +104,7 @@ const InstructorRecordings = () => {
 
   const handleDeleteRecording = () => {
     axios
-      .delete(`https://api.edukona.com/instructor-recordings/${selectedRecording}/delete-recording`, {
+      .delete(`https://api.edukona.com/recordings/${selectedRecording}/delete-recording`, {
         headers: {
           Authorization: `Token ${token.current}`,
         },
