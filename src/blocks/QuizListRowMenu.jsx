@@ -1,39 +1,21 @@
 import { Delete, Edit, EditNote, List, PlayArrow } from '@mui/icons-material';
 import { MenuItem } from '@mui/material';
-import axios from 'axios';
 import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { toast } from 'react-toastify';
 import ChangeQuizTitleDialog from './ChangeQuizTitleDialog';
 import GenericMenu from './GenericMenu';
+import { startQuizSession } from '../services/apiService';
 
-const QuizListRowMenu = ({ quiz, numQuestions, token, deleteQuiz, onUpdate }) => {
+const QuizListRowMenu = ({ quiz, numQuestions, deleteQuiz, onUpdate }) => {
   const [editTitleOpen, setEditTitleOpen] = useState(false);
   const navigate = useNavigate();
 
-  const startQuiz = async (quizId) => {
-    if (!token) {
-      console.log('No token found');
-      return;
-    }
+  const startQuiz = async (quizId) =>
     toast.promise(
-      axios
-        .post(
-          'https://api.edukona.com/quiz-session/',
-          {
-            quiz_id: quizId,
-          },
-          {
-            headers: {
-              'Content-Type': 'application/json',
-              Authorization: `Token ${token}`,
-            },
-          }
-        )
-        .then((res) => navigate(`/session/${res.data.code}`)),
+      startQuizSession(quizId).then((res) => navigate(`/session/${res.data.code}`)),
       { error: 'Failed to start quiz' }
     );
-  };
 
   const viewQuestions = (quizId) => {
     navigate(`/quiz/${quizId}/edit`);
@@ -66,7 +48,6 @@ const QuizListRowMenu = ({ quiz, numQuestions, token, deleteQuiz, onUpdate }) =>
         setOpen={setEditTitleOpen}
         quizId={quiz.id}
         currentTitle={quiz.title}
-        token={token}
         onUpdate={onUpdate}
       />
     </>
