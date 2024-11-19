@@ -1,27 +1,17 @@
 import { Button, Dialog, DialogActions, DialogContent, DialogTitle, FormControl, Input } from '@mui/material';
-import axios from 'axios';
 import { useState } from 'react';
 import { toast } from 'react-toastify';
+import { updateQuizTitle } from '../services/apiService';
 
 const ChangeQuizTitleDialog = ({ open, setOpen, currentTitle, quizId, token, onUpdate }) => {
   const [title, setTitle] = useState(currentTitle);
 
   const updateTitle = () =>
     toast.promise(
-      axios
-        .patch(
-          `https://api.edukona.com/quiz/${quizId}/update-title/`,
-          { title: title },
-          {
-            headers: {
-              Authorization: `Token ${token}`,
-            },
-          }
-        )
-        .then(() => {
-          setOpen(false);
-          onUpdate();
-        }),
+      updateQuizTitle(quizId, title).then(() => {
+        setOpen(false);
+        onUpdate();
+      }),
       {
         pending: 'Updating title...',
         success: 'Successfully updated title.',
