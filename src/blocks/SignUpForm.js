@@ -4,6 +4,7 @@ import { signUp } from './Functions';
 import { Link } from 'react-router-dom';
 import { Footer } from '../layouts/Main/components';
 import { toast } from 'react-toastify';
+import { useNavigate } from 'react-router-dom';
 
 const SignUpForm = ({ toggleForm }) => {
   const [firstName, setFirstName] = useState('');
@@ -13,6 +14,7 @@ const SignUpForm = ({ toggleForm }) => {
   const [email, setEmail] = useState('');
   const [role, setRole] = useState('student');
   const [error, setError] = useState('');
+  const navigate = useNavigate();
 
   const validateForm = () => {
     if (!firstName || !password || !confirmPassword || !email) {
@@ -36,6 +38,7 @@ const SignUpForm = ({ toggleForm }) => {
     }
     //signUp function imported from Functions.js
     signUp(firstName, lastName, password, email, role);
+    navigate('/');
   };
 
   const nameStyle = {

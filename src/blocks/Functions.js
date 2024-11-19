@@ -27,7 +27,6 @@ export function signUp(firstName, lastName, password, email, role) {
       //shows response in console
       console.log('Response: ', response.data);
       localStorage.setItem('token', response.data['token']);
-      window.location.reload();
     })
     //catches error and displays in console
     .catch((error) => {

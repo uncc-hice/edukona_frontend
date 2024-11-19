@@ -69,10 +69,7 @@ function App() {
             path="/login"
             element={isLoggedIn ? <Navigate to="/dashboard" /> : <LoginForm signUpRoute={'/signup'} />}
           />
-          <Route
-            path="/signup"
-            element={isLoggedIn ? <Navigate to="/dashboard" /> : <SignUpForm toggleForm={toggleForm} />}
-          />
+          <Route path="/signup" element={isLoggedIn ? <Navigate to="/" /> : <SignUpForm toggleForm={toggleForm} />} />
           <Route path="/dashboard" element={isLoggedIn ? <InstructorDashboard /> : <Navigate to="/" />} />
           <Route path="/session/:code" element={isLoggedIn ? <QuizSession /> : <Navigate to="/" />} />
           <Route path="/results/:code" element={isLoggedIn ? <QuizSessionResults /> : <Navigate to="/" />} />
