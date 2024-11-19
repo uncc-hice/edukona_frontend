@@ -18,5 +18,21 @@ export const fetchQuizzes = () =>
     })
     .catch((e) => {
       toast.error('An error occurred while fetching your quizzes');
-      console.error(`Error fetching quizzes ${e}`);
+      console.error(`Error fetching quizzes: ${e}`);
+    });
+
+export const updateQuizTitle = (quizId, title) =>
+  api
+    .patch(
+      `quiz/${quizId}/update-title/`,
+      { title: title },
+      {
+        headers: {
+          Authorization: `Token ${token}`,
+        },
+      }
+    )
+    .catch((e) => {
+      toast.error('An error occurred while updating the title');
+      console.error(`Error updating title: ${e}`);
     });
