@@ -231,7 +231,7 @@ const InstructorRecordings = () => {
   const handleUpdateTitle = () => {
     axios
       .patch(
-        `https://api.edukona.com/instructor-recordings/${selectedRecording}/update-title`,
+        `https://api.edukona.com/recordings/${selectedRecording}/update-title`,
         { title: newTitle },
         {
           headers: {
