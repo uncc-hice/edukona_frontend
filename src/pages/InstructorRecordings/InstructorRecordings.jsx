@@ -555,32 +555,6 @@ const InstructorRecordings = () => {
             </Button>
           </DialogActions>
         </Dialog>
-        <Dialog
-          open={openEditTitleDialog}
-          onClose={() => setOpenEditTitleDialog(false)}
-          aria-labelledby="edit-title-dialog"
-        >
-          <DialogTitle id="edit-title-dialog">Edit Title</DialogTitle>
-          <DialogContent>
-            <FormControl fullWidth>
-              <TextField
-                id="new-title"
-                value={newTitle}
-                onChange={(e) => setNewTitle(e.target.value)}
-                label="New Title"
-                variant="outlined"
-              />
-            </FormControl>
-          </DialogContent>
-          <DialogActions>
-            <Button onClick={() => setOpenEditTitleDialog(false)} color="primary">
-              Cancel
-            </Button>
-            <Button onClick={handleUpdateTitle} color="primary">
-              Save
-            </Button>
-          </DialogActions>
-        </Dialog>
       </Container>
     </Main>
   );
