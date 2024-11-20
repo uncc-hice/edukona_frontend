@@ -55,11 +55,10 @@ const InstructorRecordings = () => {
   const [quizzes, setQuizzes] = useState([]);
   const [loadingQuizzes, setLoadingQuizzes] = useState(false);
   const [expanded, setExpanded] = useState(null);
-  const [refresh, setRefresh] = useState(false);
 
   const fetchRecordings = () =>
     axios
-      .get(`https://api.edukona.com/instructor-recordings/`, {
+      .get(`https://api.edukona.com/recordings/`, {
         headers: {
           Authorization: `Token ${token.current}`,
         },
@@ -106,7 +105,7 @@ const InstructorRecordings = () => {
 
   const handleDeleteRecording = () => {
     axios
-      .delete(`https://api.edukona.com/instructor-recordings/${selectedRecording}/delete-recording`, {
+      .delete(`https://api.edukona.com/recordings/${selectedRecording}/delete-recording`, {
         headers: {
           Authorization: `Token ${token.current}`,
         },
@@ -119,6 +118,35 @@ const InstructorRecordings = () => {
       .then(() => fetchRecordings())
       .catch((error) => console.error(error));
     setOpenDialogue(false);
+  };
+
+  const handleGenerateSummary = (recordingId) => {
+    toast
+      .promise(
+        axios.post(
+          'https://6y2dyfv9k1.execute-api.us-west-2.amazonaws.com/Prod/create_summary_from_transcript',
+          { recording_id: recordingId },
+          {
+            headers: {
+              Authorization: `Token ${token.current}`,
+              'Content-Type': 'application/json',
+            },
+          }
+        ),
+        {
+          pending: 'Generating summary...',
+          success: 'Summary generated successfully!',
+          error: 'Failed to generate summary.',
+          theme,
+        }
+      )
+      .then((res) => {
+        console.log('Summary generated:', res.data);
+        // Optionally, handle the response, e.g., display the summary or update state
+      })
+      .catch((error) => {
+        console.error('Error generating summary:', error);
+      });
   };
 
   const handleCreateQuiz = () => {
@@ -189,22 +217,15 @@ const InstructorRecordings = () => {
     fetchRecordings();
   }, [token]);
 
-  const fetchQuizzes = async (id) => {
-    const config = {
-      headers: {
-        Authorization: `Token ${token.current}`,
-      },
-    };
-
-    setLoadingQuizzes(true);
-    try {
-      const response = await axios.get(`https://api.edukona.com/recordings/${id}/quizzes`, config);
-      setQuizzes(response.data);
-    } catch (error) {
-      console.error('Error fetching quizzes:', error);
-    } finally {
-      setLoadingQuizzes(false);
+  const fetchQuizzes = (id) => {
+    if (quizzes == null) {
+      setLoadingQuizzes(true);
     }
+    axios
+      .get(`https://api.edukona.com/recordings/${id}/quizzes`, { headers: { Authorization: `Token ${token.current}` } })
+      .then((res) => setQuizzes(res.data))
+      .catch((error) => console.error('Error fetching quizzes:', error))
+      .finally(() => setLoadingQuizzes(false));
   };
 
   const handleUpdateTitle = () => {
@@ -252,10 +273,6 @@ const InstructorRecordings = () => {
       fetchQuizzes(recordingId);
     }
     setExpanded(expanded === recordingId ? null : recordingId);
-  };
-
-  const onUpdate = () => {
-    setRefresh(!refresh);
   };
 
   return (
@@ -363,6 +380,7 @@ const InstructorRecordings = () => {
                           setSelectedRecording={setSelectedRecording}
                           setOpenNewRecording={setOpenNewRecording}
                           setOpenEditTitleDialog={setOpenEditTitleDialog}
+                          handleGenerateSummary={handleGenerateSummary}
                           setNewTitle={setNewTitle}
                         />
                       </Box>
@@ -382,7 +400,11 @@ const InstructorRecordings = () => {
                               <Table>
                                 <TableBody>
                                   {quizzes.map((quiz) => (
-                                    <QuizListRow key={quiz.id} quiz={quiz} onUpdate={onUpdate} />
+                                    <QuizListRow
+                                      key={quiz.id}
+                                      quiz={quiz}
+                                      onUpdate={() => fetchQuizzes(recording.id)}
+                                    />
                                   ))}
                                 </TableBody>
                               </Table>

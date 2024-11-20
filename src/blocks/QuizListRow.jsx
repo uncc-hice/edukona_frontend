@@ -17,8 +17,9 @@ import {
 } from '@mui/material';
 import axios from 'axios';
 import React, { useRef, useState } from 'react';
-import { Link, useNavigate } from 'react-router-dom';
+import { Link } from 'react-router-dom';
 import { toast } from 'react-toastify';
+import QuizListRowMenu from './QuizListRowMenu';
 
 const QuizListRow = ({ quiz, onUpdate }) => {
   const token = useRef(localStorage.getItem('token'));
@@ -31,7 +32,6 @@ const QuizListRow = ({ quiz, onUpdate }) => {
   const [selectedSession, setSelectedSession] = useState(null);
   const [sessionModalOpen, setSessionModalOpen] = useState(false);
   const [error, setError] = useState(null);
-  const navigate = useNavigate();
   const createdAt = useRef(
     new Date(quiz.created_at).toLocaleString('en-us', {
       month: 'long',
@@ -98,47 +98,6 @@ const QuizListRow = ({ quiz, onUpdate }) => {
     setSessionModalOpen(false);
   };
 
-  const startQuiz = async (quizId) => {
-    if (!token) {
-      console.log('No token found');
-      return;
-    }
-    try {
-      const response = await axios.post(
-        'https://api.edukona.com/quiz-session/',
-        {
-          quiz_id: quizId,
-        },
-        {
-          headers: {
-            'Content-Type': 'application/json',
-            Authorization: `Token ${token.current}`,
-          },
-        }
-      );
-
-      // Assuming the response contains a session code in the format: { code: 'someCode' }
-      const sessionCode = response.data.code;
-
-      if (!(response.status === 400)) {
-        navigate(`/session/${sessionCode}`);
-      }
-
-      // Example of using URL parameters
-    } catch (error) {
-      console.error('Error starting the quiz:', error);
-      // Handle error (e.g., showing an error message to the user)
-    }
-  };
-
-  const viewQuestions = (quizId) => {
-    navigate(`/quiz/${quizId}/edit`);
-  };
-
-  const settings = (quizId) => {
-    navigate(`/quiz/${quizId}/settings`);
-  };
-
   const deleteQuiz = async () => {
     setOpen(false);
     toast.promise(
@@ -154,7 +113,6 @@ const QuizListRow = ({ quiz, onUpdate }) => {
     );
   };
 
-  console.log(quiz);
   return (
     <React.Fragment>
       <TableRow key={quiz.id}>
@@ -166,28 +124,14 @@ const QuizListRow = ({ quiz, onUpdate }) => {
           </Button>
         </TableCell>
         <TableCell>
-          <Button variant="contained" color="primary" onClick={() => viewQuestions(quiz.id)}>
-            View Questions ({quiz.num_questions})
-          </Button>
-        </TableCell>
-        <TableCell>
-          <Button variant="contained" color="primary" onClick={() => settings(quiz.id)}>
-            Edit Settings
-          </Button>
-        </TableCell>
-        <TableCell>
-          <Button
-            variant="contained"
-            color="primary"
-            onClick={() => startQuiz(quiz.id)} // Add onClick event handler to call startQuiz
-          >
-            Start Quiz
-          </Button>
-        </TableCell>
-        <TableCell>
-          <Button variant="Text" onClick={() => setOpen(true)}>
-            <Delete color={'action'} />
-          </Button>
+          <QuizListRowMenu
+            title={'Actions'}
+            quiz={quiz}
+            numQuestions={quiz.num_questions}
+            deleteQuiz={() => setOpen(true)}
+            token={token.current}
+            onUpdate={onUpdate}
+          />
         </TableCell>
       </TableRow>
       <TableRow>
