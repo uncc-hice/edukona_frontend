@@ -47,3 +47,21 @@ export const updateQuizTitle = (quizId, title) =>
       toast.error('An error occurred while updating the title');
       console.error(`Error updating title: ${e}`);
     });
+
+export const startQuizSession = (quizId) =>
+  api
+    .post(
+      'quiz-session/',
+      {
+        quiz_id: quizId,
+      },
+      {
+        headers: {
+          'Content-Type': 'application/json',
+        },
+      }
+    )
+    .catch((e) => {
+      toast.error('An error occurred while starting the quiz');
+      console.error(`Error starting quiz: ${e}`);
+    });
