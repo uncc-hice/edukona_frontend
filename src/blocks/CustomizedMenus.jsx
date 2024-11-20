@@ -8,6 +8,7 @@ import DeleteIcon from '@mui/icons-material/Delete';
 import QuizIcon from '@mui/icons-material/Quiz';
 import SummarizeIcon from '@mui/icons-material/Summarize';
 import KeyboardArrowDownIcon from '@mui/icons-material/KeyboardArrowDown';
+import { Note } from '@mui/icons-material';
 
 const StyledMenu = styled((props) => (
   <Menu
