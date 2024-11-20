@@ -58,9 +58,8 @@ export default function CustomizedMenus(props) {
     setOpenNewRecording,
     setOpenEditTitleDialog,
     setNewTitle,
-    handleGenerateSummary
+    handleGenerateSummary,
   } = props;
-
 
   const [anchorEl, setAnchorEl] = React.useState(null);
   const open = Boolean(anchorEl);
@@ -87,8 +86,8 @@ export default function CustomizedMenus(props) {
     event.stopPropagation();
     setOpenEditTitleDialog(true);
     setNewTitle(recording.title);
-  }
-  
+  };
+
   const handleSummary = (event) => {
     event.stopPropagation();
     handleGenerateSummary(recording.id);
