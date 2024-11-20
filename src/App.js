@@ -32,6 +32,7 @@ import { UserContext } from './UserContext';
 import Team from './pages/Team/Team';
 import General from './pages/ProfilePage/General';
 import Security from './pages/ProfilePage/Security';
+import Summary from './pages/Summary';
 
 function App() {
   const [showLogin, setShowLogin] = useState(true);
@@ -88,6 +89,7 @@ function App() {
           {/*<Route path="/create-landing" element={<DevRoute element={<Landing />} />} />*/}
           <Route path="/unauthorized" element={<Unauthorized />} />
           <Route path="/recordings" element={isLoggedIn ? <InstructorRecordings /> : <Navigate to="/" />} />
+          <Route path="/summary/:summaryId" element={isLoggedIn ? <Summary /> : <Navigate to="/" />} />
         </Routes>
       </Router>
       <ToastContainer

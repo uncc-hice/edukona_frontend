@@ -48,6 +48,12 @@ export const updateQuizTitle = (quizId, title) =>
       console.error(`Error updating title: ${e}`);
     });
 
+export const getSummary = (summaryId) =>
+  api.get(`summary/${summaryId}/get-summary`).catch((e) => {
+    toast.error('An error occured while fetching the summary');
+    console.error(`Error fetching summary: ${e}`);
+  });
+
 export const startQuizSession = (quizId) =>
   api
     .post(
