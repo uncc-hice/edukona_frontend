@@ -16,11 +16,13 @@ const InstructorQuestionView = () => {
   const [settings, setSettings] = useState({});
   const [userCount, setUserCount] = useState(0);
   const [grades, setGrades] = useState({});
+  const [highlight, setHighlight] = useState(false);
 
   const handleIncomingMessage = useCallback(
     (event) => {
       const data = JSON.parse(event.data);
       if (data.type === 'next_question' || data.type === 'current_question') {
+        setHighlight(false);
         setCurrentQuestion(data.question);
         setResetTimer((prev) => !prev); // Toggle to reset the timer
       } else if (data.type === 'quiz_ended') {
@@ -65,7 +67,7 @@ const InstructorQuestionView = () => {
   }, [sendMessage, currentQuestion]);
 
   const onTimerEnd = useCallback(() => {
-    // Handle what happens when the timer ends
+    setHighlight(true);
   }, []);
 
   useEffect(() => {
@@ -93,6 +95,7 @@ const InstructorQuestionView = () => {
             timerDuration={currentQuestion.duration}
             resetTimer={resetTimer}
             onTimerEnd={onTimerEnd}
+            toggleHighlight={highlight}
           />
         ) : (
           <Typography>Loading question...</Typography>
