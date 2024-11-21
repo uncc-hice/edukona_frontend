@@ -15,7 +15,15 @@ const StyledCountText = styled(Typography)(({ theme }) => ({
   marginBottom: '8px', // Space below the count before the answer option
 }));
 
-const AnswersGrid = ({ liveBarChart, sendMessage, answers, responseData }) => {
+const AnswersGrid = ({
+  liveBarChart,
+  sendMessage,
+  answers,
+  responseData,
+  toggleHighlight,
+  correctAnswer,
+  incorrectAnswers,
+}) => {
   const totalResponses = responseData.total_responses;
 
   useEffect(() => {
@@ -33,6 +41,9 @@ const AnswersGrid = ({ liveBarChart, sendMessage, answers, responseData }) => {
       {answers.map((answer, index) => {
         const count = responseData?.answers?.[answer] || 0;
         const width = totalResponses > 0 ? (count / totalResponses) * 100 : 0;
+        const highlight = toggleHighlight ? (correctAnswer === answer ? 'correct' : 'incorrect') : 'base';
+        let answer_item = typeof answer === 'string' ? answer : answer.answer;
+        let feedback = typeof answer === 'string' ? '' : answer.feedback;
 
         return (
           <Grid item xs={12} sm={6} key={index}>
@@ -42,7 +53,7 @@ const AnswersGrid = ({ liveBarChart, sendMessage, answers, responseData }) => {
                 <StyledCountText variant="body2">{`Responses: ${count}`}</StyledCountText>
               </>
             )}
-            <AnswerOption answer={answer} index={index} />
+            <AnswerOption answer={answer_item} index={index} highlight={highlight} feedback={feedback} />
           </Grid>
         );
       })}

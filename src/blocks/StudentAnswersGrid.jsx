@@ -67,17 +67,20 @@ const StudentAnswersGrid = ({
   return (
     <Box sx={{ padding: 2 }}>
       <Grid container spacing={2} justifyContent="center" alignItems="center">
-        {answers.map((answer, index) => (
-          <Grid item xs={12} sm={6} key={index}>
-            <StudentAnswerOption
-              answer={answer}
-              index={index}
-              onClick={() => handleSubmitAnswer(answer)}
-              selected={answer === selectedAnswer}
-              submitted={isSubmitted}
-            />
-          </Grid>
-        ))}
+        {answers.map((answer, index) => {
+          const answerText = typeof answer === 'string' ? answer : answer.answer;
+          return (
+            <Grid item xs={12} sm={6} key={index}>
+              <StudentAnswerOption
+                answer={answerText}
+                index={index}
+                onClick={() => handleSubmitAnswer(answerText)}
+                selected={answerText === selectedAnswer}
+                submitted={isSubmitted}
+              />
+            </Grid>
+          );
+        })}
       </Grid>
     </Box>
   );
