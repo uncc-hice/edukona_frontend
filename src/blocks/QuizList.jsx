@@ -22,9 +22,11 @@ const QuizList = () => {
     <TableContainer component={Paper}>
       <Table>
         <TableBody>
-          {quizzes.map((quiz) => (
-            <QuizListRow key={quiz.id} quiz={quiz} onUpdate={onUpdate} />
-          ))}
+          {quizzes.length === 0 ? (
+            <h1 style={{ textAlign: 'center' }}>No Quizzes</h1>
+          ) : (
+            quizzes.map((quiz) => <QuizListRow key={quiz.id} quiz={quiz} onUpdate={onUpdate} />)
+          )}
         </TableBody>
       </Table>
     </TableContainer>
