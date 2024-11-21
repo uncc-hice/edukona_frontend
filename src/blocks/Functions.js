@@ -21,18 +21,20 @@ export function signUp(firstName, lastName, password, email, role) {
     password: password,
   };
   //API request using instructor URL and data from SignUpForm.js
-  axios
-    .post(axiosUrl, data)
-    .then((response) => {
-      //shows response in console
-      console.log('Response: ', response.data);
-      localStorage.setItem('token', response.data['token']);
-    })
-    //catches error and displays in console
-    .catch((error) => {
-      //console.error('Error: ', error);
-      toast('Sign up failed.');
-    });
+  return (
+    axios
+      .post(axiosUrl, data)
+      .then((response) => {
+        //shows response in console
+        console.log('Response: ', response.data);
+        localStorage.setItem('token', response.data['token']);
+      })
+      //catches error and displays in console
+      .catch((error) => {
+        //console.error('Error: ', error);
+        toast('Sign up failed.');
+      })
+  );
 }
 
 // function getQuizzes(token){

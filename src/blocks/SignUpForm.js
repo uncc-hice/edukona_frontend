@@ -37,8 +37,13 @@ const SignUpForm = ({ toggleForm }) => {
       return;
     }
     //signUp function imported from Functions.js
-    signUp(firstName, lastName, password, email, role);
-    navigate('/');
+    signUp(firstName, lastName, password, email, role)
+      .then(() => {
+        navigate('/');
+      })
+      .catch((error) => {
+        setError(error);
+      });
   };
 
   const nameStyle = {
