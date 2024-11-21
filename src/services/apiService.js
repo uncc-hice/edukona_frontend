@@ -2,6 +2,7 @@ import axios from 'axios';
 import { toast } from 'react-toastify';
 
 const token = localStorage.getItem('token');
+const theme = localStorage.getItem('themeMode');
 
 const api = axios.create({
   baseURL: 'https://api.edukona.com/',
@@ -71,3 +72,29 @@ export const startQuizSession = (quizId) =>
       toast.error('An error occurred while starting the quiz');
       console.error(`Error starting quiz: ${e}`);
     });
+
+export const fetchRecordings = (setRecordings) =>
+  axios
+    .get(`https://api.edukona.com/recordings/`, {
+      headers: {
+        Authorization: `Token ${token}`,
+      },
+    })
+    .then((res) => setRecordings(res.data.recordings))
+    .catch((error) => console.error(error));
+
+export const deleteRecording = (recording, setRecordings) => {
+  axios
+    .delete(`https://api.edukona.com/recordings/${recording}/delete-recording`, {
+      headers: {
+        Authorization: `Token ${token}`,
+      },
+    })
+    .then((res) =>
+      res.status === 200
+        ? toast.success('Recording successfully deleted!', { icon: '🗑️', theme })
+        : toast.error('Could not delete recording.', { theme })
+    )
+    .then(() => fetchRecordings(setRecordings))
+    .catch((error) => console.error(error));
+};
