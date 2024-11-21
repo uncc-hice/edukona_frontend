@@ -66,11 +66,11 @@ const InstructorQuestionView = () => {
     }
   }, [sendMessage, currentQuestion]);
 
-  const onTimerEnd = () => {
+  const onTimerEnd = useCallback(() => {
     setTimeout(() => {
       setHighlight(true);
     }, 500);
-  };
+  }, [setHighlight]);
 
   useEffect(() => {
     handleNextQuestion();
