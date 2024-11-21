@@ -1,9 +1,9 @@
 import React, { useEffect, useState } from 'react';
-import axios from 'axios';
 import QuizResults from '../blocks/QuizResults';
 import { Box, Typography } from '@mui/material';
 import { useParams } from 'react-router-dom';
 import Dashboard from '../layouts/Dashboard/Dashboard';
+import { fetchResults } from '../services/apiService';
 
 const QuizSessionResults = () => {
   const { code } = useParams();
@@ -11,21 +11,7 @@ const QuizSessionResults = () => {
 
   useEffect(() => {
     if (code) {
-      const fetchResults = async () => {
-        try {
-          const token = localStorage.getItem('token');
-          const response = await axios.get(`https://api.edukona.com/quiz-session-results/${code}`, {
-            headers: {
-              Authorization: `Token ${token}`,
-            },
-          });
-          setResults(response.data.results);
-        } catch (error) {
-          console.error('Failed to fetch quiz results:', error);
-        }
-      };
-
-      fetchResults();
+      fetchResults(code, setResults);
     } else {
       console.error('Quiz session code is undefined');
     }
