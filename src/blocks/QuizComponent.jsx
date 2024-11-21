@@ -17,15 +17,20 @@ const QuizComponent = ({
   timerDuration,
   resetTimer,
   onTimerEnd,
+  toggleHighlight,
 }) => {
   const theme = useTheme();
   const [shuffledAnswers, setShuffledAnswers] = useState([]);
+  const [correctAnswer, setCorrectAnswer] = useState('');
+  const [incorrectAnswers, setIncorrectAnswers] = useState([]);
 
   // Effect to shuffle answers only when the question changes
   useEffect(() => {
     if (question) {
       const answers = [...question['incorrect_answer_list'], question['correct_answer']];
       const shuffled = answers.sort(() => 0.5 - Math.random());
+      setCorrectAnswer(question['correct_answer']);
+      setIncorrectAnswers(question['incorrect_answer_list']);
       setShuffledAnswers(shuffled);
     }
   }, [question]);
@@ -83,6 +88,9 @@ const QuizComponent = ({
           qid={question['id']}
           responseData={responseData}
           sendMessage={sendMessage}
+          toggleHighlight={toggleHighlight}
+          correctAnswer={correctAnswer}
+          incorrectAnswers={incorrectAnswers}
         />
       </Box>
     </Box>
