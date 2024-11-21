@@ -3,7 +3,7 @@ import { useState } from 'react';
 import { toast } from 'react-toastify';
 import { updateQuizTitle } from '../services/apiService';
 
-const ChangeQuizTitleDialog = ({ open, setOpen, currentTitle, quizId, token, onUpdate }) => {
+const ChangeQuizTitleDialog = ({ open, setOpen, currentTitle, quizId, onUpdate }) => {
   const [title, setTitle] = useState(currentTitle);
 
   const updateTitle = () =>
