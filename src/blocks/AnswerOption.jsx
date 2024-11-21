@@ -37,7 +37,7 @@ const StyledButtonBase = styled(ButtonBase)(({ theme, index, bgcolor, highlight 
     opacity: 0.9,
     boxShadow: theme.shadows[4],
   },
-  color: theme.palette.getContrastText(bgcolor || getColor(index)),
+  color: 'white',
   animation: highlight === 'correct' ? `${popUpAnimation} 0.6s ease-in-out` : 'none',
 }));
 
@@ -56,6 +56,10 @@ const AnswerOption = ({ answer, index, count, totalResponses, highlight, feedbac
     bgcolor = correct_answer_color;
   } else if (highlight === 'incorrect') {
     bgcolor = incorrect_answer_color;
+  }
+
+  if (typeof answer === 'object') {
+    answer = answer["answer"];
   }
 
   return (

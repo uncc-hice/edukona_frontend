@@ -43,9 +43,10 @@ const AnswersGrid = ({
         const width = totalResponses > 0 ? (count / totalResponses) * 100 : 0;
         const highlight = toggleHighlight ? (correctAnswer === answer ? 'correct' : 'incorrect') : 'base';
         let feedback = '';
+        console.log('feedback1', incorrectAnswers[index]);
         if (highlight === 'incorrect') {
-          if (incorrectAnswers[index] && incorrectAnswers[index].feedback) {
-            feedback = incorrectAnswers[index].feedback;
+          if (incorrectAnswers[index] && incorrectAnswers[index]['feedback']) {
+            feedback = incorrectAnswers[index]['feedback'];
           } else {
             feedback = ''; // No feedback available
           }
