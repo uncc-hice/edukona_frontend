@@ -58,10 +58,6 @@ const AnswerOption = ({ answer, index, count, totalResponses, highlight, feedbac
     bgcolor = incorrect_answer_color;
   }
 
-  if (typeof answer === 'object') {
-    answer = answer["answer"];
-  }
-
   return (
     <StyledButtonBase index={index} bgcolor={bgcolor} highlight={highlight}>
       <ResponseLine width={width} />

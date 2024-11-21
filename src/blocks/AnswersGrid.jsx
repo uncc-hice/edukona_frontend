@@ -42,15 +42,8 @@ const AnswersGrid = ({
         const count = responseData?.answers?.[answer] || 0;
         const width = totalResponses > 0 ? (count / totalResponses) * 100 : 0;
         const highlight = toggleHighlight ? (correctAnswer === answer ? 'correct' : 'incorrect') : 'base';
-        let feedback = '';
-        console.log('feedback1', incorrectAnswers[index]);
-        if (highlight === 'incorrect') {
-          if (incorrectAnswers[index] && incorrectAnswers[index]['feedback']) {
-            feedback = incorrectAnswers[index]['feedback'];
-          } else {
-            feedback = ''; // No feedback available
-          }
-        }
+        let answer_item = typeof answer === 'string' ? answer : answer.answer;
+        let feedback = typeof answer === 'string' ? '' : answer.feedback;
 
         return (
           <Grid item xs={12} sm={6} key={index}>
@@ -60,7 +53,7 @@ const AnswersGrid = ({
                 <StyledCountText variant="body2">{`Responses: ${count}`}</StyledCountText>
               </>
             )}
-            <AnswerOption answer={answer} index={index} highlight={highlight} feedback={feedback} />
+            <AnswerOption answer={answer_item} index={index} highlight={highlight} feedback={feedback} />
           </Grid>
         );
       })}
