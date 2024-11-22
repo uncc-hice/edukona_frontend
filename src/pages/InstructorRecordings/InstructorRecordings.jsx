@@ -94,11 +94,15 @@ const InstructorRecordings = () => {
     setNewRecordingDetails((prev) => ({ ...prev, [e.target.name]: e.target.value }));
 
   const handleFetchRecordings = () => {
-    fetchRecordings().then((recordings) => setRecordings(recordings));
+    fetchRecordings().then((res) => setRecordings(res.data.recordings));
   };
 
   const handleDeleteRecording = () => {
-    deleteRecording(selectedRecording);
+    deleteRecording(selectedRecording).then((res) =>
+      res.status === 200
+        ? toast.success('Recording successfully deleted!', { icon: '🗑️', theme })
+        : toast.error('Could not delete recording.', { theme })
+    )
     handleFetchRecordings();
     setOpenDialogue(false);
   };

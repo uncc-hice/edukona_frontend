@@ -76,19 +76,14 @@ export const startQuizSession = (quizId) =>
 export const fetchRecordings = () =>
   api
     .get(`https://api.edukona.com/recordings/`)
-    .then((res) => res.data.recordings)
     .catch((error) => {
       console.error(error);
-      return [];
     });
 
-export const deleteRecording = (recording) => {
+export const deleteRecording = (recording) =>
   api
     .delete(`https://api.edukona.com/recordings/${recording}/delete-recording`)
-    .then((res) =>
-      res.status === 200
-        ? toast.success('Recording successfully deleted!', { icon: '🗑️', theme })
-        : toast.error('Could not delete recording.', { theme })
-    )
-    .catch((error) => console.error(error));
-};
+    .catch((error) => {
+      toast.error('An error occured while deleting the recording');
+      console.error(error)
+    });
