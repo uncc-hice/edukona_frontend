@@ -1,7 +1,7 @@
 // app.js
 
 import './App.css';
-import React, { useState, useEffect, useContext } from 'react';
+import React, { useEffect, useContext } from 'react';
 import { BrowserRouter as Router, Route, Routes, Navigate } from 'react-router-dom';
 import { ReactNotifications } from 'react-notifications-component';
 import 'react-notifications-component/dist/theme.css';
@@ -35,12 +35,7 @@ import Security from './pages/ProfilePage/Security';
 import Summary from './pages/Summary';
 
 function App() {
-  const [showLogin, setShowLogin] = useState(true);
   const { isLoggedIn } = useContext(UserContext);
-
-  const toggleForm = () => {
-    setShowLogin(!showLogin);
-  };
 
   useEffect(() => {
     const gaMeasurementId = process.env.REACT_APP_GA_MEASUREMENT_ID;
@@ -70,7 +65,7 @@ function App() {
             path="/login"
             element={isLoggedIn ? <Navigate to="/dashboard" /> : <LoginForm signUpRoute={'/signup'} />}
           />
-          <Route path="/signup" element={isLoggedIn ? <Navigate to="/" /> : <SignUpForm toggleForm={toggleForm} />} />
+          <Route path="/signup" element={isLoggedIn ? <Navigate to="/" /> : <SignUpForm />} />
           <Route path="/dashboard" element={isLoggedIn ? <InstructorDashboard /> : <Navigate to="/" />} />
           <Route path="/session/:code" element={isLoggedIn ? <QuizSession /> : <Navigate to="/" />} />
           <Route path="/results/:code" element={isLoggedIn ? <QuizSessionResults /> : <Navigate to="/" />} />

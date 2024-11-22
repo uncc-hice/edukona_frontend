@@ -1,28 +1,34 @@
 import React, { useState } from 'react';
 import { TextField, Button, Typography, Container, Grid, Tabs, Tab } from '@mui/material';
-import { signUp } from './Functions';
+import { signUp } from '../services/apiService';
 import { Link } from 'react-router-dom';
 import { Footer } from '../layouts/Main/components';
 import { toast } from 'react-toastify';
 import { useNavigate } from 'react-router-dom';
 
-const SignUpForm = ({ toggleForm }) => {
-  const [firstName, setFirstName] = useState('');
-  const [lastName, setLastName] = useState('');
-  const [password, setPassword] = useState('');
-  const [confirmPassword, setConfirmPassword] = useState('');
-  const [email, setEmail] = useState('');
+const SignUpForm = ({}) => {
   const [role, setRole] = useState('student');
   const [error, setError] = useState('');
+  const [formData, setFormData] = useState({
+    firstName: '',
+    lastName: '',
+    email: '',
+    password: '',
+    confirmPassword: '',
+  });
   const navigate = useNavigate();
 
+  const handleFormChange = (e) => {
+    setFormData((prev) => ({ ...prev, [e.target.name]: e.target.value }));
+  };
+
   const validateForm = () => {
-    if (!firstName || !password || !confirmPassword || !email) {
+    if (!formData.firstName || !formData.password || !formData.confirmPassword || !formData.email) {
       setError('Please fill in all fields.');
       return false;
     }
 
-    if (password !== confirmPassword) {
+    if (formData.password !== formData.confirmPassword) {
       toast('Passwords do not match. Please try again.');
       return false;
     }
@@ -37,13 +43,9 @@ const SignUpForm = ({ toggleForm }) => {
       return;
     }
     //signUp function imported from Functions.js
-    signUp(firstName, lastName, password, email, role)
-      .then(() => {
-        navigate('/');
-      })
-      .catch((error) => {
-        setError(error);
-      });
+    signUp(formData).then(() => {
+      navigate('/');
+    });
   };
 
   const nameStyle = {
@@ -81,10 +83,11 @@ const SignUpForm = ({ toggleForm }) => {
               <TextField
                 fullWidth
                 id="firstName"
+                name="firstName"
                 label="First Name *"
                 variant="outlined"
-                value={firstName}
-                onChange={(e) => setFirstName(e.target.value)}
+                value={formData.firstName}
+                onChange={(e) => handleFormChange(e)}
               />
             </Grid>
             <Grid item xs={12} sm={4}>
@@ -92,10 +95,11 @@ const SignUpForm = ({ toggleForm }) => {
               <TextField
                 fullWidth
                 id="lastName"
+                name="lastName"
                 label="Last Name"
                 variant="outlined"
-                value={lastName}
-                onChange={(e) => setLastName(e.target.value)}
+                value={formData.lastName}
+                onChange={(e) => handleFormChange(e)}
               />
             </Grid>
             <Grid item xs={12} sm={4} sx={{ pl: { sm: 1 } }}>
@@ -110,11 +114,12 @@ const SignUpForm = ({ toggleForm }) => {
               <TextField
                 fullWidth
                 id="email"
+                name="email"
                 label="Email *"
                 type="email"
                 variant="outlined"
-                value={email}
-                onChange={(e) => setEmail(e.target.value)}
+                value={formData.email}
+                onChange={(e) => handleFormChange(e)}
               />
             </Grid>
             <Grid item xs={12}>
@@ -122,11 +127,12 @@ const SignUpForm = ({ toggleForm }) => {
               <TextField
                 fullWidth
                 id="password"
+                name="password"
                 label="Password *"
                 type="password"
                 variant="outlined"
-                value={password}
-                onChange={(e) => setPassword(e.target.value)}
+                value={formData.password}
+                onChange={(e) => handleFormChange(e)}
               />
             </Grid>
             <Grid item xs={12}>
@@ -134,11 +140,12 @@ const SignUpForm = ({ toggleForm }) => {
               <TextField
                 fullWidth
                 id="confirmPassword"
+                name="confirmPassword"
                 label="Confirm Password *"
                 type="password"
                 variant="outlined"
-                value={confirmPassword}
-                onChange={(e) => setConfirmPassword(e.target.value)}
+                value={formData.confirmPassword}
+                onChange={(e) => handleFormChange(e)}
               />
             </Grid>
             <Grid container item xs={12} spacing={2} sx={{ mt: 2 }} alignItems="center">

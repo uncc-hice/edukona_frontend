@@ -71,3 +71,17 @@ export const startQuizSession = (quizId) =>
       toast.error('An error occurred while starting the quiz');
       console.error(`Error starting quiz: ${e}`);
     });
+
+export const signUp = (formData) =>
+  api
+    .post('sign-up-instructor/', formData)
+    .then((response) => {
+      //shows response in console
+      console.log('Response: ', response.data);
+      localStorage.setItem('token', response.data['token']);
+    })
+    //catches error and displays in console
+    .catch((error) => {
+      //console.error('Error: ', error);
+      toast('Sign up failed.');
+    });
