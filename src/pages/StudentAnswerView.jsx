@@ -18,6 +18,7 @@ const StudentAnswerView = () => {
   const [quizEnded, setQuizEnded] = useState(false);
   const [skipPowerUp, setSkipPowerUp] = useState(false);
   const [selectedAnswer, setSelectedAnswer] = useState('');
+  const [skipped, setSkipped] = useState([]);
 
   let url = `wss://api.edukona.com/ws/student/join/${code}/`;
   const sid = localStorage.getItem('sid');
@@ -32,7 +33,6 @@ const StudentAnswerView = () => {
       setQuizSession(receivedData.quiz_session);
       setLoading(false); // Stop loading when the question is received
       setSelectedAnswer('');
-      checkSubmissionStatus(receivedData.question.id); // Check if already submitted
     } else if (receivedData.type === 'quiz_ended') {
       setQuizEnded(true);
       setLoading(false);
@@ -54,7 +54,7 @@ const StudentAnswerView = () => {
         },
       });
     } else if (receivedData.type === 'skip_power_up_used') {
-      localStorage.setItem(`submitted_${question.id}_${code}_${sid}`, 'skipped');
+      setSkipped([...skipped, question.id]);
       setSkipPowerUp(false);
       setIsSubmitted(true);
       Store.addNotification({
@@ -84,11 +84,6 @@ const StudentAnswerView = () => {
     onClose: () => console.log('WebSocket disconnected'),
     onError: (event) => console.error('WebSocket error', event),
   });
-
-  const checkSubmissionStatus = (questionId) => {
-    const storedSubmission = localStorage.getItem(`submitted_${questionId}_${code}_${sid}`);
-    setIsSubmitted(!!storedSubmission);
-  };
 
   const handleSkipQuestion = () => {
     console.log('Skipping question:', question.id);
@@ -133,7 +128,7 @@ const StudentAnswerView = () => {
             answers={answers}
             code={code}
             isSubmitted={isSubmitted}
-            setIsSubmitted={setIsSubmitted} // Pass setIsSubmitted to child
+            setIsSubmitted={setIsSubmitted}
             quizSession={quizSession}
             selectedAnswer={selectedAnswer}
             setSelectedAnswer={setSelectedAnswer}
