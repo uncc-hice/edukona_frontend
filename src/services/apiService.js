@@ -72,11 +72,8 @@ export const startQuizSession = (quizId) =>
       console.error(`Error starting quiz: ${e}`);
     });
 
-export const fetchResults = async (code) => {
-  try {
-    const response = await api.get(`/quiz-session-results/${code}`);
-    return response.data.results;
-  } catch (error) {
-    console.error('Failed to fetch quiz results:', error);
-  }
-};
+export const fetchResults = (code) =>
+  api.get(`/quiz-session-results/${code}`).catch((error) => {
+    toast.error('An error occured while fetching results');
+    console.error('Failed to fetch quiz results: ', error);
+  });
