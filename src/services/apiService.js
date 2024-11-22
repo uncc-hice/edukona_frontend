@@ -72,16 +72,13 @@ export const startQuizSession = (quizId) =>
       console.error(`Error starting quiz: ${e}`);
     });
 
-export const signUp = (formData) =>
+export const signUpInstructor = (formData) =>
   api
-    .post('sign-up-instructor/', formData)
+    .post('sign-up-instructor/', formData, { headers: { Authorization: null } })
     .then((response) => {
-      //shows response in console
-      console.log('Response: ', response.data);
       localStorage.setItem('token', response.data['token']);
     })
-    //catches error and displays in console
-    .catch((error) => {
-      //console.error('Error: ', error);
-      toast('Sign up failed.');
+    .catch((e) => {
+      console.error('Failed to sign up instructor: ', e);
+      toast.error('Sign up failed.');
     });

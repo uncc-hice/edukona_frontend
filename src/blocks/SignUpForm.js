@@ -1,21 +1,21 @@
 import React, { useState } from 'react';
 import { TextField, Button, Typography, Container, Grid, Tabs, Tab } from '@mui/material';
-import { signUp } from '../services/apiService';
+import { signUpInstructor } from '../services/apiService';
 import { Link } from 'react-router-dom';
 import { Footer } from '../layouts/Main/components';
 import { toast } from 'react-toastify';
 import { useNavigate } from 'react-router-dom';
 
-const SignUpForm = ({}) => {
+const SignUpForm = () => {
   const [role, setRole] = useState('student');
   const [error, setError] = useState('');
   const [formData, setFormData] = useState({
-    firstName: '',
-    lastName: '',
+    first_name: '',
+    last_name: '',
     email: '',
     password: '',
-    confirmPassword: '',
   });
+  const [confirmPassword, setConfirmPassword] = useState('');
   const navigate = useNavigate();
 
   const handleFormChange = (e) => {
@@ -23,12 +23,12 @@ const SignUpForm = ({}) => {
   };
 
   const validateForm = () => {
-    if (!formData.firstName || !formData.password || !formData.confirmPassword || !formData.email) {
+    if (!formData.first_name || !formData.password || !confirmPassword || !formData.email) {
       setError('Please fill in all fields.');
       return false;
     }
 
-    if (formData.password !== formData.confirmPassword) {
+    if (formData.password !== confirmPassword) {
       toast('Passwords do not match. Please try again.');
       return false;
     }
@@ -42,8 +42,8 @@ const SignUpForm = ({}) => {
     if (!validateForm()) {
       return;
     }
-    //signUp function imported from Functions.js
-    signUp(formData).then(() => {
+
+    signUpInstructor(formData).then(() => {
       navigate('/');
     });
   };
@@ -83,11 +83,12 @@ const SignUpForm = ({}) => {
               <TextField
                 fullWidth
                 id="firstName"
-                name="firstName"
-                label="First Name *"
+                name="first_name"
+                label="First Name"
                 variant="outlined"
-                value={formData.firstName}
+                value={formData.first_name}
                 onChange={(e) => handleFormChange(e)}
+                required
               />
             </Grid>
             <Grid item xs={12} sm={4}>
@@ -95,10 +96,10 @@ const SignUpForm = ({}) => {
               <TextField
                 fullWidth
                 id="lastName"
-                name="lastName"
+                name="last_name"
                 label="Last Name"
                 variant="outlined"
-                value={formData.lastName}
+                value={formData.last_name}
                 onChange={(e) => handleFormChange(e)}
               />
             </Grid>
@@ -115,11 +116,12 @@ const SignUpForm = ({}) => {
                 fullWidth
                 id="email"
                 name="email"
-                label="Email *"
+                label="Email"
                 type="email"
                 variant="outlined"
                 value={formData.email}
                 onChange={(e) => handleFormChange(e)}
+                required
               />
             </Grid>
             <Grid item xs={12}>
@@ -128,11 +130,12 @@ const SignUpForm = ({}) => {
                 fullWidth
                 id="password"
                 name="password"
-                label="Password *"
+                label="Password"
                 type="password"
                 variant="outlined"
                 value={formData.password}
                 onChange={(e) => handleFormChange(e)}
+                required
               />
             </Grid>
             <Grid item xs={12}>
@@ -141,17 +144,18 @@ const SignUpForm = ({}) => {
                 fullWidth
                 id="confirmPassword"
                 name="confirmPassword"
-                label="Confirm Password *"
+                label="Confirm Password"
                 type="password"
                 variant="outlined"
                 value={formData.confirmPassword}
-                onChange={(e) => handleFormChange(e)}
+                onChange={(e) => setConfirmPassword(e.target.value)}
+                required
               />
             </Grid>
             <Grid container item xs={12} spacing={2} sx={{ mt: 2 }} alignItems="center">
               <Grid item xs={12} sm={8}>
                 <Typography component="h4" align="left" color="gray" gutterBottom>
-                  Already have an account?{' '}
+                  Already have an account?
                   <Link
                     to="https://edukona.com/login"
                     style={{
