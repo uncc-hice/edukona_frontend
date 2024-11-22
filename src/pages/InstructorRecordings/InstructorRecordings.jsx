@@ -94,7 +94,7 @@ const InstructorRecordings = () => {
     setNewRecordingDetails((prev) => ({ ...prev, [e.target.name]: e.target.value }));
 
   const handleFetchRecordings = () => {
-    setRecordings(fetchRecordings());
+    fetchRecordings().then((recordings) => setRecordings(recordings));
   };
 
   const handleDeleteRecording = () => {

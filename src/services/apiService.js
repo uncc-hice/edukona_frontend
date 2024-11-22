@@ -74,12 +74,8 @@ export const startQuizSession = (quizId) =>
     });
 
 export const fetchRecordings = () =>
-  axios
-    .get(`https://api.edukona.com/recordings/`, {
-      headers: {
-        Authorization: `Token ${token}`,
-      },
-    })
+  api
+    .get(`https://api.edukona.com/recordings/`)
     .then((res) => res.data.recordings)
     .catch((error) => {
       console.error(error);
@@ -87,12 +83,8 @@ export const fetchRecordings = () =>
     });
 
 export const deleteRecording = (recording) => {
-  axios
-    .delete(`https://api.edukona.com/recordings/${recording}/delete-recording`, {
-      headers: {
-        Authorization: `Token ${token}`,
-      },
-    })
+  api
+    .delete(`https://api.edukona.com/recordings/${recording}/delete-recording`)
     .then((res) =>
       res.status === 200
         ? toast.success('Recording successfully deleted!', { icon: '🗑️', theme })
