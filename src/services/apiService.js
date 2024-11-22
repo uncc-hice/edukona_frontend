@@ -74,16 +74,12 @@ export const startQuizSession = (quizId) =>
     });
 
 export const fetchRecordings = () =>
-  api
-    .get(`https://api.edukona.com/recordings/`)
-    .catch((error) => {
-      console.error(error);
-    });
+  api.get(`https://api.edukona.com/recordings/`).catch((error) => {
+    console.error(error);
+  });
 
 export const deleteRecording = (recording) =>
-  api
-    .delete(`https://api.edukona.com/recordings/${recording}/delete-recording`)
-    .catch((error) => {
-      toast.error('An error occured while deleting the recording');
-      console.error(error)
-    });
+  api.delete(`https://api.edukona.com/recordings/${recording}/delete-recording`).catch((error) => {
+    toast.error('An error occured while deleting the recording');
+    console.error(error);
+  });

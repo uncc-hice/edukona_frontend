@@ -102,7 +102,7 @@ const InstructorRecordings = () => {
       res.status === 200
         ? toast.success('Recording successfully deleted!', { icon: '🗑️', theme })
         : toast.error('Could not delete recording.', { theme })
-    )
+    );
     handleFetchRecordings();
     setOpenDialogue(false);
   };
