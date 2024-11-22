@@ -72,14 +72,14 @@ export const startQuizSession = (quizId) =>
       console.error(`Error starting quiz: ${e}`);
     });
 
-export const fetchResults = async (code, setResults) => {
+export const fetchResults = async (code) => {
   try {
     const response = await axios.get(`https://api.edukona.com/quiz-session-results/${code}`, {
       headers: {
         Authorization: `Token ${token}`,
       },
     });
-    setResults(response.data.results);
+    return response.data.results;
   } catch (error) {
     console.error('Failed to fetch quiz results:', error);
   }
