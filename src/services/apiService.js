@@ -73,17 +73,20 @@ export const startQuizSession = (quizId) =>
       console.error(`Error starting quiz: ${e}`);
     });
 
-export const fetchRecordings = (setRecordings) =>
+export const fetchRecordings = () =>
   axios
     .get(`https://api.edukona.com/recordings/`, {
       headers: {
         Authorization: `Token ${token}`,
       },
     })
-    .then((res) => setRecordings(res.data.recordings))
-    .catch((error) => console.error(error));
+    .then((res) => res.data.recordings)
+    .catch((error) => {
+      console.error(error);
+      return [];
+    });
 
-export const deleteRecording = (recording, setRecordings) => {
+export const deleteRecording = (recording) => {
   axios
     .delete(`https://api.edukona.com/recordings/${recording}/delete-recording`, {
       headers: {
@@ -95,6 +98,5 @@ export const deleteRecording = (recording, setRecordings) => {
         ? toast.success('Recording successfully deleted!', { icon: '🗑️', theme })
         : toast.error('Could not delete recording.', { theme })
     )
-    .then(() => fetchRecordings(setRecordings))
     .catch((error) => console.error(error));
 };

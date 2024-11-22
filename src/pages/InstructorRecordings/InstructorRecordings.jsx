@@ -93,8 +93,13 @@ const InstructorRecordings = () => {
   const handleNewRecordingDetails = (e) =>
     setNewRecordingDetails((prev) => ({ ...prev, [e.target.name]: e.target.value }));
 
+  const handleFetchRecordings = () => {
+    setRecordings(fetchRecordings());
+  };
+
   const handleDeleteRecording = () => {
     deleteRecording(selectedRecording);
+    handleFetchRecordings();
     setOpenDialogue(false);
   };
 
@@ -192,7 +197,7 @@ const InstructorRecordings = () => {
   });
 
   useEffect(() => {
-    fetchRecordings(setRecordings);
+    handleFetchRecordings();
   }, [token]);
 
   const fetchQuizzes = (id) => {
@@ -239,7 +244,7 @@ const InstructorRecordings = () => {
             Unable to establish WebSocket connection
           </Alert>
         </Snackbar>
-        <RecordButton onUpdate={fetchRecordings(setRecordings)} />
+        <RecordButton onUpdate={handleFetchRecordings} />
         <TableContainer component={Paper}>
           <Table>
             <TableHead>
