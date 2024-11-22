@@ -2,7 +2,6 @@ import axios from 'axios';
 import { toast } from 'react-toastify';
 
 const token = localStorage.getItem('token');
-const theme = localStorage.getItem('themeMode');
 
 const api = axios.create({
   baseURL: 'https://api.edukona.com/',
