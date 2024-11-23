@@ -11,8 +11,8 @@ const QuizSessionResults = () => {
 
   useEffect(() => {
     if (code) {
-      fetchResults(code).then((data) => {
-        setResults(data);
+      fetchResults(code).then((response) => {
+        setResults(response.data.results);
       });
     } else {
       console.error('Quiz session code is undefined');
