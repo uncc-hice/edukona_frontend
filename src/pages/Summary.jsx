@@ -3,6 +3,7 @@ import { Box, Button, CircularProgress } from '@mui/material';
 import { Container } from '@mui/system';
 import { useEffect, useState } from 'react';
 import { useParams } from 'react-router-dom';
+import { toast } from 'react-toastify';
 import SummaryEditor from '../blocks/SummaryEditor';
 import SummaryViewer from '../blocks/SummaryViewer';
 import { Main } from '../layouts';
@@ -14,7 +15,9 @@ const Summary = () => {
   const { summaryId } = useParams();
 
   useEffect(() => {
-    getSummary(summaryId).then((res) => setSummary(res.data.summary));
+    getSummary(summaryId)
+      .then((res) => setSummary(res.data.summary))
+      .catch(() => toast.error('Failed to fetch summary.'));
   }, [summaryId]);
 
   if (summary === null) {
