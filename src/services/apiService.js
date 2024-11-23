@@ -54,25 +54,12 @@ export const startQuizSession = (quizId) =>
     }
   );
 
-
 export const fetchResults = (code) => api.get(`/quiz-session-results/${code}`);
 
 export const signUpInstructor = (formData) =>
-  api
-    .post('sign-up-instructor/', formData, {
-      headers: {
-        Authorization: null,
-        'Content-Type': 'application/json',
-      },
-    })
-    .then((res) => localStorage.setItem('token', res.data.token))
-    .catch((err) => {
-      console.error(`Failed to create account: ${err}`);
-      return Promise.reject(err);
-    });
-
-export const fetchResults = (code) =>
-  api.get(`/quiz-session-results/${code}`).catch((error) => {
-    toast.error('An error occured while fetching results');
-    console.error('Failed to fetch quiz results: ', error);
+  api.post('sign-up-instructor/', formData, {
+    headers: {
+      Authorization: null,
+      'Content-Type': 'application/json',
+    },
   });
