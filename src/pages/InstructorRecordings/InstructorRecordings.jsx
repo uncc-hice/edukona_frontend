@@ -98,13 +98,13 @@ const InstructorRecordings = () => {
   };
 
   const handleDeleteRecording = () => {
-    deleteRecording(selectedRecording).then((res) =>
+    deleteRecording(selectedRecording).then((res) => {
       res.status === 200
         ? toast.success('Recording successfully deleted!', { icon: '🗑️', theme })
-        : toast.error('Could not delete recording.', { theme })
-    );
-    handleFetchRecordings();
-    setOpenDialogue(false);
+        : toast.error('Could not delete recording.', { theme });
+      handleFetchRecordings();
+      setOpenDialogue(false);
+    });
   };
 
   const handleGenerateSummary = (recordingId) => {
