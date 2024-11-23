@@ -24,7 +24,7 @@ const SignUpForm = () => {
 
   const validateForm = () => {
     if (formData.password !== confirmPassword) {
-      toast('Passwords do not match.');
+      setError('Passwords do not match.');
       return false;
     }
     return true;
