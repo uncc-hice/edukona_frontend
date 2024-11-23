@@ -4,7 +4,6 @@ import { signUpInstructor } from '../services/apiService';
 import { Link } from 'react-router-dom';
 import { Footer } from '../layouts/Main/components';
 import { toast } from 'react-toastify';
-import { useNavigate } from 'react-router-dom';
 
 const SignUpForm = () => {
   const [role, setRole] = useState('student');
@@ -16,7 +15,6 @@ const SignUpForm = () => {
     password: '',
   });
   const [confirmPassword, setConfirmPassword] = useState('');
-  const navigate = useNavigate();
 
   const handleFormChange = (e) => {
     setFormData((prev) => ({ ...prev, [e.target.name]: e.target.value }));
@@ -38,7 +36,7 @@ const SignUpForm = () => {
     }
 
     signUpInstructor(formData)
-      .then(() => navigate('/'))
+      .then(() => (window.location.href = '/'))
       .catch((err) => {
         console.error(err.response.data.message);
         toast.error(`Failed to create account: ${err.response.data.message}`);
