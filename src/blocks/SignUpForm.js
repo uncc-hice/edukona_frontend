@@ -23,29 +23,26 @@ const SignUpForm = () => {
   };
 
   const validateForm = () => {
-    if (!formData.first_name || !formData.password || !confirmPassword || !formData.email) {
-      setError('Please fill in all fields.');
-      return false;
-    }
-
     if (formData.password !== confirmPassword) {
-      toast('Passwords do not match. Please try again.');
+      toast('Passwords do not match.');
       return false;
     }
-
     return true;
   };
 
-  const handleSubmit = async (e) => {
+  const handleSubmit = (e) => {
     e.preventDefault();
 
     if (!validateForm()) {
       return;
     }
 
-    signUpInstructor(formData).then(() => {
-      navigate('/');
-    });
+    signUpInstructor(formData)
+      .then(() => navigate('/'))
+      .catch((err) => {
+        console.error(err.response.data.message);
+        toast.error(`Failed to create account: ${err.response.data.message}`);
+      });
   };
 
   const nameStyle = {
@@ -76,7 +73,7 @@ const SignUpForm = () => {
           )}
         </Grid>
         {/* Added first name and last name input boxes here */}
-        <form onSubmit={handleSubmit}>
+        <form onSubmit={(e) => handleSubmit(e)}>
           <Grid container spacing={2}>
             <Grid item xs={12} sm={4}>
               <p style={nameStyle}>Enter your First Name</p>
@@ -147,7 +144,7 @@ const SignUpForm = () => {
                 label="Confirm Password"
                 type="password"
                 variant="outlined"
-                value={formData.confirmPassword}
+                value={confirmPassword}
                 onChange={(e) => setConfirmPassword(e.target.value)}
                 required
               />

@@ -15,8 +15,8 @@ api.interceptors.response.use(
     if (err.response && err.response.status === 401) {
       localStorage.removeItem('token');
       window.location.href = '/login';
-      return Promise.reject(err);
     }
+    return Promise.reject(err);
   }
 );
 
@@ -74,11 +74,14 @@ export const startQuizSession = (quizId) =>
 
 export const signUpInstructor = (formData) =>
   api
-    .post('sign-up-instructor/', formData, { headers: { Authorization: null } })
-    .then((response) => {
-      localStorage.setItem('token', response.data['token']);
+    .post('sign-up-instructor/', formData, {
+      headers: {
+        Authorization: null,
+        'Content-Type': 'application/json',
+      },
     })
-    .catch((e) => {
-      console.error('Failed to sign up instructor: ', e);
-      toast.error('Sign up failed.');
+    .then((res) => localStorage.setItem('token', res.data.token))
+    .catch((err) => {
+      console.error(`Failed to create account: ${err}`);
+      return Promise.reject(err);
     });
