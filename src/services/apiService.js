@@ -71,3 +71,9 @@ export const startQuizSession = (quizId) =>
       toast.error('An error occurred while starting the quiz');
       console.error(`Error starting quiz: ${e}`);
     });
+
+export const fetchResults = (code) =>
+  api.get(`/quiz-session-results/${code}`).catch((error) => {
+    toast.error('An error occured while fetching results');
+    console.error('Failed to fetch quiz results: ', error);
+  });
