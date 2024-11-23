@@ -15,8 +15,8 @@ api.interceptors.response.use(
     if (err.response && err.response.status === 401) {
       localStorage.removeItem('token');
       window.location.href = '/login';
-      return Promise.reject(err);
     }
+    return Promise.reject(err);
   }
 );
 
@@ -70,6 +70,20 @@ export const startQuizSession = (quizId) =>
     .catch((e) => {
       toast.error('An error occurred while starting the quiz');
       console.error(`Error starting quiz: ${e}`);
+    });
+
+export const signUpInstructor = (formData) =>
+  api
+    .post('sign-up-instructor/', formData, {
+      headers: {
+        Authorization: null,
+        'Content-Type': 'application/json',
+      },
+    })
+    .then((res) => localStorage.setItem('token', res.data.token))
+    .catch((err) => {
+      console.error(`Failed to create account: ${err}`);
+      return Promise.reject(err);
     });
 
 export const fetchResults = (code) =>
