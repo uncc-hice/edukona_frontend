@@ -15,8 +15,8 @@ api.interceptors.response.use(
     if (err.response && err.response.status === 401) {
       localStorage.removeItem('token');
       window.location.href = '/login';
-      return Promise.reject(err);
     }
+    return Promise.reject(err);
   }
 );
 
@@ -82,6 +82,20 @@ export const deleteRecording = (recording) =>
     toast.error('An error occured while deleting the recording');
     console.error(error);
   });
+
+export const signUpInstructor = (formData) =>
+  api
+    .post('sign-up-instructor/', formData, {
+      headers: {
+        Authorization: null,
+        'Content-Type': 'application/json',
+      },
+    })
+    .then((res) => localStorage.setItem('token', res.data.token))
+    .catch((err) => {
+      console.error(`Failed to create account: ${err}`);
+      return Promise.reject(err);
+    });
 
 export const fetchResults = (code) =>
   api.get(`quiz-session-results/${code}`).catch((error) => {
