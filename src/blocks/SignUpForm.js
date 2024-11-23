@@ -36,7 +36,10 @@ const SignUpForm = () => {
     }
 
     signUpInstructor(formData)
-      .then(() => (window.location.href = '/'))
+      .then((res) => {
+        localStorage.setItem(res.data.token);
+        window.location.href = '/';
+      })
       .catch((err) => {
         console.error(err.response.data.message);
         toast.error(`Failed to create account: ${err.response.data.message}`);

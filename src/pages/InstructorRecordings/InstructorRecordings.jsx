@@ -170,7 +170,7 @@ const InstructorRecordings = () => {
       )
       .then((res) => {
         console.log(res.data);
-        startQuiz(res.data.quiz_id);
+        startQuiz(res.data.quiz_id).catch(() => toast.error('Failed to start quiz.'));
       })
       .catch((error) => console.error(error));
   };

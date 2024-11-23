@@ -1,5 +1,4 @@
 import axios from 'axios';
-import { toast } from 'react-toastify';
 
 const token = localStorage.getItem('token');
 
@@ -9,6 +8,8 @@ const api = axios.create({
   headers: { Authorization: `Token ${token}` },
 });
 
+// Global error handler.
+// Can be used for sending data to our logging system in the future
 api.interceptors.response.use(
   (res) => res,
   (err) => {
@@ -21,73 +22,44 @@ api.interceptors.response.use(
 );
 
 export const fetchQuizzes = () =>
-  api
-    .get('instructor/quizzes/', {
-      headers: {
-        'Content-Type': 'application/json',
-      },
-    })
-    .catch((e) => {
-      toast.error('An error occurred while fetching your quizzes');
-      console.error(`Error fetching quizzes: ${e}`);
-    });
-
-export const updateQuizTitle = (quizId, title) =>
-  api
-    .patch(
-      `quiz/${quizId}/update-title/`,
-      { title: title },
-      {
-        headers: {
-          Authorization: `Token ${token}`,
-        },
-      }
-    )
-    .catch((e) => {
-      toast.error('An error occurred while updating the title');
-      console.error(`Error updating title: ${e}`);
-    });
-
-export const getSummary = (summaryId) =>
-  api.get(`summary/${summaryId}/get-summary`).catch((e) => {
-    toast.error('An error occured while fetching the summary');
-    console.error(`Error fetching summary: ${e}`);
+  api.get('instructor/quizzes/', {
+    headers: {
+      'Content-Type': 'application/json',
+    },
   });
 
-export const startQuizSession = (quizId) =>
-  api
-    .post(
-      'quiz-session/',
-      {
-        quiz_id: quizId,
-      },
-      {
-        headers: {
-          'Content-Type': 'application/json',
-        },
-      }
-    )
-    .catch((e) => {
-      toast.error('An error occurred while starting the quiz');
-      console.error(`Error starting quiz: ${e}`);
-    });
-
-export const signUpInstructor = (formData) =>
-  api
-    .post('sign-up-instructor/', formData, {
+export const updateQuizTitle = (quizId, title) =>
+  api.patch(
+    `quiz/${quizId}/update-title/`,
+    { title: title },
+    {
       headers: {
-        Authorization: null,
+        Authorization: `Token ${token}`,
+      },
+    }
+  );
+
+export const getSummary = (summaryId) => api.get(`summary/${summaryId}/get-summary`);
+
+export const startQuizSession = (quizId) =>
+  api.post(
+    'quiz-session/',
+    {
+      quiz_id: quizId,
+    },
+    {
+      headers: {
         'Content-Type': 'application/json',
       },
-    })
-    .then((res) => localStorage.setItem('token', res.data.token))
-    .catch((err) => {
-      console.error(`Failed to create account: ${err}`);
-      return Promise.reject(err);
-    });
+    }
+  );
 
-export const fetchResults = (code) =>
-  api.get(`/quiz-session-results/${code}`).catch((error) => {
-    toast.error('An error occured while fetching results');
-    console.error('Failed to fetch quiz results: ', error);
+export const fetchResults = (code) => api.get(`/quiz-session-results/${code}`);
+
+export const signUpInstructor = (formData) =>
+  api.post('sign-up-instructor/', formData, {
+    headers: {
+      Authorization: null,
+      'Content-Type': 'application/json',
+    },
   });
