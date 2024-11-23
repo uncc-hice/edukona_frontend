@@ -81,4 +81,9 @@ export const deleteRecording = (recording) =>
   api.delete(`https://api.edukona.com/recordings/${recording}/delete-recording`).catch((error) => {
     toast.error('An error occured while deleting the recording');
     console.error(error);
+
+export const fetchResults = (code) =>
+  api.get(`/quiz-session-results/${code}`).catch((error) => {
+    toast.error('An error occured while fetching results');
+    console.error('Failed to fetch quiz results: ', error);
   });
