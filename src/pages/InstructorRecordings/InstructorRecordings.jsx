@@ -373,7 +373,7 @@ const InstructorRecordings = () => {
                     {/* Dialog for delete confirmation */}
                     <DeleteRecordingDialog
                       open={openDialogue}
-                      setOpen={handleOpenDialogue}
+                      setOpen={setOpenDialogue}
                       onUpdate={handleFetchRecordings}
                       recordingId={recording.id}
                     />
