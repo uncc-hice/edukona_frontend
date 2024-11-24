@@ -13,8 +13,6 @@ import {
   Button,
   Dialog,
   DialogContent,
-  DialogTitle,
-  DialogContentText,
   DialogActions,
   Snackbar,
   Alert,
@@ -34,7 +32,7 @@ import { toast } from 'react-toastify';
 import { Main } from '../../layouts';
 import { useNavigate } from 'react-router-dom';
 import CustomizedMenus from '../../blocks/CustomizedMenus';
-import { fetchRecordings, deleteRecording, startQuizSession } from '../../services/apiService';
+import { fetchRecordings, startQuizSession } from '../../services/apiService';
 import DeleteRecordingDialog from '../../blocks/DeleteRecordingDialog';
 
 const InstructorRecordings = () => {
@@ -89,16 +87,6 @@ const InstructorRecordings = () => {
 
   const handleFetchRecordings = () => {
     fetchRecordings().then((res) => setRecordings(res.data.recordings));
-  };
-
-  const handleDeleteRecording = () => {
-    deleteRecording(selectedRecording).then((res) => {
-      res.status === 200
-        ? toast.success('Recording successfully deleted!', { icon: '🗑️', theme })
-        : toast.error('Could not delete recording.', { theme });
-      handleFetchRecordings();
-      setOpenDialogue(false);
-    });
   };
 
   const handleGenerateSummary = (recordingId) => {
