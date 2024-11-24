@@ -25,7 +25,7 @@ export default tseslint.config(
     }
     },
     rules: {
-      'no-unused-vars': 'warn',
+      'no-unused-vars': 'off',
       'no-empty': 'warn',
       'no-undef': 'warn',
       'react/no-unescaped-entities': 'warn',
