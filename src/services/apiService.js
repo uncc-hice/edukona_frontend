@@ -67,3 +67,12 @@ export const signUpInstructor = (formData) =>
       'Content-Type': 'application/json',
     },
   });
+
+export const deleteUser = () => api.delete('delete-user');
+
+export const fetchProfile = () =>
+  api.get('profile', {
+    headers: {
+      'Content-Type': 'application/json',
+    },
+  });
