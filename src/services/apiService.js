@@ -67,3 +67,10 @@ export const signUpInstructor = (formData) =>
       'Content-Type': 'application/json',
     },
   });
+
+export const fetchProfile = () =>
+  api.get('profile', {
+    headers: {
+      'Content-Type': 'application/json',
+    },
+  });
