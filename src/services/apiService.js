@@ -54,6 +54,10 @@ export const startQuizSession = (quizId) =>
     }
   );
 
+export const deleteRecording = (recording) => api.delete(`recordings/${recording}/delete-recording`);
+
+export const fetchRecordings = () => api.get(`recordings/`);
+
 export const fetchResults = (code) => api.get(`/quiz-session-results/${code}`);
 
 export const signUpInstructor = (formData) =>

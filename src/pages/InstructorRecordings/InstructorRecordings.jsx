@@ -34,6 +34,7 @@ import { toast } from 'react-toastify';
 import { Main } from '../../layouts';
 import { useNavigate } from 'react-router-dom';
 import CustomizedMenus from '../../blocks/CustomizedMenus';
+import { fetchRecordings, deleteRecording } from '../../services/apiService';
 
 const InstructorRecordings = () => {
   const [openNewRecording, setOpenNewRecording] = useState(false);
@@ -54,16 +55,6 @@ const InstructorRecordings = () => {
   const [quizzes, setQuizzes] = useState([]);
   const [loadingQuizzes, setLoadingQuizzes] = useState(false);
   const [expanded, setExpanded] = useState(null);
-
-  const fetchRecordings = () =>
-    axios
-      .get(`https://api.edukona.com/recordings/`, {
-        headers: {
-          Authorization: `Token ${token.current}`,
-        },
-      })
-      .then((res) => setRecordings(res.data.recordings))
-      .catch((error) => console.error(error));
 
   const handleOpenDialogue = (recordingId) => {
     setSelectedRecording(recordingId);
@@ -102,21 +93,18 @@ const InstructorRecordings = () => {
   const handleNewRecordingDetails = (e) =>
     setNewRecordingDetails((prev) => ({ ...prev, [e.target.name]: e.target.value }));
 
+  const handleFetchRecordings = () => {
+    fetchRecordings().then((res) => setRecordings(res.data.recordings));
+  };
+
   const handleDeleteRecording = () => {
-    axios
-      .delete(`https://api.edukona.com/recordings/${selectedRecording}/delete-recording`, {
-        headers: {
-          Authorization: `Token ${token.current}`,
-        },
-      })
-      .then((res) =>
-        res.status === 200
-          ? toast.success('Recording successfully deleted!', { icon: '🗑️', theme })
-          : toast.error('Could not delete recording.', { theme })
-      )
-      .then(() => fetchRecordings())
-      .catch((error) => console.error(error));
-    setOpenDialogue(false);
+    deleteRecording(selectedRecording).then((res) => {
+      res.status === 200
+        ? toast.success('Recording successfully deleted!', { icon: '🗑️', theme })
+        : toast.error('Could not delete recording.', { theme });
+      handleFetchRecordings();
+      setOpenDialogue(false);
+    });
   };
 
   const handleGenerateSummary = (recordingId) => {
@@ -213,7 +201,7 @@ const InstructorRecordings = () => {
   });
 
   useEffect(() => {
-    fetchRecordings();
+    handleFetchRecordings();
   }, [token]);
 
   const fetchQuizzes = (id) => {
@@ -260,7 +248,7 @@ const InstructorRecordings = () => {
             Unable to establish WebSocket connection
           </Alert>
         </Snackbar>
-        <RecordButton onUpdate={fetchRecordings} />
+        <RecordButton onUpdate={handleFetchRecordings} />
         <TableContainer component={Paper}>
           <Table>
             <TableHead>
