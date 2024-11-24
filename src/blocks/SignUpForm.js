@@ -182,7 +182,7 @@ const SignUpForm = () => {
           </Grid>
         </form>
         <Typography component="h4" align="center" color="gray" gutterBottom sx={{ mt: 2 }}>
-          By clicking "Sign up" button you agree with our{' '}
+          By clicking the &quot;Sign up&quot; button you agree with our{' '}
           <Link to="https://edukona.com/terms-of-use" style={{ textDecoration: 'none', color: 'blue' }}>
             company terms and conditions
           </Link>

@@ -162,7 +162,7 @@ const QuizListRow = ({ quiz, onUpdate }) => {
                     </TableHead>
                     {sessions &&
                       sessions.map((session) => (
-                        <TableRow>
+                        <TableRow key={session.code}>
                           <TableCell style={{ textAlign: 'center' }}>
                             {new Date(session.start_time).toLocaleString()}
                           </TableCell>
