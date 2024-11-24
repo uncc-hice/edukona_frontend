@@ -28,15 +28,12 @@ const Security = () => {
     deleteUser()
       .then(() => {
         localStorage.clear();
-        navigate('/');
         window.location.reload();
       })
       .catch((error) => {
         console.error('Error deleting account: ', error);
         toast.error('Error deleting account');
-        setTimeout(() => {
-          navigate('/');
-        }, 3000);
+        navigate('/');
       });
   };
 
