@@ -63,3 +63,5 @@ export const signUpInstructor = (formData) =>
       'Content-Type': 'application/json',
     },
   });
+
+export const deleteUser = () => api.delete('delete-user');
