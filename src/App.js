@@ -12,7 +12,6 @@ import QuizSession from './pages/QuizSession';
 import StudentDashboard from './pages/StudentDashboard';
 import InstructorDashboard from './pages/InstructorDashboard';
 import QuizSessionResults from './pages/QuizSessionResults';
-import YourSessions from './pages/YourSessions';
 import CreateQuiz from './pages/CreateQuiz';
 import EditQuizView from './pages/EditQuizView';
 import InstructorQuestionView from './pages/InstructorQuestionView';
@@ -69,7 +68,6 @@ function App() {
           <Route path="/dashboard" element={isLoggedIn ? <InstructorDashboard /> : <Navigate to="/" />} />
           <Route path="/session/:code" element={isLoggedIn ? <QuizSession /> : <Navigate to="/" />} />
           <Route path="/results/:code" element={isLoggedIn ? <QuizSessionResults /> : <Navigate to="/" />} />
-          <Route path="/your-sessions" element={isLoggedIn ? <YourSessions /> : <Navigate to="/" />} />
           <Route path="/create-quiz" element={isLoggedIn ? <CreateQuiz /> : <Navigate to="/" />} />
           <Route path="/student/:code" element={<StudentAnswerView />} />
           <Route path="/quiz/:quizId/edit" element={isLoggedIn ? <EditQuizView /> : <Navigate to="/" />} />
