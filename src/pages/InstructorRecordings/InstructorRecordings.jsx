@@ -34,7 +34,7 @@ import { toast } from 'react-toastify';
 import { Main } from '../../layouts';
 import { useNavigate } from 'react-router-dom';
 import CustomizedMenus from '../../blocks/CustomizedMenus';
-import { fetchRecordings, deleteRecording } from '../../services/apiService';
+import { fetchRecordings, deleteRecording, startQuizSession } from '../../services/apiService';
 
 const InstructorRecordings = () => {
   const [openNewRecording, setOpenNewRecording] = useState(false);
@@ -61,33 +61,26 @@ const InstructorRecordings = () => {
     setOpenDialogue(true);
   };
 
-  const startQuiz = async (quizId) => {
+  const startQuiz = (quizId) => {
     if (!token) {
       console.log('No token found');
+      toast.error('Failed to start quiz', { theme });
       return;
     }
-    try {
-      const response = await axios.post(
-        'https://api.edukona.com/quiz-session/',
-        {
-          quiz_id: quizId,
-        },
-        {
-          headers: {
-            'Content-Type': 'application/json',
-            Authorization: `Token ${token.current}`,
-          },
+
+    startQuizSession(quizId)
+      .then((res) => {
+        if (res.status === 201) {
+          navigate(`/session/${res.data.code}`);
+        } else {
+          console.error('Failed to start quiz with status:', res.status);
+          toast.error('Failed to start quiz', { theme });
         }
-      );
-
-      const sessionCode = response.data.code;
-
-      if (response.status !== 400) {
-        navigate(`/session/${sessionCode}`);
-      }
-    } catch (error) {
-      console.error('Error starting the quiz:', error);
-    }
+      })
+      .catch((error) => {
+        console.error('Error starting the quiz:', error);
+        toast.error('Failed to start quiz', { theme });
+      });
   };
 
   const handleNewRecordingDetails = (e) =>
