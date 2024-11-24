@@ -72,4 +72,6 @@ const Timer = React.memo(({ initialTime, onTimerEnd, sendMessage, questionId }) 
   );
 });
 
+Timer.displayName = 'Timer';
+
 export default Timer;

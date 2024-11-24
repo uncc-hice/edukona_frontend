@@ -35,7 +35,6 @@ const InstructorQuestionView = () => {
       } else if (data.type === 'settings') {
         setSettings(data.settings);
         setUserCount(data.user_count);
-      } else if (data.type === 'skipped_question' && data.status === 'success') {
       }
     },
     [setCurrentQuestion, setResetTimer, setResponseData, setSettings, setUserCount]

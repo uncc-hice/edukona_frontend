@@ -101,7 +101,7 @@ const LoginForm = ({ signUpRoute }) => {
             <Grid container justifyContent="center">
               <Grid item>
                 <Button onClick={directToSignUp} sx={{ mt: 3, mb: 2 }}>
-                  Don't have an account? Sign Up
+                  Don&lsquo;t have an account? Sign Up
                 </Button>
               </Grid>
             </Grid>

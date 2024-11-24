@@ -22,7 +22,9 @@ const DeleteQuestionDialog = ({ question, token, open, setOpen, onUpdate }) => {
     <Dialog open={open} fullWidth>
       <DialogTitle>Confirm Question Deletion</DialogTitle>
       <DialogContent style={{ display: 'flex', flexDirection: 'column' }}>
-        <Typography variant="p">Are you sure you want to delete the question "{question.question_text}"</Typography>
+        <Typography variant="p">
+          Are you sure you want to delete the question &quot;{question.question_text}&quot;
+        </Typography>
         <Typography variant="subtitle1" fontWeight={'bold'}>
           This cannot be undone.
         </Typography>
