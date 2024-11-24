@@ -5,8 +5,9 @@ import Grid from '@mui/material/Grid';
 import Typography from '@mui/material/Typography';
 import Main from '../../../layouts/Main/Main';
 import Page from '../Components/Page/Page';
-import axios from 'axios';
 import { useNavigate } from 'react-router-dom';
+import { fetchProfile } from '../../../services/apiService';
+import { toast } from 'react-toastify';
 
 const General = () => {
   const [userData, setUserData] = useState({
@@ -15,31 +16,27 @@ const General = () => {
     username: '',
     email: '',
   });
+  const theme = localStorage.getItem('themeMode');
 
-  const token = localStorage.getItem('token');
   const navigate = useNavigate();
   useEffect(() => {
-    const fetchData = async () => {
-      try {
-        const generalResponse = await axios.get('https://api.edukona.com/profile', {
-          headers: {
-            'Content-Type': 'application/json',
-            Authorization: `Token ${token}`,
-          },
-        });
-        if (generalResponse.status === 200) {
-          const { first_name, last_name, username, email } = generalResponse.data;
+    fetchProfile()
+      .then((response) => {
+        if (response.status === 200) {
+          const { first_name, last_name, username, email } = response.data;
           setUserData({ first_name, last_name, username, email });
+        } else {
+          console.error("Failed to gather the user's information.");
+          toast.error("Failed to gather the user's information.", { theme });
         }
-      } catch (error) {
+      })
+      .catch((error) => {
         console.error("Failed to gather the user's information.", error);
         if (error.response.status === 401) {
           navigate('https://api.edukona.com');
         }
-      }
-    };
-    fetchData();
-  }, [token, navigate]);
+      });
+  }, [theme, navigate]);
 
   return (
     <Main>
