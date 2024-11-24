@@ -8,7 +8,8 @@ import Main from '../../../layouts/Main/Main';
 import Page from '../Components/Page/Page';
 import { DialogActions, DialogContent, DialogTitle, Dialog } from '@mui/material';
 import { useNavigate } from 'react-router-dom';
-import axios from 'axios';
+import { deleteUser } from '../../../services/apiService';
+import { toast } from 'react-toastify';
 
 const Security = () => {
   const [openDialog, setOpenDialog] = useState(false);
@@ -22,24 +23,18 @@ const Security = () => {
     setOpenDialog(false);
   };
 
-  const triggerDeleteAccount = async () => {
+  const triggerDeleteAccount = () => {
     setOpenDialog(false);
-    try {
-      const response = await axios.delete('https://api.edukona.com/delete-user', {
-        headers: { Authorization: `Token ${localStorage.getItem('token')}` },
+    deleteUser()
+      .then(() => {
+        localStorage.clear();
+        window.location.reload();
+      })
+      .catch((error) => {
+        console.error('Error deleting account: ', error);
+        toast.error('Error deleting account');
+        navigate('/');
       });
-
-      if (response.status !== 200) {
-        throw new Error(response);
-      }
-    } catch (error) {
-      console.error('Error deleting account: ', error);
-      navigate('/');
-      return;
-    }
-    localStorage.clear();
-    navigate('/');
-    window.location.reload();
   };
 
   return (

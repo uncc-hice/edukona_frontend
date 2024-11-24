@@ -68,6 +68,8 @@ export const signUpInstructor = (formData) =>
     },
   });
 
+export const deleteUser = () => api.delete('delete-user');
+
 export const fetchProfile = () =>
   api.get('profile', {
     headers: {
