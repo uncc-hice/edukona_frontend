@@ -13,8 +13,6 @@ import {
   Button,
   Dialog,
   DialogContent,
-  DialogTitle,
-  DialogContentText,
   DialogActions,
   Snackbar,
   Alert,
@@ -34,7 +32,8 @@ import { toast } from 'react-toastify';
 import { Main } from '../../layouts';
 import { useNavigate } from 'react-router-dom';
 import CustomizedMenus from '../../blocks/CustomizedMenus';
-import { fetchRecordings, deleteRecording, startQuizSession } from '../../services/apiService';
+import { fetchRecordings, startQuizSession } from '../../services/apiService';
+import DeleteRecordingDialog from '../../blocks/DeleteRecordingDialog';
 
 const InstructorRecordings = () => {
   const [openNewRecording, setOpenNewRecording] = useState(false);
@@ -88,16 +87,6 @@ const InstructorRecordings = () => {
 
   const handleFetchRecordings = () => {
     fetchRecordings().then((res) => setRecordings(res.data.recordings));
-  };
-
-  const handleDeleteRecording = () => {
-    deleteRecording(selectedRecording).then((res) => {
-      res.status === 200
-        ? toast.success('Recording successfully deleted!', { icon: '🗑️', theme })
-        : toast.error('Could not delete recording.', { theme });
-      handleFetchRecordings();
-      setOpenDialogue(false);
-    });
   };
 
   const handleGenerateSummary = (recordingId) => {
@@ -270,7 +259,13 @@ const InstructorRecordings = () => {
             </TableHead>
             <TableBody>
               {recordings.length === 0 ? (
-                <h1 style={{ textAlign: 'center' }}>No Recordings</h1>
+                <TableRow>
+                  <TableCell colSpan={4}>
+                    <Typography variant={'h4'} textAlign={'center'}>
+                      No Recordings
+                    </Typography>
+                  </TableCell>
+                </TableRow>
               ) : (
                 recordings.map((recording) => (
                   <React.Fragment key={recording.id}>
@@ -375,34 +370,19 @@ const InstructorRecordings = () => {
                         </TableCell>
                       </TableRow>
                     )}
+                    {/* Dialog for delete confirmation */}
+                    <DeleteRecordingDialog
+                      open={openDialogue}
+                      setOpen={setOpenDialogue}
+                      onUpdate={handleFetchRecordings}
+                      recordingId={recording.id}
+                    />
                   </React.Fragment>
                 ))
               )}
             </TableBody>
           </Table>
         </TableContainer>
-        {/* Dialog for delete confirmation */}
-        <Dialog
-          open={openDialogue}
-          onClose={() => setOpenDialogue(false)}
-          aria-labelledby="alert-dialog-title"
-          aria-describedby="alert-dialog-description"
-        >
-          <DialogTitle id="alert-dialog-title">{'Confirm Deletion'}</DialogTitle>
-          <DialogContent>
-            <DialogContentText id="alert-dialog-description">
-              Are you sure you want to delete this recording?
-            </DialogContentText>
-          </DialogContent>
-          <DialogActions>
-            <Button onClick={() => setOpenDialogue(false)} color="primary">
-              Cancel
-            </Button>
-            <Button onClick={handleDeleteRecording} color="primary" autoFocus>
-              Confirm
-            </Button>
-          </DialogActions>
-        </Dialog>
         {/* Dialog for creating a new quiz */}
         <Dialog
           open={openNewRecording}
