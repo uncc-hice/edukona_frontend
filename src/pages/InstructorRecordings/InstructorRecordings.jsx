@@ -34,9 +34,10 @@ import { useNavigate } from 'react-router-dom';
 import CustomizedMenus from '../../blocks/CustomizedMenus';
 import { fetchRecordings, startQuizSession } from '../../services/apiService';
 import DeleteRecordingDialog from '../../blocks/DeleteRecordingDialog';
+import NewQuizDialog from '../../blocks/NewQuizDialog';
 
 const InstructorRecordings = () => {
-  const [openNewRecording, setOpenNewRecording] = useState(false);
+  const [openNewQuiz, setOpenNewQuiz] = useState(false);
   const [newRecordingDetails, setNewRecordingDetails] = useState({
     recording_id: '',
     num_of_questions: 5,
@@ -58,28 +59,6 @@ const InstructorRecordings = () => {
   const handleOpenDialogue = (recordingId) => {
     setSelectedRecording(recordingId);
     setOpenDialogue(true);
-  };
-
-  const startQuiz = (quizId) => {
-    if (!token) {
-      console.log('No token found');
-      toast.error('Failed to start quiz', { theme });
-      return;
-    }
-
-    startQuizSession(quizId)
-      .then((res) => {
-        if (res.status === 201) {
-          navigate(`/session/${res.data.code}`);
-        } else {
-          console.error('Failed to start quiz with status:', res.status);
-          toast.error('Failed to start quiz', { theme });
-        }
-      })
-      .catch((error) => {
-        console.error('Error starting the quiz:', error);
-        toast.error('Failed to start quiz', { theme });
-      });
   };
 
   const handleNewRecordingDetails = (e) =>
@@ -116,33 +95,6 @@ const InstructorRecordings = () => {
       .catch((error) => {
         console.error('Error generating summary:', error);
       });
-  };
-
-  const handleCreateQuiz = () => {
-    toast
-      .promise(
-        axios.post(
-          'https://jtsw0t0x32.execute-api.us-west-2.amazonaws.com/Prod/create_quiz_from_transcript',
-          { ...newRecordingDetails, recording_id: selectedRecording },
-          {
-            headers: {
-              Authorization: `Token ${token.current}`,
-              'Content-Type': 'application/json',
-            },
-          }
-        ),
-        {
-          pending: 'Creating quiz',
-          success: 'Successfully created quiz!',
-          error: 'Failed to create quiz!',
-          theme,
-        }
-      )
-      .then((res) => {
-        console.log(res.data);
-        startQuiz(res.data.quiz_id).catch(() => toast.error('Failed to start quiz.'));
-      })
-      .catch((error) => console.error(error));
   };
 
   const handleIncomingMessage = (event) => {
@@ -334,7 +286,7 @@ const InstructorRecordings = () => {
                             recording={recording}
                             handleOpenDialogue={handleOpenDialogue}
                             setSelectedRecording={setSelectedRecording}
-                            setOpenNewRecording={setOpenNewRecording}
+                            setOpenNewRecording={setOpenNewQuiz}
                             setOpenEditTitleDialog={setOpenEditTitleDialog}
                             handleGenerateSummary={handleGenerateSummary}
                             setNewTitle={setNewTitle}
@@ -377,97 +329,14 @@ const InstructorRecordings = () => {
                       onUpdate={handleFetchRecordings}
                       recordingId={recording.id}
                     />
+                    {/* Dialog for creating a new quiz */}
+                    <NewQuizDialog open={openNewQuiz} setOpen={setOpenNewQuiz} recordingId={recording.id} />
                   </React.Fragment>
                 ))
               )}
             </TableBody>
           </Table>
         </TableContainer>
-        {/* Dialog for creating a new quiz */}
-        <Dialog
-          open={openNewRecording}
-          onClose={() => setOpenNewRecording(false)}
-          aria-labelledby="new-recording-dialogue"
-          aria-describedby="new-recording-dialogue"
-          PaperProps={{
-            component: 'form',
-            onSubmit: (event) => {
-              event.preventDefault();
-              handleCreateQuiz();
-              setOpenNewRecording(false);
-            },
-          }}
-          maxWidth="sm"
-          fullWidth
-        >
-          <DialogContent
-            style={{
-              paddingTop: '20px',
-              display: 'flex',
-              gap: '8px',
-              flexDirection: 'column',
-              alignItems: 'center',
-              padding: '25px',
-            }}
-          >
-            <FormControl fullWidth style={{ marginBottom: '10px' }}>
-              <Typography id="num_of_questions_label" gutterBottom>
-                Number of Questions
-              </Typography>
-              <Grid container alignItems="center" spacing={2}>
-                <Grid item xs>
-                  <Slider
-                    name="num_of_questions"
-                    id="num_of_questions"
-                    value={newRecordingDetails.num_of_questions}
-                    onChange={handleNewRecordingDetails}
-                    aria-labelledby="num_of_questions_label"
-                    valueLabelDisplay="auto"
-                    step={1}
-                    marks
-                    min={3}
-                    max={10}
-                  />
-                </Grid>
-                <Grid item>
-                  <Typography>{newRecordingDetails.num_of_questions}</Typography>
-                </Grid>
-              </Grid>
-            </FormControl>
-            <FormControl fullWidth>
-              <Typography id="question_duration_label" gutterBottom>
-                Question Duration (seconds)
-              </Typography>
-              <Grid container alignItems="center" spacing={2}>
-                <Grid item xs>
-                  <Slider
-                    name="question_duration"
-                    id="question_duration"
-                    value={newRecordingDetails.question_duration}
-                    onChange={handleNewRecordingDetails}
-                    aria-labelledby="question_duration_label"
-                    valueLabelDisplay="auto"
-                    step={15}
-                    marks
-                    min={15}
-                    max={60}
-                  />
-                </Grid>
-                <Grid item>
-                  <Typography>{newRecordingDetails.question_duration}</Typography>
-                </Grid>
-              </Grid>
-            </FormControl>
-          </DialogContent>
-          <DialogActions>
-            <Button onClick={() => setOpenNewRecording(false)} color="primary">
-              Cancel
-            </Button>
-            <Button type="submit" color="primary" autoFocus>
-              Create Quiz
-            </Button>
-          </DialogActions>
-        </Dialog>
       </Container>
     </Main>
   );
