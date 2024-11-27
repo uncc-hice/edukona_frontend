@@ -5,7 +5,6 @@ import tseslint from 'typescript-eslint';
 import globals from 'globals';
 import reactPlugin from 'eslint-plugin-react';
 
-
 export default tseslint.config(
   eslint.configs.recommended,
   tseslint.configs.base,
@@ -14,15 +13,15 @@ export default tseslint.config(
   {
     files: ['**/*.{js,jsx,ts,tsx}'],
     languageOptions: {
-      globals : {
+      globals: {
         ...globals.browser,
         ...globals.node,
       },
       parserOptions: {
         ecmaFeatures: {
-            jsx: true
-        }
-    }
+          jsx: true,
+        },
+      },
     },
     rules: {
       'no-unused-vars': 'off',
@@ -43,7 +42,7 @@ export default tseslint.config(
     plugins: {
       react: reactPlugin,
     },
-    settings : {
+    settings: {
       react: {
         version: 'detect',
       },

@@ -5,6 +5,8 @@ import TextField from '@mui/material/TextField';
 import Navbar from '../blocks/Navbar';
 import axios from 'axios';
 
+// TODO: Resolve timing out when creating a quiz.
+
 function CreateQuiz() {
   const [quizName, setQuizName] = useState('');
   const navigate = useNavigate();
