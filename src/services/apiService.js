@@ -76,3 +76,6 @@ export const fetchProfile = () =>
       'Content-Type': 'application/json',
     },
   });
+
+export const fetchQuiz = (id) => api.get(`quiz/${id}`);
+export const updateQuiz = (id, data) => api.put(`quiz/${id}`, data);
