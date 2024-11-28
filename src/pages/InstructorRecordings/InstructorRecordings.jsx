@@ -312,7 +312,7 @@ const InstructorRecordings = () => {
             </TableBody>
           </Table>
         </TableContainer>
-        {/* Dialog for delete confirmation */}
+
         <DeleteRecordingDialog
           open={openDialogue}
           setOpen={setOpenDialogue}
@@ -320,7 +320,6 @@ const InstructorRecordings = () => {
           recordingId={selectedRecording}
         />
 
-        {/* Dialog for creating a new quiz */}
         <NewQuizDialog
           open={openNewQuiz}
           setOpen={setOpenNewQuiz}
