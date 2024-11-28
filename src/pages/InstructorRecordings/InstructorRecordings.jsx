@@ -370,19 +370,19 @@ const InstructorRecordings = () => {
                         </TableCell>
                       </TableRow>
                     )}
-                    {/* Dialog for delete confirmation */}
-                    <DeleteRecordingDialog
-                      open={openDialogue}
-                      setOpen={setOpenDialogue}
-                      onUpdate={handleFetchRecordings}
-                      recordingId={recording.id}
-                    />
                   </React.Fragment>
                 ))
               )}
             </TableBody>
           </Table>
         </TableContainer>
+        {/* Move DeleteRecordingDialog outside of the recordings.map */}
+        <DeleteRecordingDialog
+          open={openDialogue}
+          setOpen={setOpenDialogue}
+          onUpdate={handleFetchRecordings}
+          recordingId={selectedRecording}
+        />
         {/* Dialog for creating a new quiz */}
         <Dialog
           open={openNewRecording}
