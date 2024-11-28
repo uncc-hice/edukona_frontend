@@ -50,7 +50,7 @@ const StyledMenu = styled((props) => (
 }));
 
 export default function CustomizedMenus(props) {
-  const { recording, handleOpenDialogue, setOpenNewRecording, handleGenerateSummary } = props;
+  const { recording, handleOpenDialogue, setSelectedRecording, setOpenNewRecording, handleGenerateSummary } = props;
 
   const [anchorEl, setAnchorEl] = React.useState(null);
   const open = Boolean(anchorEl);
@@ -58,6 +58,7 @@ export default function CustomizedMenus(props) {
   const handleClick = (event) => {
     event.stopPropagation(); // Prevent accordion from toggling
     setAnchorEl(event.currentTarget);
+    setSelectedRecording(recording.id); // Set the selected recording ID
   };
 
   const handleClose = (event) => {

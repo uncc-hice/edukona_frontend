@@ -24,9 +24,8 @@ import QuizListRow from '../../blocks/QuizListRow';
 import useWebSocket from 'react-use-websocket';
 import { toast } from 'react-toastify';
 import { Main } from '../../layouts';
-import { useNavigate } from 'react-router-dom';
 import CustomizedMenus from '../../blocks/CustomizedMenus';
-import { fetchRecordings, startQuizSession } from '../../services/apiService';
+import { fetchRecordings } from '../../services/apiService';
 import DeleteRecordingDialog from '../../blocks/DeleteRecordingDialog';
 import NewQuizDialog from '../../blocks/NewQuizDialog';
 
@@ -34,40 +33,19 @@ const InstructorRecordings = () => {
   const [openNewQuiz, setOpenNewQuiz] = useState(false);
   const [recordings, setRecordings] = useState([]);
   const [open, setOpen] = useState(false);
+  const [selectedRecording, setSelectedRecording] = useState(null);
   const [openDialogue, setOpenDialogue] = useState(false);
   const [setOpenEditTitleDialog] = useState(false);
   const [setNewTitle] = useState('');
   const token = useRef(localStorage.getItem('token'));
   const theme = localStorage.getItem('themeMode');
-  const navigate = useNavigate();
   const [quizzes, setQuizzes] = useState([]);
   const [loadingQuizzes, setLoadingQuizzes] = useState(false);
   const [expanded, setExpanded] = useState(null);
 
-  const handleOpenDialogue = () => {
+  const handleOpenDialogue = (recordingId) => {
+    setSelectedRecording(recordingId);
     setOpenDialogue(true);
-  };
-
-  const startQuiz = (quizId) => {
-    if (!token) {
-      console.log('No token found');
-      toast.error('Failed to start quiz', { theme });
-      return;
-    }
-
-    startQuizSession(quizId)
-      .then((res) => {
-        if (res.status === 201) {
-          navigate(`/session/${res.data.code}`);
-        } else {
-          console.error('Failed to start quiz with status:', res.status);
-          toast.error('Failed to start quiz', { theme });
-        }
-      })
-      .catch((error) => {
-        console.error('Error starting the quiz:', error);
-        toast.error('Failed to start quiz', { theme });
-      });
   };
 
   const handleFetchRecordings = () => {
@@ -291,6 +269,7 @@ const InstructorRecordings = () => {
                           <CustomizedMenus
                             recording={recording}
                             handleOpenDialogue={handleOpenDialogue}
+                            setSelectedRecording={setSelectedRecording}
                             setOpenNewRecording={setOpenNewQuiz}
                             setOpenEditTitleDialog={setOpenEditTitleDialog}
                             handleGenerateSummary={handleGenerateSummary}
@@ -327,21 +306,27 @@ const InstructorRecordings = () => {
                         </TableCell>
                       </TableRow>
                     )}
-                    {/* Dialog for delete confirmation */}
-                    <DeleteRecordingDialog
-                      open={openDialogue}
-                      setOpen={setOpenDialogue}
-                      onUpdate={handleFetchRecordings}
-                      recordingId={recording.id}
-                    />
-                    {/* Dialog for creating a new quiz */}
-                    <NewQuizDialog open={openNewQuiz} setOpen={setOpenNewQuiz} recordingId={recording.id} />
                   </React.Fragment>
                 ))
               )}
             </TableBody>
           </Table>
         </TableContainer>
+        {/* Dialog for delete confirmation */}
+        <DeleteRecordingDialog
+          open={openDialogue}
+          setOpen={setOpenDialogue}
+          onUpdate={handleFetchRecordings}
+          recordingId={selectedRecording}
+        />
+
+        {/* Dialog for creating a new quiz */}
+        <NewQuizDialog
+          open={openNewQuiz}
+          setOpen={setOpenNewQuiz}
+          onUpdate={handleFetchRecordings}
+          recordingId={selectedRecording}
+        />
       </Container>
     </Main>
   );
