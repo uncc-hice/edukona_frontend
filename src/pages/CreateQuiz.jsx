@@ -3,7 +3,7 @@ import { useNavigate } from 'react-router-dom';
 import Button from '@mui/material/Button';
 import TextField from '@mui/material/TextField';
 import Navbar from '../blocks/Navbar';
-import axios from 'axios';
+import { createQuiz } from '../services/apiService';
 
 function CreateQuiz() {
   const [quizName, setQuizName] = useState('');
@@ -31,30 +31,24 @@ function CreateQuiz() {
       created_at: now,
       start_time: now,
       end_time: now,
-      settings: {
-        live_bar_chart: true,
-        timer: false,
-        timer_duration: 60,
-        skip_question: false,
-        skip_count_per_student: 0,
-        skip_question_logic: 'disabled',
-        skip_question_streak_count: 0,
-      },
+      live_bar_chart: true,
+      timer: false,
+      timer_duration: 60,
+      skip_question: false,
+      skip_count_per_student: 0,
+      skip_question_logic: 'disabled',
+      skip_question_streak_count: 0,
     };
 
-    try {
-      const response = await axios.post('https://api.edukona.com/quiz/create/', quizData, {
-        headers: {
-          'Content-Type': 'application/json',
-          Authorization: `Token ${token}`,
-        },
+    createQuiz(quizData)
+      .then((response) => {
+        const quizId = response.data.quiz_id;
+        navigate(`/quiz/${quizId}/edit`);
+      })
+      .catch((error) => {
+        console.error('Failed to create quiz:', error);
+        alert('Failed to create quiz');
       });
-      const quizId = response.data.quiz_id;
-      navigate(`/quiz/${quizId}/edit`);
-    } catch (error) {
-      console.error('Failed to create quiz:', error);
-      alert('Failed to create quiz');
-    }
   };
 
   return (
