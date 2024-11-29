@@ -32,9 +32,6 @@ const InstructorQuestionView = () => {
       } else if (data.type === 'update_answers') {
         console.log('Response data:', data.data);
         setResponseData(data.data);
-      } else if (data.type === 'settings') {
-        setSettings(data.settings);
-        setUserCount(data.user_count);
       }
     },
     [setCurrentQuestion, setResetTimer, setResponseData, setSettings, setUserCount]
