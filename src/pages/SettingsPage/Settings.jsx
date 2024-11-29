@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import { useEffect, useState } from 'react';
 import {
   Switch,
   TextField,
@@ -14,32 +14,39 @@ import {
 } from '@mui/material';
 import './SettingsPage.css';
 import { useNavigate, useParams } from 'react-router-dom';
-import axios from 'axios';
 import Main from '../../layouts/Main/Main';
+import { fetchQuiz, updateQuiz } from '../../services/apiService';
 
 const SettingsPage = () => {
   const [settings, setSettings] = useState(null);
+  const [currentQuiz, setCurrentQuiz] = useState(null);
 
   const { id } = useParams();
   const token = localStorage.getItem('token');
   const navigate = useNavigate();
 
   useEffect(() => {
-    const fetchSettings = async () => {
-      try {
-        const response = await axios.get(`https://api.edukona.com/quiz/${id}/settings`, {
-          headers: {
-            'Content-Type': 'application/json',
-            Authorization: `Token ${token}`,
-          },
+    const fetchSettings = () => {
+      fetchQuiz(id)
+        .then((response) => {
+          const quiz = response.data.quiz;
+          console.log('Quiz fetched successfully', quiz);
+          setCurrentQuiz(quiz);
+          const settings = {
+            timer: quiz.timer,
+            live_bar_chart: quiz.live_bar_chart,
+            skip_question: quiz.skip_question,
+            skip_count_per_student: quiz.skip_count_per_student,
+            skip_question_logic: quiz.skip_question_logic,
+            skip_question_streak_count: quiz.skip_question_streak_count,
+            skip_question_percentage: quiz.skip_question_percentage,
+          };
+          setSettings(settings);
+        })
+        .catch((error) => {
+          console.error('Failed to fetch settings', error);
         });
-        console.log(response.data);
-        setSettings(response.data.settings);
-      } catch (error) {
-        console.error('Failed to fetch settings', error);
-      }
     };
-
     fetchSettings();
   }, [id, token]);
 
@@ -51,24 +58,13 @@ const SettingsPage = () => {
     };
     setSettings(newSettings);
 
-    try {
-      const response = await axios.patch(
-        `https://api.edukona.com/quiz/${id}/settings`,
-        { settings: newSettings },
-        {
-          headers: {
-            'Content-Type': 'application/json',
-            Authorization: `Token ${token}`,
-          },
-        }
-      );
-
-      if (response.status === 200) {
-        console.log('Settings updated successfully');
-      }
-    } catch (error) {
-      console.error('Failed to update settings', error);
-    }
+    updateQuiz(id, { ...currentQuiz, ...newSettings })
+      .then(() => {
+        console.log('Settings updated successfully', { ...currentQuiz, ...newSettings });
+      })
+      .catch((error) => {
+        console.error('Failed to update settings', error);
+      });
   };
 
   const handleChange = async (event) => {
@@ -77,28 +73,15 @@ const SettingsPage = () => {
       ...settings,
       [name]: name === 'skip_question_percentage' ? parseFloat(value) : value,
     };
-
-    console.log(newSettings);
     setSettings(newSettings);
 
-    try {
-      const response = await axios.patch(
-        `https://api.edukona.com/quiz/${id}/settings`,
-        { settings: newSettings },
-        {
-          headers: {
-            'Content-Type': 'application/json',
-            Authorization: `Token ${token}`,
-          },
-        }
-      );
-
-      if (response.status === 200) {
-        console.log('Settings updated successfully');
-      }
-    } catch (error) {
-      console.error('Failed to update settings', error);
-    }
+    updateQuiz(id, { ...currentQuiz, ...newSettings })
+      .then(() => {
+        console.log('Settings updated successfully', { ...currentQuiz, ...newSettings });
+      })
+      .catch((error) => {
+        console.error('Failed to update settings', error);
+      });
   };
 
   const handleBackButton = () => {

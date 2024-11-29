@@ -32,11 +32,9 @@ const InstructorQuestionView = () => {
       } else if (data.type === 'update_answers') {
         console.log('Response data:', data.data);
         setResponseData(data.data);
-      } else if (data.type === 'settings') {
-        setSettings(data.settings);
-        setUserCount(data.user_count);
       }
     },
+    // eslint-disable-next-line react-hooks/exhaustive-deps
     [setCurrentQuestion, setResetTimer, setResponseData, setSettings, setUserCount]
   );
 
