@@ -13,8 +13,8 @@ const InstructorQuestionView = () => {
   const { code } = useParams();
   const [resetTimer, setResetTimer] = useState(false);
   const [responseData, setResponseData] = useState({});
-  const [settings, setSettings] = useState({});
-  const [userCount, setUserCount] = useState(0);
+  const settings = useState({});
+  const userCount = useState(0);
   const [grades, setGrades] = useState({});
   const [highlight, setHighlight] = useState(false);
 
@@ -34,8 +34,7 @@ const InstructorQuestionView = () => {
         setResponseData(data.data);
       }
     },
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-    [setCurrentQuestion, setResetTimer, setResponseData, setSettings, setUserCount]
+    [setCurrentQuestion, setResetTimer, setResponseData]
   );
 
   const { sendMessage } = useWebSocket(`wss://api.edukona.com/ws/quiz-session-instructor/${code}/`, {
