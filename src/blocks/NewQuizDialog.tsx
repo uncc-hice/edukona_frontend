@@ -1,8 +1,6 @@
 import { Button, Dialog, DialogActions, DialogContent, FormControl, Grid, Slider, Typography } from '@mui/material';
 import { useState } from 'react';
-import { useNavigate } from 'react-router-dom';
 import { toast } from 'react-toastify';
-import { startQuizSession } from '../services/apiService';
 import { createQuiz } from '../services/lambdaService';
 
 interface NewQuizDialogProps {
@@ -23,26 +21,11 @@ const NewQuizDialog = (props: NewQuizDialogProps) => {
       ...prev,
       [(e.target as HTMLInputElement).name]: (e.target as HTMLInputElement).value,
     }));
-  const navigate = useNavigate();
 
-  const startQuiz = async (quizId: number) =>
-    toast.promise(
-      startQuizSession(quizId).then((res) => navigate(`/session/${res.data.code}`)),
-      { error: 'Failed to start quiz' }
-    );
-
-  const handleCreateQuiz = () =>
-    toast
-      .promise(createQuiz(quizSettings, props.recordingId), {
-        pending: 'Creating quiz',
-        success: 'Successfully created quiz!',
-        error: 'Failed to create quiz!',
-      })
-      .then((res) => {
-        console.log(res.data);
-        startQuiz(res.data.quiz_id);
-      })
-      .catch((error) => console.error(error));
+  const handleCreateQuiz = () => {
+    createQuiz(quizSettings, props.recordingId).catch((error) => console.error(error));
+    toast.info('Creating Quiz ...', { autoClose: false, toastId: 'generatingQuiz' });
+  };
 
   return (
     <Dialog
