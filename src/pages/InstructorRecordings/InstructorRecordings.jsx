@@ -25,9 +25,10 @@ import useWebSocket from 'react-use-websocket';
 import { toast } from 'react-toastify';
 import { Main } from '../../layouts';
 import CustomizedMenus from '../../blocks/CustomizedMenus';
-import { fetchRecordings } from '../../services/apiService';
+import { fetchRecordings, startQuizSession } from '../../services/apiService';
 import DeleteRecordingDialog from '../../blocks/DeleteRecordingDialog';
 import NewQuizDialog from '../../blocks/NewQuizDialog';
+import { useNavigate } from 'react-router-dom';
 
 const InstructorRecordings = () => {
   const [openNewQuiz, setOpenNewQuiz] = useState(false);
@@ -42,6 +43,7 @@ const InstructorRecordings = () => {
   const [quizzes, setQuizzes] = useState([]);
   const [loadingQuizzes, setLoadingQuizzes] = useState(false);
   const [expanded, setExpanded] = useState(null);
+  const navigate = useNavigate();
 
   const handleOpenDialogue = (recordingId) => {
     setSelectedRecording(recordingId);
@@ -94,6 +96,12 @@ const InstructorRecordings = () => {
               }
             : recording
         )
+      );
+    } else if (receivedData.type === 'quiz_creation_completed') {
+      toast.dismiss('generatingQuiz');
+      toast.promise(
+        startQuizSession(receivedData.quiz_id).then((res) => navigate(`/session/${res.data.code}`)),
+        { error: 'Failed to start quiz' }
       );
     }
   };
