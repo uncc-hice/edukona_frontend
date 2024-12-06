@@ -13,3 +13,15 @@ export const createQuiz = (quizSettings, recordingId) =>
       },
     }
   );
+
+export const generateSummary = (recordingId) =>
+  axios.post(
+    'https://6y2dyfv9k1.execute-api.us-west-2.amazonaws.com/Prod/create_summary_from_transcript',
+    { recording_id: recordingId },
+    {
+      headers: {
+        Authorization: `Token ${token}`,
+        'Content-Type': 'application/json',
+      },
+    }
+  );

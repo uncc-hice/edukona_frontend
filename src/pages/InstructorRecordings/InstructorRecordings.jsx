@@ -11,8 +11,6 @@ import {
   Typography,
   Box,
   Button,
-  Snackbar,
-  Alert,
   Accordion,
   AccordionSummary,
   AccordionDetails,
@@ -24,61 +22,19 @@ import QuizListRow from '../../blocks/QuizListRow';
 import useWebSocket from 'react-use-websocket';
 import { toast } from 'react-toastify';
 import { Main } from '../../layouts';
-import CustomizedMenus from '../../blocks/CustomizedMenus';
 import { fetchRecordings } from '../../services/apiService';
-import DeleteRecordingDialog from '../../blocks/DeleteRecordingDialog';
-import NewQuizDialog from '../../blocks/NewQuizDialog';
+import RecordingListRowMenu from '../../blocks/RecordingListRowMenu';
 
 const InstructorRecordings = () => {
-  const [openNewQuiz, setOpenNewQuiz] = useState(false);
   const [recordings, setRecordings] = useState([]);
-  const [open, setOpen] = useState(false);
-  const [selectedRecording, setSelectedRecording] = useState(null);
-  const [openDialogue, setOpenDialogue] = useState(false);
-  const [setOpenEditTitleDialog] = useState(false);
-  const [setNewTitle] = useState('');
   const token = useRef(localStorage.getItem('token'));
   const theme = localStorage.getItem('themeMode');
   const [quizzes, setQuizzes] = useState([]);
   const [loadingQuizzes, setLoadingQuizzes] = useState(false);
   const [expanded, setExpanded] = useState(null);
 
-  const handleOpenDialogue = (recordingId) => {
-    setSelectedRecording(recordingId);
-    setOpenDialogue(true);
-  };
-
   const handleFetchRecordings = () => {
     fetchRecordings().then((res) => setRecordings(res.data.recordings));
-  };
-
-  const handleGenerateSummary = (recordingId) => {
-    toast
-      .promise(
-        axios.post(
-          'https://6y2dyfv9k1.execute-api.us-west-2.amazonaws.com/Prod/create_summary_from_transcript',
-          { recording_id: recordingId },
-          {
-            headers: {
-              Authorization: `Token ${token.current}`,
-              'Content-Type': 'application/json',
-            },
-          }
-        ),
-        {
-          pending: 'Generating summary...',
-          success: 'Summary generated successfully!',
-          error: 'Failed to generate summary.',
-          theme,
-        }
-      )
-      .then((res) => {
-        console.log('Summary generated:', res.data);
-        // Optionally, handle the response, e.g., display the summary or update state
-      })
-      .catch((error) => {
-        console.error('Error generating summary:', error);
-      });
   };
 
   const handleIncomingMessage = (event) => {
@@ -98,16 +54,9 @@ const InstructorRecordings = () => {
     }
   };
 
-  const handleClose = (event, reason) => {
-    if (reason === 'clickaway') {
-      return;
-    }
-    setOpen(false);
-  };
-
   const websocketError = (event) => {
     console.error('WebSocket error', event);
-    setOpen(true);
+    toast.error('Failed to establish WebSocket Connection');
   };
 
   useWebSocket(`wss://api.edukona.com/ws/recordings/?token=${token.current}`, {
@@ -161,11 +110,6 @@ const InstructorRecordings = () => {
   return (
     <Main>
       <Container sx={{ padding: '40px' }}>
-        <Snackbar open={open} autoHideDuration={6000} onClose={handleClose}>
-          <Alert onClose={handleClose} severity="error" sx={{ width: '100%' }}>
-            Unable to establish WebSocket connection
-          </Alert>
-        </Snackbar>
         <RecordButton onUpdate={handleFetchRecordings} />
         <TableContainer component={Paper}>
           <Table>
@@ -266,15 +210,7 @@ const InstructorRecordings = () => {
                       <TableCell align="center" sx={{ width: '25%' }}>
                         {/* Center the CustomizedMenus component */}
                         <Box textAlign="center">
-                          <CustomizedMenus
-                            recording={recording}
-                            handleOpenDialogue={handleOpenDialogue}
-                            setSelectedRecording={setSelectedRecording}
-                            setOpenNewRecording={setOpenNewQuiz}
-                            setOpenEditTitleDialog={setOpenEditTitleDialog}
-                            handleGenerateSummary={handleGenerateSummary}
-                            setNewTitle={setNewTitle}
-                          />
+                          <RecordingListRowMenu recording={recording} onUpdate={handleFetchRecordings} />
                         </Box>
                       </TableCell>
                     </TableRow>
@@ -312,20 +248,6 @@ const InstructorRecordings = () => {
             </TableBody>
           </Table>
         </TableContainer>
-
-        <DeleteRecordingDialog
-          open={openDialogue}
-          setOpen={setOpenDialogue}
-          onUpdate={handleFetchRecordings}
-          recordingId={selectedRecording}
-        />
-
-        <NewQuizDialog
-          open={openNewQuiz}
-          setOpen={setOpenNewQuiz}
-          onUpdate={handleFetchRecordings}
-          recordingId={selectedRecording}
-        />
       </Container>
     </Main>
   );
