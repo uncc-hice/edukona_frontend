@@ -56,6 +56,9 @@ export const startQuizSession = (quizId) =>
 
 export const deleteRecording = (recording) => api.delete(`recordings/${recording}/delete-recording`);
 
+export const updateRecordingTitle = (recordingId, title) =>
+  api.patch(`recordings/${recordingId}/update-title/`, { title: title });
+
 export const fetchRecordings = () => api.get(`recordings/`);
 
 export const fetchResults = (code) => api.get(`/quiz-session-results/${code}`);
@@ -78,6 +81,7 @@ export const fetchProfile = () =>
   });
 
 export const fetchQuiz = (id) => api.get(`quiz/${id}`);
+
 export const updateQuiz = (id, data) => api.put(`quiz/${id}`, data);
 
 export const createQuiz = (quizData) => api.post('quiz/create/', quizData);
