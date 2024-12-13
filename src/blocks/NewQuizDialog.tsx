@@ -24,7 +24,7 @@ const NewQuizDialog = (props: NewQuizDialogProps) => {
 
   const handleCreateQuiz = () => {
     createQuiz(quizSettings, props.recordingId).catch((error) => console.error(error));
-    toast.info('Creating Quiz ...', { autoClose: false, toastId: 'generatingQuiz' });
+    toast.loading('Creating Quiz ...', { autoClose: false, toastId: 'generatingQuiz' });
   };
 
   return (
