@@ -22,8 +22,8 @@ import QuizListRow from '../../blocks/QuizListRow';
 import useWebSocket from 'react-use-websocket';
 import { toast } from 'react-toastify';
 import { Main } from '../../layouts';
-import { fetchRecordings, startQuizSession } from '../../services/apiService';
 import { useNavigate } from 'react-router-dom';
+import { fetchRecordings } from '../../services/apiService';
 import RecordingListRowMenu from '../../blocks/RecordingListRowMenu';
 
 const InstructorRecordings = () => {
