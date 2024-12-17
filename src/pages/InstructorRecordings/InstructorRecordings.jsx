@@ -32,6 +32,7 @@ const InstructorRecordings = () => {
   const [quizzes, setQuizzes] = useState([]);
   const [loadingQuizzes, setLoadingQuizzes] = useState(false);
   const [expanded, setExpanded] = useState(null);
+  const navigate = useNavigate();
 
   const handleFetchRecordings = () => {
     fetchRecordings().then((res) => setRecordings(res.data.recordings));
@@ -50,6 +51,12 @@ const InstructorRecordings = () => {
               }
             : recording
         )
+      );
+    } else if (receivedData.type === 'quiz_creation_completed') {
+      toast.dismiss('generatingQuiz');
+      toast.promise(
+        startQuizSession(receivedData.quiz_id).then((res) => navigate(`/session/${res.data.code}`)),
+        { error: 'Failed to start quiz' }
       );
     }
   };
