@@ -36,7 +36,7 @@ const EditRecordingTitleDialog: React.FC<EditRecordingTitleDialogProps> = ({
     );
 
   return (
-    <Dialog open={open}>
+    <Dialog open={open} fullWidth>
       <DialogTitle>Rename Recording</DialogTitle>
       <DialogContent>
         <TextField
