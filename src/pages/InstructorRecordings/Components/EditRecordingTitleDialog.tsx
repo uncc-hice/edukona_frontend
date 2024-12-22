@@ -1,28 +1,42 @@
 import React, { useState } from 'react';
 import { Dialog, DialogActions, DialogContent, DialogTitle, Button, TextField } from '@mui/material';
+import { updateRecordingTitle } from '../../../services/apiService';
+import { toast } from 'react-toastify';
 
 interface EditRecordingTitleDialogProps {
   open: boolean;
-  onClose: () => void;
-  onRename: (newTitle: string) => void;
+  setOpen(open: boolean): void;
+  recordingId: string;
   currentTitle: string;
+  onUpdate(): void;
 }
 
 const EditRecordingTitleDialog: React.FC<EditRecordingTitleDialogProps> = ({
   open,
-  onClose,
-  onRename,
+  setOpen,
   currentTitle,
+  recordingId,
+  onUpdate,
 }) => {
   const [newTitle, setNewTitle] = useState(currentTitle);
 
-  const handleRename = () => {
-    onRename(newTitle);
-    onClose();
-  };
+  const handleRename = () =>
+    toast.promise(
+      updateRecordingTitle(recordingId, newTitle)
+        .then(() => {
+          setOpen(false);
+          onUpdate();
+        })
+        .catch((err) => console.error(err)),
+      {
+        pending: 'Updating recording title...',
+        success: 'Successfully updated recording title',
+        error: 'Failed to update recording title',
+      }
+    );
 
   return (
-    <Dialog open={open} onClose={onClose}>
+    <Dialog open={open} fullWidth>
       <DialogTitle>Rename Recording</DialogTitle>
       <DialogContent>
         <TextField
@@ -36,7 +50,7 @@ const EditRecordingTitleDialog: React.FC<EditRecordingTitleDialogProps> = ({
         />
       </DialogContent>
       <DialogActions>
-        <Button onClick={onClose} color="primary">
+        <Button onClick={() => setOpen(false)} color="primary">
           Cancel
         </Button>
         <Button onClick={handleRename} color="primary">
