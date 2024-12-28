@@ -1,4 +1,4 @@
-import React, { createContext, useContext, useEffect, useState } from 'react';
+import React, { createContext, useEffect, useState } from 'react';
 import { login as apiLogin } from './services/apiService';
 import { logout as apiLogout } from './services/apiService';
 import { googleAuth } from './services/apiService';
@@ -58,23 +58,23 @@ export const UserProvider = ({ children }: { children: React.ReactNode }) => {
       setIsLoggedIn(true);
     }
   }, [accessToken]);
-
   const login = async (username: string, password: string, setError: SetErrorFunction, navigate: NavigateFunction) => {
-    apiLogin(username, password)
-      .then((response: LoginResponse) => {
-        setAccessToken(response.data.access);
-        setRefreshToken(response.data.refresh);
-        setUser(response.data.user);
-        navigate('/');
-      })
-      .catch((error) => {
-        console.log(error);
-        if (error.response.status === 400 || error.response.status === 401) {
-          setError('Invalid email or password.');
-        } else {
-          setError("Sorry, we couldn't log you in due to an internal server error.");
-        }
-      });
+    console.log('Logging in');
+    try {
+      const response: LoginResponse = await apiLogin(username, password);
+      console.log(response);
+      setAccessToken(response.data.access);
+      setRefreshToken(response.data.refresh);
+      setUser(response.data.user);
+      navigate('/');
+    } catch (error: any) {
+      console.log(error);
+      if (error.response && (error.response.status === 400 || error.response.status === 401)) {
+        setError('Invalid email or password.');
+      } else {
+        setError("Sorry, we couldn't log you in due to an internal server error.");
+      }
+    }
   };
 
   const googleLogin = async (credential: string, setError: SetErrorFunction, navigate: NavigateFunction) => {
