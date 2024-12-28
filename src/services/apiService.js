@@ -1,11 +1,18 @@
 import axios from 'axios';
 
 const token = localStorage.getItem('token');
+const base = 'https://api.edukona.com/';
 
 const api = axios.create({
-  baseURL: 'https://api.edukona.com/',
+  baseURL: base,
   timeout: 1500,
   headers: { Authorization: `Token ${token}` },
+});
+
+// unauthenticated api
+export const defaultApi = axios.create({
+  baseURL: base,
+  timeout: 1500,
 });
 
 // Global error handler.
@@ -20,6 +27,11 @@ api.interceptors.response.use(
     return Promise.reject(err);
   }
 );
+
+// jwt-related api calls
+export const login = (email, password) => defaultApi.post('jwt-login/', { email, password });
+export const googleAuth = (token) => defaultApi.post('auth/jwt-google/', { token });
+export const logout = () => api.post('jwt-logout/');
 
 export const fetchQuizzes = () =>
   api.get('instructor/quizzes/', {
