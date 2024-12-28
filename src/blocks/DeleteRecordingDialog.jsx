@@ -17,12 +17,13 @@ const DeleteRecordingDialog = ({ open, setOpen, onUpdate, recordingId }) => {
     <Dialog
       open={open}
       onClose={() => setOpen(false)}
-      aria-labelledby="alert-dialog-title"
-      aria-describedby="alert-dialog-description"
+      fullWidth
+      aria-labelledby="delete-recording-title"
+      aria-describedby="delete-recording-description"
     >
-      <DialogTitle id="alert-dialog-title">{'Confirm Deletion'}</DialogTitle>
+      <DialogTitle id="delete-recording-title">{'Confirm Deletion'}</DialogTitle>
       <DialogContent>
-        <DialogContentText id="alert-dialog-description">
+        <DialogContentText id="delete-recording-description">
           Are you sure you want to delete this recording?
         </DialogContentText>
       </DialogContent>
