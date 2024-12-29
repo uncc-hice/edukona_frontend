@@ -12,7 +12,6 @@ const api = axios.create({
 // unauthenticated api
 export const defaultApi = axios.create({
   baseURL: base,
-  timeout: 1500,
 });
 
 // Global error handler.
