@@ -5,24 +5,26 @@ import Typography from '@mui/material/Typography';
 import Grid from '@mui/material/Grid';
 import { alpha, useTheme } from '@mui/material/styles';
 import { TextField, Button, Paper, Divider, Stack } from '@mui/material/';
-import axios from 'axios';
+import { submitContactForm } from '../../../../services/apiService';
 import { toast } from 'react-toastify';
 
 const Contact = () => {
   const theme = useTheme();
 
-  const submit_form = async (event) => {
+  const submit_form = (event) => {
     event.preventDefault();
     const toast_theme = theme.palette.mode;
-    const form = event.target;
-    try {
-      await axios.post('https://api.edukona.com/contact-us/', form);
-      event.target.reset();
-      toast.success('Message sent successfully!', toast_theme);
-    } catch (error) {
-      console.error(error);
-      toast.error('Failed to send message. Please try again.', toast_theme);
-    }
+    const formData = new FormData(event.target);
+    const form = Object.fromEntries(formData.entries());
+    submitContactForm(form)
+      .then(() => {
+        event.target.reset();
+        toast.success('Message sent successfully!', { theme: toast_theme });
+      })
+      .catch((error) => {
+        console.error(error);
+        toast.error('Failed to send message. Please try again.', { theme: toast_theme });
+      });
   };
 
   return (
