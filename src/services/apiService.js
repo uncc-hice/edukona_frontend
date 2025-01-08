@@ -97,4 +97,4 @@ export const updateQuiz = (id, data) => api.put(`quiz/${id}`, data);
 
 export const createQuiz = (quizData) => api.post('quiz/create/', quizData);
 
-export const submitContactForm = (formData) => defaultApi.post('https://api.edukona.com/contact-us/', formData);
+export const submitContactForm = (formData) => defaultApi.post('contact-us/', formData);
