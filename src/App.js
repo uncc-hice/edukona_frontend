@@ -35,6 +35,7 @@ import Summary from './pages/Summary';
 import JWTLoginForm from './blocks/JWTLoginForm';
 import { UserContext as JWTUserContext } from './JWTUserContext';
 import { UserProvider as JWTUserProvider } from './JWTUserContext';
+import JWTSignUpForm from './blocks/JWTSignUpForm';
 
 function App() {
   const { isLoggedIn } = useContext(UserContext);
@@ -70,6 +71,7 @@ function App() {
               element={isLoggedIn ? <Navigate to="/dashboard" /> : <LoginForm signUpRoute={'/signup'} />}
             />
             <Route path="/signup" element={isLoggedIn ? <Navigate to="/" /> : <SignUpForm />} />
+            <Route path="/jwt-signup" element={JWTIsLoggedIn ? <Navigate to="/" /> : <JWTSignUpForm />} />
             <Route
               path="/jwt-login"
               element={JWTIsLoggedIn ? <Navigate to="/" /> : <JWTLoginForm signUpRoute={'/jwt-signup'} />}
