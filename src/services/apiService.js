@@ -97,3 +97,5 @@ export const fetchQuiz = (id) => api.get(`quiz/${id}`);
 export const updateQuiz = (id, data) => api.put(`quiz/${id}`, data);
 
 export const createQuiz = (quizData) => api.post('quiz/create/', quizData);
+
+export const submitContactForm = (formData) => defaultApi.post('contact-us/', formData);
