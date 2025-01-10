@@ -22,12 +22,7 @@ interface AccordionQuizzesProps {
   onChange: (event: React.SyntheticEvent, isExpanded: boolean) => void;
 }
 
-const AccordionQuizzes: FC<AccordionQuizzesProps> = ({
-  recordingId,
-  token,
-  expanded,
-  onChange,
-}) => {
+const AccordionQuizzes: FC<AccordionQuizzesProps> = ({ recordingId, token, expanded, onChange }) => {
   const [quizzes, setQuizzes] = useState<Quiz[]>([]);
   const [loading, setLoading] = useState(false);
   const [loadedOnce, setLoadedOnce] = useState(false);
@@ -68,11 +63,7 @@ const AccordionQuizzes: FC<AccordionQuizzesProps> = ({
           <Table>
             <TableBody>
               {quizzes.map((quiz) => (
-                <QuizListRow
-                  key={quiz.id}
-                  quiz={quiz}
-                  onUpdate={() => {}}
-                />
+                <QuizListRow key={quiz.id} quiz={quiz} onUpdate={() => {}} />
               ))}
             </TableBody>
           </Table>

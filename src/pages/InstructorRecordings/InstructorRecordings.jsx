@@ -53,9 +53,7 @@ const InstructorRecordings = () => {
     } else if (receivedData.type === 'quiz_creation_completed') {
       toast.dismiss('generatingQuiz');
       toast.promise(
-        startQuizSession(receivedData.quiz_id).then((res) =>
-          navigate(`/session/${res.data.code}`)
-        ),
+        startQuizSession(receivedData.quiz_id).then((res) => navigate(`/session/${res.data.code}`)),
         { error: 'Failed to start quiz' }
       );
     }
@@ -159,9 +157,7 @@ const InstructorRecordings = () => {
                               handleTitleClick(recording.id, recording.title);
                             }}
                           >
-                            {recording.title === ''
-                              ? recording.id.substr(0, 7) + '...'
-                              : recording.title}
+                            {recording.title === '' ? recording.id.substr(0, 7) + '...' : recording.title}
                           </Button>
                         </Box>
                       </TableCell>
@@ -182,22 +178,15 @@ const InstructorRecordings = () => {
                             height: 16,
                             display: 'inline-block',
                             borderRadius: '50%',
-                            bgcolor:
-                              recording.transcript.toLowerCase() === 'completed'
-                                ? 'green'
-                                : 'red',
+                            bgcolor: recording.transcript.toLowerCase() === 'completed' ? 'green' : 'red',
                             marginRight: 1,
                           }}
                         />
-                        {recording.transcript.charAt(0).toUpperCase() +
-                          recording.transcript.slice(1)}
+                        {recording.transcript.charAt(0).toUpperCase() + recording.transcript.slice(1)}
                       </TableCell>
                       <TableCell align="center" sx={{ width: '25%' }}>
                         <Box textAlign="center">
-                          <RecordingListRowMenu
-                            recording={recording}
-                            onUpdate={handleFetchRecordings}
-                          />
+                          <RecordingListRowMenu recording={recording} onUpdate={handleFetchRecordings} />
                         </Box>
                       </TableCell>
                     </TableRow>
