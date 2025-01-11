@@ -29,6 +29,7 @@ api.interceptors.response.use(
 
 // jwt-related api calls
 export const login = (email, password) => defaultApi.post('jwt-login/', { email, password });
+export const JWTSignUpInstructor = (formData) => defaultApi.post('jwt-sign-up-instructor/', formData);
 export const googleAuth = (token) => defaultApi.post('auth/jwt-google/', { token });
 export const logout = () => api.post('jwt-logout/');
 
