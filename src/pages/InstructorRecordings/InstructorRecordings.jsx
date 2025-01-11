@@ -11,14 +11,8 @@ import {
   Typography,
   Box,
   Button,
-  Accordion,
-  AccordionSummary,
-  AccordionDetails,
-  CircularProgress,
 } from '@mui/material';
-import axios from 'axios';
 import RecordButton from '../../blocks/RecordButton';
-import QuizListRow from '../../blocks/QuizListRow';
 import useWebSocket from 'react-use-websocket';
 import { toast } from 'react-toastify';
 import { Main } from '../../layouts';
@@ -26,19 +20,22 @@ import { useNavigate } from 'react-router-dom';
 import { fetchRecordings, startQuizSession } from '../../services/apiService';
 import RecordingListRowMenu from '../../blocks/RecordingListRowMenu';
 
+// Import our new component
+import AccordionQuizzes from './Components/AccordionQuizzes.tsx';
+
 const InstructorRecordings = () => {
   const [recordings, setRecordings] = useState([]);
-  const token = useRef(localStorage.getItem('token'));
+  const token = useRef(localStorage.getItem('token') || '');
   const theme = localStorage.getItem('themeMode');
-  const [quizzes, setQuizzes] = useState([]);
-  const [loadingQuizzes, setLoadingQuizzes] = useState(false);
   const [expanded, setExpanded] = useState(null);
   const navigate = useNavigate();
 
+  // Fetch recordings
   const handleFetchRecordings = () => {
     fetchRecordings().then((res) => setRecordings(res.data.recordings));
   };
 
+  // WebSocket events
   const handleIncomingMessage = (event) => {
     const receivedData = JSON.parse(event.data);
     if (receivedData.type === 'transcript_completed') {
@@ -67,37 +64,30 @@ const InstructorRecordings = () => {
     toast.error('Failed to establish WebSocket Connection');
   };
 
+  // Initialize WebSocket
   useWebSocket(`wss://api.edukona.com/ws/recordings/?token=${token.current}`, {
     onOpen: () => console.log('WebSocket connected'),
     onClose: () => console.log('WebSocket disconnected'),
     onError: websocketError,
     onMessage: handleIncomingMessage,
-    shouldReconnect: (closeEvent) => true,
+    shouldReconnect: () => true,
   });
 
+  // On mount, fetch the recordings
   useEffect(() => {
     handleFetchRecordings();
   }, [token]);
 
-  const fetchQuizzes = (id) => {
-    if (quizzes == null) {
-      setLoadingQuizzes(true);
-    }
-    axios
-      .get(`https://api.edukona.com/recordings/${id}/quizzes`, { headers: { Authorization: `Token ${token.current}` } })
-      .then((res) => setQuizzes(res.data))
-      .catch((error) => console.error('Error fetching quizzes:', error))
-      .finally(() => setLoadingQuizzes(false));
-  };
-
+  /**
+   * Toggles the accordion for a given recording ID.
+   * If it's already expanded, collapse it; otherwise expand it.
+   */
   const handleAccordionChange = (recordingId) => (event, isExpanded) => {
     setExpanded(isExpanded ? recordingId : null);
-    if (isExpanded) {
-      fetchQuizzes(recordingId);
-    }
   };
 
   const handleTitleClick = (recordingId, recordingTitle) => {
+    // If the recording has no title, copy the ID to clipboard
     if (recordingTitle === '') {
       navigator.permissions.query({ name: 'clipboard-write' }).then((result) => {
         if (result.state === 'granted' || result.state === 'prompt') {
@@ -109,9 +99,8 @@ const InstructorRecordings = () => {
           });
         }
       });
-    } else {
-      fetchQuizzes(recordingId);
     }
+    // Toggle the accordion
     setExpanded(expanded === recordingId ? null : recordingId);
   };
 
@@ -157,38 +146,19 @@ const InstructorRecordings = () => {
               ) : (
                 recordings.map((recording) => (
                   <React.Fragment key={recording.id}>
-                    {/* First Row: Recording Details */}
+                    {/* --- Row 1: Recording Info --- */}
                     <TableRow sx={{ cursor: 'default' }}>
-                      {/* Adjusted alignment to center */}
                       <TableCell align="center" sx={{ width: '25%' }}>
-                        {/* Center the content inside */}
                         <Box textAlign="center">
-                          {/* Accordion Summary */}
-                          <Accordion
-                            expanded={expanded === recording.id}
-                            onChange={handleAccordionChange(recording.id)}
-                            sx={{ boxShadow: 'none' }}
+                          <Button
+                            color="primary"
+                            onClick={(e) => {
+                              e.stopPropagation();
+                              handleTitleClick(recording.id, recording.title);
+                            }}
                           >
-                            <AccordionSummary
-                              onClick={(e) => {
-                                e.stopPropagation();
-                                handleAccordionChange(recording.id)(e, expanded !== recording.id);
-                              }}
-                              aria-controls={`panel-${recording.id}-content`}
-                              id={`panel-${recording.id}-header`}
-                              sx={{ padding: 0 }}
-                            >
-                              <Button
-                                color="primary"
-                                onClick={(e) => {
-                                  e.stopPropagation();
-                                  handleTitleClick(recording.id, recording.title);
-                                }}
-                              >
-                                {recording.title === '' ? recording.id.substr(0, 7) + '...' : recording.title}
-                              </Button>
-                            </AccordionSummary>
-                          </Accordion>
+                            {recording.title === '' ? recording.id.substr(0, 7) + '...' : recording.title}
+                          </Button>
                         </Box>
                       </TableCell>
                       <TableCell align="center" sx={{ width: '25%' }}>
@@ -214,39 +184,23 @@ const InstructorRecordings = () => {
                         />
                         {recording.transcript.charAt(0).toUpperCase() + recording.transcript.slice(1)}
                       </TableCell>
-                      {/* Adjusted alignment to center */}
                       <TableCell align="center" sx={{ width: '25%' }}>
-                        {/* Center the CustomizedMenus component */}
                         <Box textAlign="center">
                           <RecordingListRowMenu recording={recording} onUpdate={handleFetchRecordings} />
                         </Box>
                       </TableCell>
                     </TableRow>
-                    {/* Second Row: Accordion Details */}
+
+                    {/* --- Row 2: Accordion for Quizzes (only if expanded) --- */}
                     {expanded === recording.id && (
                       <TableRow>
                         <TableCell colSpan={4} style={{ paddingBottom: 0, paddingTop: 0 }}>
-                          <Accordion expanded={expanded === recording.id} sx={{ boxShadow: 'none' }}>
-                            <AccordionDetails>
-                              {loadingQuizzes ? (
-                                <CircularProgress />
-                              ) : quizzes.length === 0 ? (
-                                <Typography>No quizzes available</Typography>
-                              ) : (
-                                <Table>
-                                  <TableBody>
-                                    {quizzes.map((quiz) => (
-                                      <QuizListRow
-                                        key={quiz.id}
-                                        quiz={quiz}
-                                        onUpdate={() => fetchQuizzes(recording.id)}
-                                      />
-                                    ))}
-                                  </TableBody>
-                                </Table>
-                              )}
-                            </AccordionDetails>
-                          </Accordion>
+                          <AccordionQuizzes
+                            recordingId={recording.id}
+                            token={token.current}
+                            expanded={expanded === recording.id}
+                            onChange={handleAccordionChange(recording.id)}
+                          />
                         </TableCell>
                       </TableRow>
                     )}
