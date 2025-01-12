@@ -52,19 +52,34 @@ const defaultUserContext: UserContextType = {
   user: null,
 };
 
+/**
+ * Helper function to get the user value as an integer from local storage.
+ * @returns {number | null} The user id saved in local storage or null if it does not exist.
+ */
+const getUserLocalStorage = (): number | null => {
+  const user = localStorage.getItem('user');
+  if (!user) {
+    return null;
+  }
+  return parseInt(user);
+};
+
 export const UserContext = createContext<UserContextType>(defaultUserContext);
 
 export const UserProvider = ({ children }: { children: React.ReactNode }) => {
-  const [accessToken, setAccessToken] = useState<string | null>(null);
-  const [refreshToken, setRefreshToken] = useState<string | null>(null);
+  const [accessToken, setAccessToken] = useState<string | null>(localStorage.getItem('accessToken'));
+  const [refreshToken, setRefreshToken] = useState<string | null>(localStorage.getItem('refreshToken'));
 
-  const [isLoggedIn, setIsLoggedIn] = useState(false);
-  const [user, setUser] = useState<number | null>(null);
+  const [isLoggedIn, setIsLoggedIn] = useState(!(accessToken === null));
+  const [user, setUser] = useState<number | null>(getUserLocalStorage());
 
   const reset = () => {
     setIsLoggedIn(false);
     setAccessToken(null);
     setRefreshToken(null);
+    localStorage.removeItem('accessToken');
+    localStorage.removeItem('refreshToken');
+    localStorage.removeItem('user');
     setUser(null);
   };
 
@@ -76,32 +91,24 @@ export const UserProvider = ({ children }: { children: React.ReactNode }) => {
     }
   }, [accessToken]);
 
-  useEffect(() => {
-    localStorage.setItem('accessToken', accessToken || '');
-  }, [accessToken]);
-
-  useEffect(() => {
-    localStorage.setItem('refreshToken', refreshToken || '');
-  }, [refreshToken]);
-
-  useEffect(() => {
-    localStorage.setItem('user', user !== null ? user.toString() : '');
-  }, [user]);
-
   const login = async (username: string, password: string, setError: SetErrorFunction, navigate: NavigateFunction) => {
-    try {
-      const response: LoginResponse = await apiLogin(username, password);
-      setAccessToken(response.data.access);
-      setRefreshToken(response.data.refresh);
-      setUser(response.data.user);
-      navigate('/');
-    } catch (error: any) {
-      if (error.response && (error.response.status === 400 || error.response.status === 401)) {
-        setError('Invalid email or password.');
-      } else {
-        setError("Sorry, we couldn't log you in due to an internal server error.");
-      }
-    }
+    apiLogin(username, password)
+      .then((res: LoginResponse) => {
+        setAccessToken(res.data.access);
+        setRefreshToken(res.data.refresh);
+        setUser(res.data.user);
+        localStorage.setItem('accessToken', res.data.access);
+        localStorage.setItem('refreshToken', res.data.refresh);
+        localStorage.setItem('user', res.data.user.toString());
+        navigate('/');
+      })
+      .catch((err) => {
+        if (err.response && (err.response.status === 400 || err.response.status === 401)) {
+          setError('Invalid email or password.');
+        } else {
+          setError("Sorry, we couldn't log you in due to an internal server error.");
+        }
+      });
   };
 
   const googleLogin = async (credential: string, setError: SetErrorFunction, navigate: NavigateFunction) => {
@@ -130,17 +137,17 @@ export const UserProvider = ({ children }: { children: React.ReactNode }) => {
         setUser(response.data.user);
         navigate('/');
       })
-      .catch((error: any) => {
+      .catch(() => {
         toast.error(`Failed to create account, please try again.`);
         reset();
       });
   };
 
-  const logout = () => {
-    reset();
-    apiLogout();
-    window.location.reload();
-  };
+  const logout = () =>
+    apiLogout(refreshToken).then(() => {
+      reset();
+      window.location.reload();
+    });
 
   return (
     <UserContext.Provider
