@@ -1,5 +1,5 @@
 // UserContext.js
-import React, { createContext, useState, useEffect } from 'react';
+import { createContext, useState, useEffect } from 'react';
 import axios from 'axios';
 
 export const UserContext = createContext();
@@ -27,7 +27,6 @@ export const UserProvider = ({ children }) => {
       .post(axiosUrl, data)
       .then((response) => {
         //creates a response in console to ensure that the data sent was correct
-        console.log('Response: ', response.data);
         //sets token data
         localStorage.setItem('token', response.data['token']);
         //sets user data
