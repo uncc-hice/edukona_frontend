@@ -4,14 +4,26 @@ import PropTypes from 'prop-types';
 import { Box, Button, useMediaQuery } from '@mui/material';
 import { alpha, useTheme } from '@mui/material/styles';
 import MenuIcon from '@mui/icons-material/Menu';
-import ThemeModeToggler from '../../../../components/ThemeModeToggler'; // Adjust the path based on your project structure
-import { UserContext } from '../../../../UserContext'; // Adjust the path based on your project structure
+import ThemeModeToggler from '../../../../components/ThemeModeToggler';
+import { UserContext } from '../../../../UserContext';
+import { UserContext as JWTUserContext } from '../../../../JWTUserContext';
 
-const Topbar = ({ onSidebarOpen, colorInvert = false }) => {
+const Topbar = ({ onSidebarOpen }) => {
   const theme = useTheme();
   const isMd = useMediaQuery(theme.breakpoints.up('md'));
 
-  const { isLoggedIn, logout } = useContext(UserContext);
+  const { isLoggedIn: isLoggedInToken, logout: logoutToken } = useContext(UserContext);
+  const { isLoggedIn: isLoggedInJWT, logout: logoutJWT } = useContext(JWTUserContext);
+
+  const isLoggedIn = isLoggedInJWT || isLoggedInToken;
+
+  const handleLogout = () => {
+    if (isLoggedInJWT) {
+      logoutJWT();
+    } else {
+      logoutToken();
+    }
+  };
 
   return (
     <Box display="flex" justifyContent="space-between" alignItems="center" width={1}>
@@ -82,7 +94,7 @@ const Topbar = ({ onSidebarOpen, colorInvert = false }) => {
                 Profile
               </Button>
 
-              <Button variant="outlined" color="primary" onClick={logout} size="large" sx={{ marginLeft: 4 }}>
+              <Button variant="outlined" color="primary" onClick={handleLogout} size="large" sx={{ marginLeft: 4 }}>
                 Logout
               </Button>
             </>

@@ -1,7 +1,7 @@
 // app.js
 
 import './App.css';
-import React, { useEffect, useContext } from 'react';
+import { useEffect, useContext } from 'react';
 import { BrowserRouter as Router, Route, Routes, Navigate } from 'react-router-dom';
 import { ReactNotifications } from 'react-notifications-component';
 import 'react-notifications-component/dist/theme.css';
@@ -34,12 +34,13 @@ import Security from './pages/ProfilePage/Security';
 import Summary from './pages/Summary';
 import JWTLoginForm from './blocks/JWTLoginForm';
 import { UserContext as JWTUserContext } from './JWTUserContext';
-import { UserProvider as JWTUserProvider } from './JWTUserContext';
 import JWTSignUpForm from './blocks/JWTSignUpForm';
 
 function App() {
-  const { isLoggedIn } = useContext(UserContext);
-  const { isLoggedIn: JWTIsLoggedIn } = useContext(JWTUserContext);
+  const { isLoggedIn: isLoggedInToken } = useContext(UserContext);
+  const { isLoggedIn: isLoggedInJWT } = useContext(JWTUserContext);
+  // This is temporary to allow for testing until we have moved to using JWT based auth across the app.
+  const isLoggedIn = isLoggedInToken || isLoggedInJWT;
 
   useEffect(() => {
     const gaMeasurementId = process.env.REACT_APP_GA_MEASUREMENT_ID;
@@ -59,52 +60,50 @@ function App() {
 
   return (
     <Page>
-      <JWTUserProvider>
-        <Router>
-          <ReactNotifications />
-          <Routes>
-            <Route path="/student-dashboard" element={isLoggedIn ? <StudentDashboard /> : <Navigate to="/login" />} />
-            <Route path="/join" element={<JoinQuiz />} />
-            <Route path="/" element={<Landing />} />
-            <Route
-              path="/login"
-              element={isLoggedIn ? <Navigate to="/dashboard" /> : <LoginForm signUpRoute={'/signup'} />}
-            />
-            <Route path="/signup" element={isLoggedIn ? <Navigate to="/" /> : <SignUpForm />} />
-            <Route path="/jwt-signup" element={JWTIsLoggedIn ? <Navigate to="/" /> : <JWTSignUpForm />} />
-            <Route
-              path="/jwt-login"
-              element={JWTIsLoggedIn ? <Navigate to="/" /> : <JWTLoginForm signUpRoute={'/jwt-signup'} />}
-            />
-            <Route path="/dashboard" element={isLoggedIn ? <InstructorDashboard /> : <Navigate to="/" />} />
-            <Route path="/session/:code" element={isLoggedIn ? <QuizSession /> : <Navigate to="/" />} />
-            <Route path="/results/:code" element={isLoggedIn ? <QuizSessionResults /> : <Navigate to="/" />} />
-            <Route path="/create-quiz" element={isLoggedIn ? <CreateQuiz /> : <Navigate to="/" />} />
-            <Route path="/student/:code" element={<StudentAnswerView />} />
-            <Route path="/quiz/:quizId/edit" element={isLoggedIn ? <EditQuizView /> : <Navigate to="/" />} />
-            <Route path="/quiz/:code" element={isLoggedIn ? <InstructorQuestionView /> : <Navigate to="/" />} />
-            <Route path="/quiz/:id/settings" element={isLoggedIn ? <SettingsPage /> : <Navigate to="/" />} />
-            <Route path={'/team'} element={<Team />} />
-            <Route path="/account-general" element={isLoggedIn ? <General /> : <Navigate to="/" />} />
-            <Route path="account-security" element={isLoggedIn ? <Security /> : <Navigate to="/" />} />
-            {/*<Route path="/create-landing" element={<DevRoute element={<Landing />} />} />*/}
-            <Route path="/unauthorized" element={<Unauthorized />} />
-            <Route path="/recordings" element={isLoggedIn ? <InstructorRecordings /> : <Navigate to="/" />} />
-            <Route path="/summary/:summaryId" element={isLoggedIn ? <Summary /> : <Navigate to="/" />} />
-          </Routes>
-        </Router>
-        <ToastContainer
-          position="top-center"
-          autoClose={5000}
-          hideProgressBar={false}
-          newestOnTop={false}
-          closeOnClick
-          rtl={false}
-          pauseOnFocusLoss
-          draggable
-          pauseOnHover
-        />
-      </JWTUserProvider>
+      <Router>
+        <ReactNotifications />
+        <Routes>
+          <Route path="/student-dashboard" element={isLoggedIn ? <StudentDashboard /> : <Navigate to="/login" />} />
+          <Route path="/join" element={<JoinQuiz />} />
+          <Route path="/" element={<Landing />} />
+          <Route
+            path="/login"
+            element={isLoggedIn ? <Navigate to="/dashboard" /> : <LoginForm signUpRoute={'/signup'} />}
+          />
+          <Route path="/signup" element={isLoggedIn ? <Navigate to="/" /> : <SignUpForm />} />
+          <Route path="/jwt-signup" element={isLoggedIn ? <Navigate to="/" /> : <JWTSignUpForm />} />
+          <Route
+            path="/jwt-login"
+            element={isLoggedIn ? <Navigate to="/" /> : <JWTLoginForm signUpRoute={'/jwt-signup'} />}
+          />
+          <Route path="/dashboard" element={isLoggedIn ? <InstructorDashboard /> : <Navigate to="/" />} />
+          <Route path="/session/:code" element={isLoggedIn ? <QuizSession /> : <Navigate to="/" />} />
+          <Route path="/results/:code" element={isLoggedIn ? <QuizSessionResults /> : <Navigate to="/" />} />
+          <Route path="/create-quiz" element={isLoggedIn ? <CreateQuiz /> : <Navigate to="/" />} />
+          <Route path="/student/:code" element={<StudentAnswerView />} />
+          <Route path="/quiz/:quizId/edit" element={isLoggedIn ? <EditQuizView /> : <Navigate to="/" />} />
+          <Route path="/quiz/:code" element={isLoggedIn ? <InstructorQuestionView /> : <Navigate to="/" />} />
+          <Route path="/quiz/:id/settings" element={isLoggedIn ? <SettingsPage /> : <Navigate to="/" />} />
+          <Route path={'/team'} element={<Team />} />
+          <Route path="/account-general" element={isLoggedIn ? <General /> : <Navigate to="/" />} />
+          <Route path="account-security" element={isLoggedIn ? <Security /> : <Navigate to="/" />} />
+          {/*<Route path="/create-landing" element={<DevRoute element={<Landing />} />} />*/}
+          <Route path="/unauthorized" element={<Unauthorized />} />
+          <Route path="/recordings" element={isLoggedIn ? <InstructorRecordings /> : <Navigate to="/" />} />
+          <Route path="/summary/:summaryId" element={isLoggedIn ? <Summary /> : <Navigate to="/" />} />
+        </Routes>
+      </Router>
+      <ToastContainer
+        position="top-center"
+        autoClose={5000}
+        hideProgressBar={false}
+        newestOnTop={false}
+        closeOnClick
+        rtl={false}
+        pauseOnFocusLoss
+        draggable
+        pauseOnHover
+      />
     </Page>
   );
 }
