@@ -74,6 +74,8 @@ export const fetchRecordings = () => api.get(`recordings/`);
 
 export const fetchResults = (code) => api.get(`/quiz-session-results/${code}`);
 
+export const fetchQuizzesByRecording = (recordingId) => api.get(`recordings/${recordingId}/quizzes`);
+
 export const signUpInstructor = (formData) =>
   api.post('sign-up-instructor/', formData, {
     headers: {
