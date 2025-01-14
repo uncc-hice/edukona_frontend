@@ -16,7 +16,6 @@ import {
   AccordionDetails,
   CircularProgress,
 } from '@mui/material';
-import axios from 'axios';
 import RecordButton from '../../blocks/RecordButton';
 import QuizListRow from '../../blocks/QuizListRow';
 import useWebSocket from 'react-use-websocket';
@@ -25,6 +24,7 @@ import { Main } from '../../layouts';
 import { useNavigate } from 'react-router-dom';
 import { fetchRecordings, startQuizSession } from '../../services/apiService';
 import RecordingListRowMenu from '../../blocks/RecordingListRowMenu';
+import { getQuizzesByRecording } from '../../services/apiService';
 
 const InstructorRecordings = () => {
   const [recordings, setRecordings] = useState([]);
@@ -79,12 +79,11 @@ const InstructorRecordings = () => {
     handleFetchRecordings();
   }, [token]);
 
-  const fetchQuizzes = (id) => {
+  const fetchQuizzes = (recordingId) => {
     if (quizzes == null) {
       setLoadingQuizzes(true);
     }
-    axios
-      .get(`https://api.edukona.com/recordings/${id}/quizzes`, { headers: { Authorization: `Token ${token.current}` } })
+    getQuizzesByRecording(recordingId)
       .then((res) => setQuizzes(res.data))
       .catch((error) => console.error('Error fetching quizzes:', error))
       .finally(() => setLoadingQuizzes(false));
