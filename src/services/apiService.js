@@ -70,6 +70,7 @@ export const logout = (refreshToken) => api.post('jwt-logout/', { refresh: refre
 export const createRecording = (formData) => api.post('recordings/create-recording', formData);
 export const generateTemporaryCredentials = () => api.post('generate-temporary-credentials/');
 export const getQuizzesByRecording = (recordingId) => api.get(`recordings/${recordingId}/quizzes`);
+export const getQuizSessionResponsesCount = (code) => api.get(`quiz-session-responses-count/${code}/`);
 
 export const fetchQuizzes = () =>
   api.get('instructor/quizzes/', {
