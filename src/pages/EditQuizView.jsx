@@ -4,7 +4,7 @@ import Main from '../layouts/Main';
 import { CircularProgress, Container, Typography } from '@mui/material';
 import EditableQuestion from '../blocks/EditableQuestion';
 import { useParams } from 'react-router-dom';
-import { getQuiz } from '../services/apiService';
+import { getQuiz, getAllQuestions } from '../services/apiService';
 
 function EditQuizView() {
   const { quizId } = useParams();
@@ -14,22 +14,12 @@ function EditQuizView() {
   const token = localStorage.getItem('token');
 
   const onUpdate = () =>
-    axios
-      .get(`https://api.edukona.com/all-questions/${quizId}/`, {
-        headers: {
-          Authorization: `Token ${token}`,
-        },
-      })
+    getAllQuestions(quizId)
       .then((res) => setQuestions(res.data.questions))
       .catch((error) => console.error('Error fetching questions:', error));
 
   useEffect(() => {
-    axios
-      .get(`https://api.edukona.com/all-questions/${quizId}/`, {
-        headers: {
-          Authorization: `Token ${token}`,
-        },
-      })
+    getAllQuestions(quizId)
       .then((res) => setQuestions(res.data.questions))
       .catch((error) => console.error('Error fetching questions:', error));
 
