@@ -70,6 +70,8 @@ export const logout = (refreshToken) => api.post('jwt-logout/', { refresh: refre
 export const getQuiz = (quizId) => api.get(`quiz/${quizId}`);
 export const getAllQuestions = (quizId) => api.get(`all-questions/${quizId}/`);
 export const getQuizSessions = (quizId) => api.get(`quiz/${quizId}/sessions`);
+export const deleteQuizSession = (sessionCode) => api.delete(`quiz-session-delete/${sessionCode}`);
+export const deleteQuiz = (quizId) => api.delete(`quiz/${quizId}`);
 
 export const fetchQuizzes = () =>
   api.get('instructor/quizzes/', {

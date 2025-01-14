@@ -1,5 +1,4 @@
-import React, { useEffect, useState } from 'react';
-import axios from 'axios';
+import { useEffect, useState } from 'react';
 import Main from '../layouts/Main';
 import { CircularProgress, Container, Typography } from '@mui/material';
 import EditableQuestion from '../blocks/EditableQuestion';
