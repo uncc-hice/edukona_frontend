@@ -69,6 +69,7 @@ export const googleAuth = (token) => api.post('auth/jwt-google/', { token });
 export const logout = (refreshToken) => api.post('jwt-logout/', { refresh: refreshToken });
 export const getQuiz = (quizId) => api.get(`quiz/${quizId}`);
 export const getAllQuestions = (quizId) => api.get(`all-questions/${quizId}/`);
+export const getQuizSessions = (quizId) => api.get(`quiz/${quizId}/sessions`);
 
 export const fetchQuizzes = () =>
   api.get('instructor/quizzes/', {

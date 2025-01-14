@@ -20,6 +20,7 @@ import React, { useRef, useState } from 'react';
 import { Link } from 'react-router-dom';
 import { toast } from 'react-toastify';
 import QuizListRowMenu from './QuizListRowMenu';
+import { getQuizSessions } from '../services/apiService';
 
 const QuizListRow = ({ quiz, onUpdate }) => {
   const token = useRef(localStorage.getItem('token'));
@@ -43,12 +44,7 @@ const QuizListRow = ({ quiz, onUpdate }) => {
   );
 
   const fetchSessions = () =>
-    axios
-      .get(`https://api.edukona.com/quiz/${quiz.id}/sessions`, {
-        headers: {
-          Authorization: `Token ${token.current}`,
-        },
-      })
+    getQuizSessions(quiz.id)
       .then((res) => {
         sessionsCache.current = res.data.quiz_sessions;
         setSessions(res.data.quiz_sessions);
