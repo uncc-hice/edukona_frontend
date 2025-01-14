@@ -5,14 +5,11 @@ import StudentGrid from '../blocks/StudentGrid.jsx';
 import useWebSocket from 'react-use-websocket';
 import Main from '../layouts/Main';
 import { QRCode } from 'react-qr-code';
+import { getStudentsForQuizSession } from '../services/apiService.js';
 
 const fetchStudents = async (code, token) => {
   console.log('token', token);
-  const response = await fetch('https://api.edukona.com/quiz-session-student-instructor/' + code + '/', {
-    headers: {
-      Authorization: `Token ${token}`,
-    },
-  });
+  const response = await getStudentsForQuizSession(code);
   if (!response.ok) {
     throw new Error('Failed to fetch');
   }
