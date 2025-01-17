@@ -61,17 +61,25 @@ api.interceptors.response.use(
   }
 );
 
-// jwt-related api calls
 export const login = (email, password) =>
   api.post('jwt-login/', { email, password }, { headers: { Authorization: '' } });
 export const JWTSignUpInstructor = (formData) => api.post('jwt-sign-up-instructor/', formData);
 export const googleAuth = (token) => api.post('auth/jwt-google/', { token });
 export const logout = (refreshToken) => api.post('jwt-logout/', { refresh: refreshToken });
+
 export const createRecording = (formData) => api.post('recordings/create-recording', formData);
 export const generateTemporaryCredentials = () => api.post('generate-temporary-credentials/');
 export const getQuizzesByRecording = (recordingId) => api.get(`recordings/${recordingId}/quizzes`);
 export const getQuizSessionResponsesCount = (code) => api.get(`quiz-session-responses-count/${code}/`);
 export const getStudentsForQuizSession = (code) => api.get(`quiz-session-student-instructor/${code}/`);
+
+export const getQuiz = (quizId) => api.get(`quiz/${quizId}`);
+export const getAllQuestions = (quizId) => api.get(`all-questions/${quizId}/`);
+export const getQuizSessions = (quizId) => api.get(`quiz/${quizId}/sessions`);
+export const deleteQuizSession = (sessionCode) => api.delete(`quiz-session-delete/${sessionCode}`);
+export const deleteQuiz = (quizId) => api.delete(`quiz/${quizId}`);
+export const deleteQuestion = (questionId) => api.delete(`question/${questionId}`);
+export const editQuestion = (questionId, data) => api.put(`question/${questionId}/`, data);
 
 export const fetchQuizzes = () =>
   api.get('instructor/quizzes/', {
@@ -114,6 +122,8 @@ export const updateRecordingTitle = (recordingId, title) =>
 export const fetchRecordings = () => api.get(`recordings/`);
 
 export const fetchResults = (code) => api.get(`/quiz-session-results/${code}`);
+
+export const fetchQuizzesByRecording = (recordingId) => api.get(`recordings/${recordingId}/quizzes`);
 
 export const signUpInstructor = (formData) =>
   api.post('sign-up-instructor/', formData, {

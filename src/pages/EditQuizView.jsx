@@ -1,9 +1,9 @@
-import React, { useEffect, useState } from 'react';
-import axios from 'axios';
+import { useEffect, useState } from 'react';
 import Main from '../layouts/Main';
 import { CircularProgress, Container, Typography } from '@mui/material';
 import EditableQuestion from '../blocks/EditableQuestion';
 import { useParams } from 'react-router-dom';
+import { getQuiz, getAllQuestions } from '../services/apiService';
 
 function EditQuizView() {
   const { quizId } = useParams();
@@ -13,31 +13,16 @@ function EditQuizView() {
   const token = localStorage.getItem('token');
 
   const onUpdate = () =>
-    axios
-      .get(`https://api.edukona.com/all-questions/${quizId}/`, {
-        headers: {
-          Authorization: `Token ${token}`,
-        },
-      })
+    getAllQuestions(quizId)
       .then((res) => setQuestions(res.data.questions))
       .catch((error) => console.error('Error fetching questions:', error));
 
   useEffect(() => {
-    axios
-      .get(`https://api.edukona.com/all-questions/${quizId}/`, {
-        headers: {
-          Authorization: `Token ${token}`,
-        },
-      })
+    getAllQuestions(quizId)
       .then((res) => setQuestions(res.data.questions))
       .catch((error) => console.error('Error fetching questions:', error));
 
-    axios
-      .get(`https://api.edukona.com/quiz/${quizId}/`, {
-        headers: {
-          Authorization: `Token ${token}`,
-        },
-      })
+    getQuiz(quizId)
       .then((res) => setQuiz(res.data.quiz))
       .catch((error) => console.error('Error fetching quiz:', error));
   }, [quizId, token]);
