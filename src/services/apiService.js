@@ -66,6 +66,11 @@ export const login = (email, password) =>
 export const JWTSignUpInstructor = (formData) => api.post('jwt-sign-up-instructor/', formData);
 export const googleAuth = (token) => api.post('auth/jwt-google/', { token });
 export const logout = (refreshToken) => api.post('jwt-logout/', { refresh: refreshToken });
+export const getQuiz = (quizId) => api.get(`quiz/${quizId}`);
+export const getAllQuestions = (quizId) => api.get(`all-questions/${quizId}/`);
+export const getQuizSessions = (quizId) => api.get(`quiz/${quizId}/sessions`);
+export const deleteQuizSession = (sessionCode) => api.delete(`quiz-session-delete/${sessionCode}`);
+export const deleteQuiz = (quizId) => api.delete(`quiz/${quizId}`);
 export const deleteQuestion = (questionId) => api.delete(`question/${questionId}`);
 export const editQuestion = (questionId, data) => api.put(`question/${questionId}/`, data);
 
