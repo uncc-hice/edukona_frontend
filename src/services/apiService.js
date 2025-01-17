@@ -61,12 +61,13 @@ api.interceptors.response.use(
   }
 );
 
-// jwt-related api calls
 export const login = (email, password) =>
   api.post('jwt-login/', { email, password }, { headers: { Authorization: '' } });
 export const JWTSignUpInstructor = (formData) => api.post('jwt-sign-up-instructor/', formData);
 export const googleAuth = (token) => api.post('auth/jwt-google/', { token });
 export const logout = (refreshToken) => api.post('jwt-logout/', { refresh: refreshToken });
+export const deleteQuestion = (questionId) => api.delete(`question/${questionId}`);
+export const editQuestion = (questionId, data) => api.put(`question/${questionId}/`, data);
 
 export const fetchQuizzes = () =>
   api.get('instructor/quizzes/', {
