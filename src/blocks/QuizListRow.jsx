@@ -15,11 +15,11 @@ import {
   TableRow,
   Typography,
 } from '@mui/material';
+import axios from 'axios';
 import React, { useRef, useState } from 'react';
 import { Link } from 'react-router-dom';
 import { toast } from 'react-toastify';
 import QuizListRowMenu from './QuizListRowMenu';
-import { getQuizSessions, deleteQuizSession, deleteQuiz as apiDeleteQuiz } from '../services/apiService';
 
 const QuizListRow = ({ quiz, onUpdate }) => {
   const token = useRef(localStorage.getItem('token'));
@@ -43,7 +43,12 @@ const QuizListRow = ({ quiz, onUpdate }) => {
   );
 
   const fetchSessions = () =>
-    getQuizSessions(quiz.id)
+    axios
+      .get(`https://api.edukona.com/quiz/${quiz.id}/sessions`, {
+        headers: {
+          Authorization: `Token ${token.current}`,
+        },
+      })
       .then((res) => {
         sessionsCache.current = res.data.quiz_sessions;
         setSessions(res.data.quiz_sessions);
@@ -72,25 +77,38 @@ const QuizListRow = ({ quiz, onUpdate }) => {
   };
 
   const deleteSession = (sessionCode) => {
-    toast.promise(
-      deleteQuizSession(sessionCode).then(() => {
+    toast
+      .promise(
+        axios.delete(`https://api.edukona.com/quiz-session-delete/${sessionCode}`, {
+          headers: {
+            Authorization: `Token ${token.current}`,
+          },
+        }),
+        {
+          pending: 'Deleting session',
+          success: 'Succesfully deleted session',
+          error: 'Failed to delete session',
+          theme,
+        }
+      )
+      .then(() => {
         onUpdate();
         fetchSessions();
-      }),
-      {
-        pending: 'Deleting session',
-        success: 'Succesfully deleted session',
-        error: 'Failed to delete session',
-        theme,
-      }
-    );
+      });
     setSessionModalOpen(false);
   };
 
   const deleteQuiz = async () => {
     setOpen(false);
     toast.promise(
-      apiDeleteQuiz(quiz.id).then(() => onUpdate()),
+      axios
+        .delete(`https://api.edukona.com/quiz/${quiz.id}`, {
+          headers: {
+            'Content-Type': 'application/json',
+            Authorization: `Token ${token.current}`,
+          },
+        })
+        .then(() => onUpdate()),
       { pending: 'Deleting quiz...', success: 'Quiz successfully deleted!', error: 'Failed to delete quiz' }
     );
   };

@@ -5,7 +5,6 @@ import axios from 'axios';
 import { useEffect, useState } from 'react';
 import { toast } from 'react-toastify';
 import DeleteQuestionDialog from './DeleteQuestionDialog';
-import { editQuestion } from '../services/apiService';
 
 const EditableQuestion = ({ question, token, onUpdate }) => {
   const [questionData, setQuestionData] = useState(question);
@@ -33,10 +32,14 @@ const EditableQuestion = ({ question, token, onUpdate }) => {
   const handleSave = (e) => {
     e.preventDefault();
     toast.promise(
-      editQuestion(questionData.id, questionData).then(() => {
-        setDisabled(true);
-        onUpdate();
-      }),
+      axios
+        .put(`https://api.edukona.com/question/${question.id}/`, questionData, {
+          headers: { Authorization: `Token ${token}` },
+        })
+        .then(() => {
+          setDisabled(true);
+          onUpdate();
+        }),
       { pending: 'Saving changes...', success: 'Successfully saved changes', error: 'Failed to save changes' }
     );
   };

@@ -1,15 +1,17 @@
 import { Delete, Undo } from '@mui/icons-material';
 import { Button, Dialog, DialogActions, DialogContent, DialogTitle, Typography } from '@mui/material';
+import axios from 'axios';
 import { toast } from 'react-toastify';
-import { deleteQuestion } from '../services/apiService';
 
-const DeleteQuestionDialog = ({ question, open, setOpen, onUpdate }) => {
+const DeleteQuestionDialog = ({ question, token, open, setOpen, onUpdate }) => {
   const handleDelete = () =>
     toast.promise(
-      deleteQuestion(question.id).then(() => {
-        setOpen(false);
-        onUpdate();
-      }),
+      axios
+        .delete(`https://api.edukona.com/question/${question.id}/`, { headers: { Authorization: `Token ${token}` } })
+        .then(() => {
+          setOpen(false);
+          onUpdate();
+        }),
       {
         pending: 'Deleting question...',
         success: 'Successfully deleted question.',

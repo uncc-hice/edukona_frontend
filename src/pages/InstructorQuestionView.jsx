@@ -13,8 +13,8 @@ const InstructorQuestionView = () => {
   const { code } = useParams();
   const [resetTimer, setResetTimer] = useState(false);
   const [responseData, setResponseData] = useState({});
-  const [quiz, setQuiz] = useState({});
-  const [userCount, setUserCount] = useState(0);
+  const settings = useState({});
+  const userCount = useState(0);
   const [grades, setGrades] = useState({});
   const [highlight, setHighlight] = useState(false);
 
@@ -32,13 +32,9 @@ const InstructorQuestionView = () => {
       } else if (data.type === 'update_answers') {
         console.log('Response data:', data.data);
         setResponseData(data.data);
-      } else if (data.type === 'quiz_details') {
-        console.log('response data: ', data.data);
-        setQuiz(data.quiz);
-        setUserCount(data.user_count);
       }
     },
-    [setCurrentQuestion, setResetTimer, setResponseData, setQuiz, setUserCount]
+    [setCurrentQuestion, setResetTimer, setResponseData]
   );
 
   const { sendMessage } = useWebSocket(`wss://api.edukona.com/ws/quiz-session-instructor/${code}/`, {
@@ -87,13 +83,13 @@ const InstructorQuestionView = () => {
         ) : currentQuestion ? (
           <QuizComponent
             userCount={userCount}
-            liveBarChart={quiz.live_bar_chart}
+            liveBarChart={settings['live_bar_chart']}
             question={currentQuestion}
             code={code}
             responseData={responseData}
             sendMessage={sendMessage}
             quizEnded={quizEnded}
-            timerEnabled={quiz.timer}
+            timerEnabled={settings['timer']}
             timerDuration={currentQuestion.duration}
             resetTimer={resetTimer}
             onTimerEnd={onTimerEnd}
