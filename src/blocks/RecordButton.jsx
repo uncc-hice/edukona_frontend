@@ -11,11 +11,11 @@ import {
   Typography,
   LinearProgress,
 } from '@mui/material';
-import axios from 'axios';
 import { useEffect, useRef, useState, useCallback } from 'react';
 import { toast } from 'react-toastify';
 import RecordingTimer from './RecordingTimer';
 import AWS from 'aws-sdk';
+import { createRecording, generateTemporaryCredentials } from '../services/apiService';
 
 const mimetype = 'audio/webm';
 
@@ -56,16 +56,7 @@ const RecordButton = ({ onUpdate }) => {
 
     try {
       // Fetch temporary credentials
-      const response = await axios.post(
-        'https://api.edukona.com/generate-temporary-credentials/',
-        {},
-        {
-          headers: {
-            Authorization: `Token ${localStorage.getItem('token')}`,
-          },
-        }
-      );
-
+      const response = await generateTemporaryCredentials();
       const { AccessKeyId, SecretAccessKey, SessionToken, Region, BucketName, Folder } = response.data;
 
       // Configure AWS SDK
@@ -115,25 +106,12 @@ const RecordButton = ({ onUpdate }) => {
             theme,
           });
           // Notify backend about the new recording
-          try {
-            const backendResponse = await axios.post(
-              'https://api.edukona.com/recordings/create-recording/',
-              {
-                s3_path: s3Key,
-                title: title,
-              },
-              {
-                headers: {
-                  Authorization: `Token ${localStorage.getItem('token')}`,
-                },
-              }
-            );
-            console.log('Backend recording creation success:', backendResponse.data);
-            onUpdate(); // Refresh recordings if necessary
-          } catch (backendError) {
-            console.error('Error creating recording in backend:', backendError);
-            toast.error('Failed to save recording metadata');
-          }
+          createRecording({ s3_path: s3Key, title: title })
+            .then(() => onUpdate())
+            .catch((error) => {
+              console.error('Error creating recording in backend:', error);
+              toast.error('Failed to save recording metadata');
+            });
         }
       });
     } catch (error) {

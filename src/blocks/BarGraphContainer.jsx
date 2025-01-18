@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import axios from 'axios';
 import BarGraphComponent from './BarGraphComponent';
+import { getQuizSessionResponsesCount } from '../services/apiService';
 
 const BarGraphContainer = ({ code, currentQuestion }) => {
   const [data, setData] = useState([]);
@@ -10,11 +11,7 @@ const BarGraphContainer = ({ code, currentQuestion }) => {
 
     const fetchData = async () => {
       try {
-        const response = await axios.get(`https://api.edukona.com/quiz-session-responses-count/${code}/`, {
-          headers: {
-            Authorization: `Token ${token}`,
-          },
-        });
+        const response = await getQuizSessionResponsesCount(code);
 
         console.log(response.data);
         const responseData = response.data || {};
