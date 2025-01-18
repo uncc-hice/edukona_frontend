@@ -19,7 +19,6 @@ import { Main } from '../../layouts';
 import { useNavigate } from 'react-router-dom';
 import { fetchRecordings, startQuizSession } from '../../services/apiService';
 import RecordingListRowMenu from '../../blocks/RecordingListRowMenu';
-import { getQuizzesByRecording } from '../../services/apiService';
 
 // Import our new component
 import AccordionQuizzes from './Components/AccordionQuizzes.tsx';
@@ -78,16 +77,6 @@ const InstructorRecordings = () => {
   useEffect(() => {
     handleFetchRecordings();
   }, [token]);
-
-  const fetchQuizzes = (recordingId) => {
-    if (quizzes == null) {
-      setLoadingQuizzes(true);
-    }
-    getQuizzesByRecording(recordingId)
-      .then((res) => setQuizzes(res.data))
-      .catch((error) => console.error('Error fetching quizzes:', error))
-      .finally(() => setLoadingQuizzes(false));
-  };
 
   /**
    * Toggles the accordion for a given recording ID.
