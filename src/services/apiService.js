@@ -89,8 +89,13 @@ const getWebSocketAuth = () => {
   }
 };
 
+const getWebSocketUrl = (path) => {
+  const baseUrl = 'wss://api.edukona.com/ws/';
+  return baseUrl + path + getWebSocketAuth();
+};
+
 export const useRecordingWebSocket = (websocketError, handleIncomingMessage) => {
-  useWebSocket(`wss://api.edukona.com/ws/recordings/` + getWebSocketAuth(), {
+  useWebSocket(getWebSocketUrl('recordings/'), {
     onOpen: () => console.log('WebSocket connected'),
     onClose: () => console.log('WebSocket disconnected'),
     onError: websocketError,
@@ -100,7 +105,7 @@ export const useRecordingWebSocket = (websocketError, handleIncomingMessage) => 
 };
 
 export const useStudentAnswerWebSocket = (code, handleIncomingMessage) => {
-  return useWebSocket(`wss://api.edukona.com/ws/student/join/${code}/`, {
+  return useWebSocket(getWebSocketUrl(`student/join/${code}/`), {
     onMessage: handleIncomingMessage,
     onOpen: () => console.log('WebSocket connected'),
     onClose: () => console.log('WebSocket disconnected'),
@@ -109,7 +114,7 @@ export const useStudentAnswerWebSocket = (code, handleIncomingMessage) => {
 };
 
 export const useQuizSessionWebSocket = (code, handleIncomingMessage) => {
-  return useWebSocket(`wss://api.edukona.com/ws/quiz-session-instructor/${code}/`, {
+  return useWebSocket(getWebSocketUrl(`quiz-session-instructor/${code}/`), {
     onOpen: () => console.log('WebSocket connected'),
     onClose: () => console.log('WebSocket disconnected'),
     onError: (event) => console.error('WebSocket error', event),
@@ -119,7 +124,7 @@ export const useQuizSessionWebSocket = (code, handleIncomingMessage) => {
 };
 
 export const useJoinQuizWebSocket = (code, handleIncomingMessage) => {
-  return useWebSocket(`wss://api.edukona.com/ws/student/join/${code}/`, {
+  return useWebSocket(getWebSocketUrl(`student/join/${code}/`), {
     onMessage: handleIncomingMessage,
     onClose: () => console.log('WebSocket Disconnected'),
     onOpen: () => console.log('WebSocket Connected'),
