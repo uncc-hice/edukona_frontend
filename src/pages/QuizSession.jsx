@@ -1,14 +1,12 @@
-import React, { useEffect, useState } from 'react';
-import { Typography, Container, Button, Paper, Grid } from '@mui/material';
+import { Button, Container, Grid, Paper, Typography } from '@mui/material';
+import { useEffect, useState } from 'react';
+import { QRCode } from 'react-qr-code';
 import { useNavigate, useParams } from 'react-router-dom';
 import StudentGrid from '../blocks/StudentGrid.jsx';
-import useWebSocket from 'react-use-websocket';
 import Main from '../layouts/Main';
-import { QRCode } from 'react-qr-code';
-import { getStudentsForQuizSession } from '../services/apiService.js';
+import { getStudentsForQuizSession, useQuizSessionWebSocket } from '../services/apiService.js';
 
 const fetchStudents = async (code, token) => {
-  console.log('token', token);
   const response = await getStudentsForQuizSession(code);
   if (!response.ok) {
     throw new Error('Failed to fetch');
@@ -45,13 +43,7 @@ const QuizSession = () => {
     }
   };
 
-  const { sendMessage } = useWebSocket(`wss://api.edukona.com/ws/quiz-session-instructor/${code}/`, {
-    onOpen: () => console.log('WebSocket connected'),
-    onClose: () => console.log('WebSocket disconnected'),
-    onError: (event) => console.error('WebSocket error', event),
-    onMessage: handleIncomingMessage,
-    shouldReconnect: (closeEvent) => true, // Automatically reconnect
-  });
+  const { sendMessage } = useQuizSessionWebSocket(code, handleIncomingMessage);
 
   const onDelete = (username) => {
     console.log(`Sending delete for username: ${username}`);

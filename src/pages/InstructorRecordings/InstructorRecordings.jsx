@@ -13,12 +13,12 @@ import {
   Button,
 } from '@mui/material';
 import RecordButton from '../../blocks/RecordButton';
-import useWebSocket from 'react-use-websocket';
 import { toast } from 'react-toastify';
 import { Main } from '../../layouts';
 import { useNavigate } from 'react-router-dom';
 import { fetchRecordings, startQuizSession } from '../../services/apiService';
 import RecordingListRowMenu from '../../blocks/RecordingListRowMenu';
+import { useRecordingWebSocket } from '../../services/apiService';
 
 // Import our new component
 import AccordionQuizzes from './Components/AccordionQuizzes.tsx';
@@ -65,18 +65,12 @@ const InstructorRecordings = () => {
   };
 
   // Initialize WebSocket
-  useWebSocket(`wss://api.edukona.com/ws/recordings/?token=${token.current}`, {
-    onOpen: () => console.log('WebSocket connected'),
-    onClose: () => console.log('WebSocket disconnected'),
-    onError: websocketError,
-    onMessage: handleIncomingMessage,
-    shouldReconnect: () => true,
-  });
+  useRecordingWebSocket(websocketError, handleIncomingMessage);
 
   // On mount, fetch the recordings
   useEffect(() => {
     handleFetchRecordings();
-  }, [token]);
+  }, []);
 
   /**
    * Toggles the accordion for a given recording ID.

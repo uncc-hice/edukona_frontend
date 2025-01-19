@@ -1,4 +1,5 @@
 import axios from 'axios';
+import useWebSocket from 'react-use-websocket';
 
 const token = localStorage.getItem('token');
 const jwtAccessToken = localStorage.getItem('accessToken');
@@ -66,7 +67,7 @@ export const login = (email, password) =>
 export const JWTSignUpInstructor = (formData) => api.post('jwt-sign-up-instructor/', formData);
 export const googleAuth = (token) => api.post('auth/jwt-google/', { token });
 export const logout = (refreshToken) => api.post('jwt-logout/', { refresh: refreshToken });
-export const createRecording = (formData) => api.post('recordings/create-recording', formData);
+export const createRecording = (formData) => api.post('recordings/create-recording/', formData);
 export const generateTemporaryCredentials = () => api.post('generate-temporary-credentials/');
 export const getQuizSessionResponsesCount = (code) => api.get(`quiz-session-responses-count/${code}/`);
 export const getStudentsForQuizSession = (code) => api.get(`quiz-session-student-instructor/${code}/`);
@@ -77,6 +78,59 @@ export const deleteQuizSession = (sessionCode) => api.delete(`quiz-session-delet
 export const deleteQuiz = (quizId) => api.delete(`quiz/${quizId}`);
 export const deleteQuestion = (questionId) => api.delete(`question/${questionId}`);
 export const editQuestion = (questionId, data) => api.put(`question/${questionId}/`, data);
+
+const getWebSocketAuth = () => {
+  if (jwtAccessToken !== null) {
+    return `?jwt=${jwtAccessToken}`;
+  } else if (token !== null) {
+    return `?token=${token}`;
+  } else {
+    return '';
+  }
+};
+
+const getWebSocketUrl = (path) => {
+  const baseUrl = 'wss://api.edukona.com/ws/';
+  return baseUrl + path + getWebSocketAuth();
+};
+
+export const useRecordingWebSocket = (websocketError, handleIncomingMessage) => {
+  useWebSocket(getWebSocketUrl('recordings/'), {
+    onOpen: () => console.log('WebSocket connected'),
+    onClose: () => console.log('WebSocket disconnected'),
+    onError: websocketError,
+    onMessage: handleIncomingMessage,
+    shouldReconnect: () => true,
+  });
+};
+
+export const useStudentAnswerWebSocket = (code, handleIncomingMessage) => {
+  return useWebSocket(getWebSocketUrl(`student/join/${code}/`), {
+    onMessage: handleIncomingMessage,
+    onOpen: () => console.log('WebSocket connected'),
+    onClose: () => console.log('WebSocket disconnected'),
+    onError: (event) => console.error('WebSocket error', event),
+  });
+};
+
+export const useQuizSessionWebSocket = (code, handleIncomingMessage) => {
+  return useWebSocket(getWebSocketUrl(`quiz-session-instructor/${code}/`), {
+    onOpen: () => console.log('WebSocket connected'),
+    onClose: () => console.log('WebSocket disconnected'),
+    onError: (event) => console.error('WebSocket error', event),
+    onMessage: handleIncomingMessage,
+    shouldReconnect: () => true,
+  });
+};
+
+export const useJoinQuizWebSocket = (code, handleIncomingMessage) => {
+  return useWebSocket(getWebSocketUrl(`student/join/${code}/`), {
+    onMessage: handleIncomingMessage,
+    onClose: () => console.log('WebSocket Disconnected'),
+    onOpen: () => console.log('WebSocket Connected'),
+    shouldReconnect: () => true,
+  });
+};
 
 export const fetchQuizzes = () =>
   api.get('instructor/quizzes/', {

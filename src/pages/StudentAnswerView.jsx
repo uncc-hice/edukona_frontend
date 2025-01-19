@@ -1,12 +1,12 @@
-import React, { useState } from 'react';
-import { useParams } from 'react-router-dom';
 import { Box, Button, CircularProgress, Container, Typography } from '@mui/material';
-import StudentAnswersGrid from '../blocks/StudentAnswersGrid';
-import QuizEndView from './QuizEndView';
-import useWebSocket from 'react-use-websocket'; // Adjust the import path as needed
+import { useState } from 'react';
 import { Store } from 'react-notifications-component';
-import { Topbar } from '../layouts/Main/components';
+import { useParams } from 'react-router-dom';
 import { toast } from 'react-toastify';
+import StudentAnswersGrid from '../blocks/StudentAnswersGrid';
+import { Topbar } from '../layouts/Main/components';
+import { useStudentAnswerWebSocket } from '../services/apiService';
+import QuizEndView from './QuizEndView';
 
 const StudentAnswerView = () => {
   const [question, setQuestion] = useState(null);
@@ -20,7 +20,6 @@ const StudentAnswerView = () => {
   const [selectedAnswer, setSelectedAnswer] = useState('');
   const [skipped, setSkipped] = useState([]);
 
-  let url = `wss://api.edukona.com/ws/student/join/${code}/`;
   const sid = localStorage.getItem('sid');
 
   const handleIncomingMessage = (event) => {
@@ -78,12 +77,7 @@ const StudentAnswerView = () => {
     }
   };
 
-  const { sendMessage } = useWebSocket(url, {
-    onMessage: handleIncomingMessage,
-    onOpen: () => console.log('WebSocket connected'),
-    onClose: () => console.log('WebSocket disconnected'),
-    onError: (event) => console.error('WebSocket error', event),
-  });
+  const { sendMessage } = useStudentAnswerWebSocket(code, handleIncomingMessage);
 
   const handleSkipQuestion = () => {
     console.log('Skipping question:', question.id);

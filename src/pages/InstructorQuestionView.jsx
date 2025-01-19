@@ -1,10 +1,10 @@
-import React, { useEffect, useState, useCallback } from 'react';
-import { Typography, Button, Box } from '@mui/material';
-import QuizComponent from '../blocks/QuizComponent';
+import { Box, Button, Typography } from '@mui/material';
+import { useCallback, useEffect, useState } from 'react';
 import { useParams } from 'react-router-dom';
-import useWebSocket from 'react-use-websocket';
-import { Topbar } from '../layouts/Main/components';
+import QuizComponent from '../blocks/QuizComponent';
 import Container from '../components/Container';
+import { Topbar } from '../layouts/Main/components';
+import { useQuizSessionWebSocket } from '../services/apiService';
 import Leaderboard from './Leaderboard/Leaderboard';
 
 const InstructorQuestionView = () => {
@@ -41,12 +41,7 @@ const InstructorQuestionView = () => {
     [setCurrentQuestion, setResetTimer, setResponseData, setQuiz, setUserCount]
   );
 
-  const { sendMessage } = useWebSocket(`wss://api.edukona.com/ws/quiz-session-instructor/${code}/`, {
-    onMessage: handleIncomingMessage,
-    onOpen: () => console.log('WebSocket connected'),
-    onClose: () => console.log('WebSocket disconnected'),
-    onError: (event) => console.error('WebSocket error', event),
-  });
+  const { sendMessage } = useQuizSessionWebSocket(code, handleIncomingMessage);
 
   const handleNextQuestion = useCallback(() => {
     setResponseData({});
