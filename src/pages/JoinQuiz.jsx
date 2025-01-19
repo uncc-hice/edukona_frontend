@@ -1,7 +1,7 @@
-import React, { useEffect, useState } from 'react';
-import { useNavigate } from 'react-router-dom';
 import { Button, Container, Grid, TextField } from '@mui/material';
-import useWebSocket from 'react-use-websocket';
+import { useEffect, useState } from 'react';
+import { useNavigate } from 'react-router-dom';
+import { useJoinQuizWebSocket } from '../services/apiService';
 
 const JoinQuiz = () => {
   const [quizCode, setQuizCode] = useState('');
@@ -26,12 +26,7 @@ const JoinQuiz = () => {
   };
 
   // Setup WebSocket connection
-  const { sendMessage, readyState } = useWebSocket(`wss://api.edukona.com/ws/student/join/${quizCode}/`, {
-    onMessage: handleIncomingMessage,
-    shouldReconnect: (closeEvent) => true,
-    onOpen: () => console.log('WebSocket Connected'),
-    onClose: () => console.log('WebSocket Disconnected'),
-  });
+  const { sendMessage, readyState } = useJoinQuizWebSocket(quizCode, handleIncomingMessage);
 
   const handleSubmit = (e) => {
     e.preventDefault();
