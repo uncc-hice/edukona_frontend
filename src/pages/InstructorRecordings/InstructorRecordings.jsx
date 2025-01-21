@@ -10,7 +10,6 @@ import {
   Paper,
   Typography,
   CircularProgress,
-  Box,
 } from '@mui/material';
 import RecordButton from '../../blocks/RecordButton';
 import { toast } from 'react-toastify';
