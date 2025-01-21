@@ -26,7 +26,7 @@ const api = axios.create({
   headers: { Authorization: getAuthHeader() },
 });
 
-const refreshAccessToken = (refreshToken) =>
+export const refreshAccessToken = (refreshToken) =>
   api.post('jwt-token/refresh/', { refresh: refreshToken }, { headers: { Authorization: '' } }).then((res) => {
     localStorage.setItem('accessToken', res.data.access);
     localStorage.setItem('refreshToken', res.data.refresh);
