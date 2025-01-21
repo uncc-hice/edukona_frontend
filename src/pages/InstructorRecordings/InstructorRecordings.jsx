@@ -9,6 +9,8 @@ import {
   TableRow,
   Paper,
   Typography,
+  CircularProgress,
+  Box,
 } from '@mui/material';
 import RecordButton from '../../blocks/RecordButton';
 import { toast } from 'react-toastify';
@@ -19,13 +21,15 @@ import { useRecordingWebSocket } from '../../services/apiService';
 import RecordingListRow from './Components/RecordingListRow';
 
 const InstructorRecordings = () => {
+  const [loading, setLoading] = useState(true);
   const [recordings, setRecordings] = useState([]);
   const navigate = useNavigate();
 
   // Fetch recordings
-  const handleFetchRecordings = () => {
-    fetchRecordings().then((res) => setRecordings(res.data.recordings));
-  };
+  const handleFetchRecordings = () =>
+    fetchRecordings()
+      .then((res) => setRecordings(res.data.recordings))
+      .finally(() => setLoading(false));
 
   // WebSocket events
   const handleIncomingMessage = (event) => {
@@ -95,7 +99,13 @@ const InstructorRecordings = () => {
               </TableRow>
             </TableHead>
             <TableBody>
-              {recordings.length === 0 ? (
+              {loading ? (
+                <TableRow>
+                  <TableCell colSpan={4} align={'center'}>
+                    <CircularProgress />
+                  </TableCell>
+                </TableRow>
+              ) : recordings.length === 0 ? (
                 <TableRow>
                   <TableCell colSpan={4}>
                     <Typography variant={'h4'} textAlign={'center'}>
