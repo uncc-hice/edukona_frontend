@@ -11,10 +11,7 @@ interface WebSocketOptions {
   [key: string]: any;
 }
 
-const useWebSocketWithTokenRefresh = (
-  url: string,
-  options: WebSocketOptions = {},
-) => {
+const useWebSocketWithTokenRefresh = (url: string, options: WebSocketOptions = {}) => {
   const { onOpen, onClose, onError, onMessage, shouldReconnect, ...restOptions } = options;
   const [shouldStop, setShouldStop] = useState(false);
 
