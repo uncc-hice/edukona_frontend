@@ -1,6 +1,5 @@
 import axios from 'axios';
-import useWebSocket from 'react-use-websocket';
-
+import useWebSocketWithTokenRefresh from '../hooks/useWebSocketWithTokenRefresh';
 const token = localStorage.getItem('token');
 const jwtAccessToken = localStorage.getItem('accessToken');
 const base = 'https://api.edukona.com/';
@@ -95,9 +94,7 @@ const getWebSocketUrl = (path) => {
 };
 
 export const useRecordingWebSocket = (websocketError, handleIncomingMessage) => {
-  useWebSocket(getWebSocketUrl('recordings/'), {
-    onOpen: () => console.log('WebSocket connected'),
-    onClose: () => console.log('WebSocket disconnected'),
+  useWebSocketWithTokenRefresh(getWebSocketUrl('recordings/'), {
     onError: websocketError,
     onMessage: handleIncomingMessage,
     shouldReconnect: () => true,
@@ -105,18 +102,14 @@ export const useRecordingWebSocket = (websocketError, handleIncomingMessage) => 
 };
 
 export const useStudentAnswerWebSocket = (code, handleIncomingMessage) => {
-  return useWebSocket(getWebSocketUrl(`student/join/${code}/`), {
+  return useWebSocketWithTokenRefresh(getWebSocketUrl(`student/join/${code}/`), {
     onMessage: handleIncomingMessage,
-    onOpen: () => console.log('WebSocket connected'),
-    onClose: () => console.log('WebSocket disconnected'),
     onError: (event) => console.error('WebSocket error', event),
   });
 };
 
 export const useQuizSessionWebSocket = (code, handleIncomingMessage) => {
-  return useWebSocket(getWebSocketUrl(`quiz-session-instructor/${code}/`), {
-    onOpen: () => console.log('WebSocket connected'),
-    onClose: () => console.log('WebSocket disconnected'),
+  return useWebSocketWithTokenRefresh(getWebSocketUrl(`quiz-session-instructor/${code}/`), {
     onError: (event) => console.error('WebSocket error', event),
     onMessage: handleIncomingMessage,
     shouldReconnect: () => true,
@@ -124,7 +117,7 @@ export const useQuizSessionWebSocket = (code, handleIncomingMessage) => {
 };
 
 export const useJoinQuizWebSocket = (code, handleIncomingMessage) => {
-  return useWebSocket(getWebSocketUrl(`student/join/${code}/`), {
+  return useWebSocketWithTokenRefresh(getWebSocketUrl(`student/join/${code}/`), {
     onMessage: handleIncomingMessage,
     onClose: () => console.log('WebSocket Disconnected'),
     onOpen: () => console.log('WebSocket Connected'),
