@@ -1,4 +1,4 @@
-import React, { FC, useEffect, useState } from 'react';
+import { FC, useEffect, useState } from 'react';
 import {
   Accordion,
   AccordionSummary,
@@ -20,12 +20,23 @@ interface Quiz {
 interface AccordionQuizzesProps {
   recordingId: string;
   expanded: boolean;
-  onChange: (event: React.SyntheticEvent, isExpanded: boolean) => void;
 }
 
-const AccordionQuizzes: FC<AccordionQuizzesProps> = ({ recordingId, expanded, onChange }) => {
+const AccordionQuizzes: FC<AccordionQuizzesProps> = ({ recordingId, expanded }) => {
   const [quizzes, setQuizzes] = useState<Quiz[] | null>(null);
   const [loading, setLoading] = useState(false);
+
+  const handleFetchQuizzes = () =>
+    fetchQuizzesByRecording(recordingId)
+      .then((res) => {
+        setQuizzes(res.data);
+      })
+      .catch((error) => {
+        console.error('Error fetching quizzes:', error);
+      })
+      .finally(() => {
+        setLoading(false);
+      });
 
   useEffect(() => {
     // If the accordion isn't expanded, don't do anything
@@ -34,21 +45,12 @@ const AccordionQuizzes: FC<AccordionQuizzesProps> = ({ recordingId, expanded, on
     // Only fetch quizzes the first time the accordion is expanded
     if (quizzes === null) {
       setLoading(true);
-      fetchQuizzesByRecording(recordingId)
-        .then((res) => {
-          setQuizzes(res.data);
-        })
-        .catch((error) => {
-          console.error('Error fetching quizzes:', error);
-        })
-        .finally(() => {
-          setLoading(false);
-        });
+      handleFetchQuizzes();
     }
   }, [expanded, quizzes, recordingId]);
 
   return (
-    <Accordion expanded={expanded} onChange={onChange} sx={{ boxShadow: 'none' }}>
+    <Accordion expanded={expanded} sx={{ boxShadow: 'none' }}>
       <AccordionSummary sx={{ padding: 0 }}>
         <Typography variant="subtitle1" sx={{ ml: 1 }}>
           Quizzes
@@ -64,7 +66,7 @@ const AccordionQuizzes: FC<AccordionQuizzesProps> = ({ recordingId, expanded, on
           <Table>
             <TableBody>
               {quizzes.map((quiz) => (
-                <QuizListRow key={quiz.id} quiz={quiz} onUpdate={() => {}} />
+                <QuizListRow key={quiz.id} quiz={quiz} onUpdate={handleFetchQuizzes} />
               ))}
             </TableBody>
           </Table>
