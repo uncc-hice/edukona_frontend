@@ -1,4 +1,4 @@
-import React, { useEffect, useRef, useState } from 'react';
+import { useEffect, useState } from 'react';
 import {
   Container,
   Table,
@@ -9,31 +9,26 @@ import {
   TableRow,
   Paper,
   Typography,
-  Box,
-  Button,
+  CircularProgress,
 } from '@mui/material';
 import RecordButton from '../../blocks/RecordButton';
 import { toast } from 'react-toastify';
 import { Main } from '../../layouts';
 import { useNavigate } from 'react-router-dom';
 import { fetchRecordings, startQuizSession } from '../../services/apiService';
-import RecordingListRowMenu from '../../blocks/RecordingListRowMenu';
 import { useRecordingWebSocket } from '../../services/apiService';
-
-// Import our new component
-import AccordionQuizzes from './Components/AccordionQuizzes.tsx';
+import RecordingListRow from './Components/RecordingListRow';
 
 const InstructorRecordings = () => {
+  const [loading, setLoading] = useState(true);
   const [recordings, setRecordings] = useState([]);
-  const token = useRef(localStorage.getItem('token') || '');
-  const theme = localStorage.getItem('themeMode');
-  const [expanded, setExpanded] = useState(null);
   const navigate = useNavigate();
 
   // Fetch recordings
-  const handleFetchRecordings = () => {
-    fetchRecordings().then((res) => setRecordings(res.data.recordings));
-  };
+  const handleFetchRecordings = () =>
+    fetchRecordings()
+      .then((res) => setRecordings(res.data.recordings))
+      .finally(() => setLoading(false));
 
   // WebSocket events
   const handleIncomingMessage = (event) => {
@@ -72,32 +67,6 @@ const InstructorRecordings = () => {
     handleFetchRecordings();
   }, []);
 
-  /**
-   * Toggles the accordion for a given recording ID.
-   * If it's already expanded, collapse it; otherwise expand it.
-   */
-  const handleAccordionChange = (recordingId) => (event, isExpanded) => {
-    setExpanded(isExpanded ? recordingId : null);
-  };
-
-  const handleTitleClick = (recordingId, recordingTitle) => {
-    // If the recording has no title, copy the ID to clipboard
-    if (recordingTitle === '') {
-      navigator.permissions.query({ name: 'clipboard-write' }).then((result) => {
-        if (result.state === 'granted' || result.state === 'prompt') {
-          toast.promise(navigator.clipboard.writeText(recordingId), {
-            success: 'Copied recording id to clipboard',
-            pending: 'Copying recording id to clipboard',
-            error: "Couldn't copy recording id to clipboard",
-            theme,
-          });
-        }
-      });
-    }
-    // Toggle the accordion
-    setExpanded(expanded === recordingId ? null : recordingId);
-  };
-
   return (
     <Main>
       <Container sx={{ padding: '40px' }}>
@@ -129,7 +98,13 @@ const InstructorRecordings = () => {
               </TableRow>
             </TableHead>
             <TableBody>
-              {recordings.length === 0 ? (
+              {loading ? (
+                <TableRow>
+                  <TableCell colSpan={4} align={'center'}>
+                    <CircularProgress />
+                  </TableCell>
+                </TableRow>
+              ) : recordings.length === 0 ? (
                 <TableRow>
                   <TableCell colSpan={4}>
                     <Typography variant={'h4'} textAlign={'center'}>
@@ -139,66 +114,7 @@ const InstructorRecordings = () => {
                 </TableRow>
               ) : (
                 recordings.map((recording) => (
-                  <React.Fragment key={recording.id}>
-                    {/* --- Row 1: Recording Info --- */}
-                    <TableRow sx={{ cursor: 'default' }}>
-                      <TableCell align="center" sx={{ width: '25%' }}>
-                        <Box textAlign="center">
-                          <Button
-                            color="primary"
-                            onClick={(e) => {
-                              e.stopPropagation();
-                              handleTitleClick(recording.id, recording.title);
-                            }}
-                          >
-                            {recording.title === '' ? recording.id.substr(0, 7) + '...' : recording.title}
-                          </Button>
-                        </Box>
-                      </TableCell>
-                      <TableCell align="center" sx={{ width: '25%' }}>
-                        {new Date(recording.uploaded_at).toLocaleDateString(undefined, {
-                          year: 'numeric',
-                          month: 'long',
-                          day: 'numeric',
-                          hour: 'numeric',
-                          minute: 'numeric',
-                        })}
-                      </TableCell>
-                      <TableCell align="center" sx={{ width: '25%' }}>
-                        <Box
-                          component="span"
-                          sx={{
-                            width: 16,
-                            height: 16,
-                            display: 'inline-block',
-                            borderRadius: '50%',
-                            bgcolor: recording.transcript.toLowerCase() === 'completed' ? 'green' : 'red',
-                            marginRight: 1,
-                          }}
-                        />
-                        {recording.transcript.charAt(0).toUpperCase() + recording.transcript.slice(1)}
-                      </TableCell>
-                      <TableCell align="center" sx={{ width: '25%' }}>
-                        <Box textAlign="center">
-                          <RecordingListRowMenu recording={recording} onUpdate={handleFetchRecordings} />
-                        </Box>
-                      </TableCell>
-                    </TableRow>
-
-                    {/* --- Row 2: Accordion for Quizzes (only if expanded) --- */}
-                    {expanded === recording.id && (
-                      <TableRow>
-                        <TableCell colSpan={4} style={{ paddingBottom: 0, paddingTop: 0 }}>
-                          <AccordionQuizzes
-                            recordingId={recording.id}
-                            token={token.current}
-                            expanded={expanded === recording.id}
-                            onChange={handleAccordionChange(recording.id)}
-                          />
-                        </TableCell>
-                      </TableRow>
-                    )}
-                  </React.Fragment>
+                  <RecordingListRow key={recording.id} recording={recording} onUpdate={handleFetchRecordings} />
                 ))
               )}
             </TableBody>
