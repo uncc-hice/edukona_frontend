@@ -51,11 +51,7 @@ const AccordionQuizzes: FC<AccordionQuizzesProps> = ({ recordingId, expanded }) 
 
   return (
     <Accordion expanded={expanded} sx={{ boxShadow: 'none' }}>
-      <AccordionSummary sx={{ padding: 0 }}>
-        <Typography variant="subtitle1" sx={{ ml: 1 }}>
-          Quizzes
-        </Typography>
-      </AccordionSummary>
+      <AccordionSummary sx={{ padding: 0 }} />
 
       <AccordionDetails>
         {loading ? (
