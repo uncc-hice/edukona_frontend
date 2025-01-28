@@ -76,7 +76,6 @@ function App() {
             path="/jwt-login"
             element={isLoggedIn ? <Navigate to="/" /> : <JWTLoginForm signUpRoute={'/jwt-signup'} />}
           />
-          <Route path="/dashboard" element={isLoggedIn ? <InstructorDashboard /> : <Navigate to="/" />} />
           <Route path="/session/:code" element={isLoggedIn ? <QuizSession /> : <Navigate to="/" />} />
           <Route path="/results/:code" element={isLoggedIn ? <QuizSessionResults /> : <Navigate to="/" />} />
           <Route path="/create-quiz" element={isLoggedIn ? <CreateQuiz /> : <Navigate to="/" />} />
@@ -89,7 +88,7 @@ function App() {
           <Route path="account-security" element={isLoggedIn ? <Security /> : <Navigate to="/" />} />
           {/*<Route path="/create-landing" element={<DevRoute element={<Landing />} />} />*/}
           <Route path="/unauthorized" element={<Unauthorized />} />
-          <Route path="/recordings" element={isLoggedIn ? <InstructorRecordings /> : <Navigate to="/" />} />
+          <Route path="/dashboard" element={isLoggedIn ? <InstructorRecordings /> : <Navigate to="/" />} />
           <Route path="/summary/:summaryId" element={isLoggedIn ? <Summary /> : <Navigate to="/" />} />
         </Routes>
       </Router>
