@@ -1,16 +1,29 @@
 import axios from 'axios';
 import useWebSocketWithTokenRefresh from '../hooks/useWebSocketWithTokenRefresh';
 const token = localStorage.getItem('token');
-const jwtAccessToken = localStorage.getItem('accessToken');
+let jwtAccessToken = localStorage.getItem('accessToken');
 const base = 'https://api.edukona.com/';
+
+const verifyAccessToken = async () => {
+  if (jwtAccessToken !== null) {
+    try {
+      await api.post('jwt-token/verify/', { token: jwtAccessToken });
+      return true;
+    } catch (error) {
+      return false;
+    }
+  } else {
+    return false;
+  }
+};
 
 /**
  * This helper function enables us to use the JWT if available or fallback on the session token otherwise.
  * This function should be removed once we have finished migrating to JWT authentication.
- * @returns {string} The value to use for the Authorization header.
+ * @returns {Promise<string>} The value to use for the Authorization header.
  */
-const getAuthHeader = () => {
-  if (jwtAccessToken !== null) {
+const getAuthHeader = async () => {
+  if (jwtAccessToken !== null && (await verifyAccessToken())) {
     return `Bearer ${jwtAccessToken}`;
   } else if (token !== null) {
     return `Token ${token}`;
@@ -22,7 +35,7 @@ const getAuthHeader = () => {
 const api = axios.create({
   baseURL: base,
   timeout: 1500,
-  headers: { Authorization: getAuthHeader() },
+  headers: { Authorization: await getAuthHeader() },
 });
 
 export const refreshAccessToken = (refreshToken) =>
@@ -30,6 +43,22 @@ export const refreshAccessToken = (refreshToken) =>
     localStorage.setItem('accessToken', res.data.access);
     localStorage.setItem('refreshToken', res.data.refresh);
   });
+
+// Ensures the latest access token is used for all requests.
+api.interceptors.request.use(
+  async (config) => {
+    const latestAccessToken = localStorage.getItem('accessToken');
+    if (latestAccessToken) {
+      config.headers['Authorization'] = `Bearer ${latestAccessToken}`;
+    } else if (token) {
+      config.headers['Authorization'] = `Token ${token}`;
+    }
+    return config;
+  },
+  (error) => {
+    return Promise.reject(error);
+  }
+);
 
 // Global error handler.
 // Can be used for sending data to our logging system in the future
@@ -40,6 +69,7 @@ api.interceptors.response.use(
       if (jwtAccessToken !== null || localStorage.getItem('refreshToken') !== null) {
         return refreshAccessToken(localStorage.getItem('refreshToken'))
           .then(() => {
+            jwtAccessToken = localStorage.getItem('accessToken');
             const request = err.config;
             request.headers['Authorization'] = `Bearer ${localStorage.getItem('accessToken')}`;
             return api(request);
@@ -77,25 +107,15 @@ export const deleteQuizSession = (sessionCode) => api.delete(`quiz-session-delet
 export const deleteQuiz = (quizId) => api.delete(`quiz/${quizId}`);
 export const deleteQuestion = (questionId) => api.delete(`question/${questionId}`);
 export const editQuestion = (questionId, data) => api.put(`question/${questionId}/`, data);
-
-const getWebSocketAuth = () => {
-  if (jwtAccessToken !== null) {
-    return `?jwt=${jwtAccessToken}`;
-  } else if (token !== null) {
-    return `?token=${token}`;
-  } else {
-    return '';
-  }
-};
+export const verifyToken = (token) => api.post('jwt-token/verify/', { token });
 
 const getWebSocketUrl = (path) => {
   const baseUrl = 'wss://api.edukona.com/ws/';
-  return baseUrl + path + getWebSocketAuth();
+  return baseUrl + path;
 };
 
 export const useRecordingWebSocket = (websocketError, handleIncomingMessage) => {
   useWebSocketWithTokenRefresh(getWebSocketUrl('recordings/'), {
-    onError: websocketError,
     onMessage: handleIncomingMessage,
     shouldReconnect: () => true,
   });
@@ -104,13 +124,11 @@ export const useRecordingWebSocket = (websocketError, handleIncomingMessage) => 
 export const useStudentAnswerWebSocket = (code, handleIncomingMessage) => {
   return useWebSocketWithTokenRefresh(getWebSocketUrl(`student/join/${code}/`), {
     onMessage: handleIncomingMessage,
-    onError: (event) => console.error('WebSocket error', event),
   });
 };
 
 export const useQuizSessionWebSocket = (code, handleIncomingMessage) => {
   return useWebSocketWithTokenRefresh(getWebSocketUrl(`quiz-session-instructor/${code}/`), {
-    onError: (event) => console.error('WebSocket error', event),
     onMessage: handleIncomingMessage,
     shouldReconnect: () => true,
   });
@@ -119,8 +137,6 @@ export const useQuizSessionWebSocket = (code, handleIncomingMessage) => {
 export const useJoinQuizWebSocket = (code, handleIncomingMessage) => {
   return useWebSocketWithTokenRefresh(getWebSocketUrl(`student/join/${code}/`), {
     onMessage: handleIncomingMessage,
-    onClose: () => console.log('WebSocket Disconnected'),
-    onOpen: () => console.log('WebSocket Connected'),
     shouldReconnect: () => true,
   });
 };
