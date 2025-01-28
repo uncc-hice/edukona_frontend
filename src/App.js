@@ -17,7 +17,6 @@ import EditQuizView from './pages/EditQuizView';
 import InstructorQuestionView from './pages/InstructorQuestionView';
 import JoinQuiz from './pages/JoinQuiz';
 import StudentAnswerView from './pages/StudentAnswerView';
-import SettingsPage from './pages/SettingsPage/Settings';
 import Landing from './pages/Landing';
 import Page from './components/Page';
 import Unauthorized from './pages/Unauthorized';
@@ -82,7 +81,6 @@ function App() {
           <Route path="/student/:code" element={<StudentAnswerView />} />
           <Route path="/quiz/:quizId/edit" element={isLoggedIn ? <EditQuizView /> : <Navigate to="/" />} />
           <Route path="/quiz/:code" element={isLoggedIn ? <InstructorQuestionView /> : <Navigate to="/" />} />
-          <Route path="/quiz/:id/settings" element={isLoggedIn ? <SettingsPage /> : <Navigate to="/" />} />
           <Route path={'/team'} element={<Team />} />
           <Route path="/account-general" element={isLoggedIn ? <General /> : <Navigate to="/" />} />
           <Route path="account-security" element={isLoggedIn ? <Security /> : <Navigate to="/" />} />
