@@ -3,9 +3,11 @@ import { Box, Button, Menu, MenuItem, SxProps } from '@mui/material';
 import { MouseEvent, useContext, useState } from 'react';
 import { InstructorContext } from '../../InstructorContext';
 import { Course } from '../../types/edukonaTypes';
+import CreateCourseDialog from './CreateCourseDialog';
 
 const CourseDropdown = ({ boxStyle }: { boxStyle: SxProps | null }) => {
   const [open, setOpen] = useState<boolean>(false);
+  const [createCourseOpen, setCreateCourseOpen] = useState<boolean>(false);
   const [anchor, setAnchor] = useState<HTMLButtonElement | null>(null);
   const { courses, activeCourse, setActiveCourse } = useContext(InstructorContext);
 
@@ -48,11 +50,12 @@ const CourseDropdown = ({ boxStyle }: { boxStyle: SxProps | null }) => {
           </MenuItem>
         ))}
         <MenuItem onClick={() => handleSelectCourse(null)}>Sandbox Course</MenuItem>
-        <MenuItem>
+        <MenuItem onClick={() => setCreateCourseOpen(true)}>
           <Add />
           Create Course
         </MenuItem>
       </Menu>
+      <CreateCourseDialog open={createCourseOpen} setOpen={setCreateCourseOpen} />
     </Box>
   );
 };

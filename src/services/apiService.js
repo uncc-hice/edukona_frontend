@@ -202,4 +202,7 @@ export const createQuiz = (quizData) => api.post('quiz/create/', quizData);
 export const submitContactForm = (formData) => api.post('contact-us/', formData);
 
 export const fetchInstructorCourses = () => api.get(`instructor/get-courses/`);
+
 export const fetchRecordingsByCourse = (course_id) => api.get(`course/${course_id}/get-recordings/`);
+
+export const createCourse = (courseData) => api.post(`instructor/create-course/`, courseData);

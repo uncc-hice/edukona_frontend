@@ -1,5 +1,8 @@
 import { Button, Dialog, DialogActions, DialogContent, DialogTitle, TextField } from '@mui/material';
-import { ChangeEvent, useState } from 'react';
+import { ChangeEvent, useContext, useState } from 'react';
+import { toast } from 'react-toastify';
+import { InstructorContext } from '../../../InstructorContext';
+import { createCourse } from '../../../services/apiService';
 import LocalizedDatePicker from '../../LocalizedDatePicker';
 
 interface CourseForm {
@@ -11,6 +14,7 @@ interface CourseForm {
 }
 
 const CreateCourseDialog = ({ open, setOpen }: { open: boolean; setOpen: (open: boolean) => void }) => {
+  const { updateCourses } = useContext(InstructorContext);
   const [formData, setFormData] = useState<CourseForm>({
     title: '',
     description: '',
@@ -21,6 +25,26 @@ const CreateCourseDialog = ({ open, setOpen }: { open: boolean; setOpen: (open: 
 
   const handleChange = (e: ChangeEvent<HTMLInputElement>) => {
     setFormData({ ...formData, [e.target.name]: e.target.value });
+  };
+
+  const handleSubmit = () => {
+    const data = Object.entries(formData)
+      .filter(([_, v]: [k: string, v: any]) => v !== null)
+      .reduce((acc: any, [k, v]: [k: string, v: any]) => {
+        acc[k] = v;
+        return acc;
+      }, {});
+    toast
+      .promise(createCourse(data), {
+        pending: 'Creating course...',
+        success: 'Successfully created course!',
+        error: 'Failed to create course',
+      })
+      .then(() => {
+        updateCourses();
+        setOpen(false);
+      })
+      .catch((err) => console.error(err));
   };
 
   return (
@@ -81,8 +105,8 @@ const CreateCourseDialog = ({ open, setOpen }: { open: boolean; setOpen: (open: 
         <Button onClick={() => setOpen(false)} color="primary">
           Cancel
         </Button>
-        <Button onClick={() => {}} color="primary" autoFocus>
-          Confirm
+        <Button onClick={handleSubmit} color="primary" autoFocus>
+          Submit
         </Button>
       </DialogActions>
     </Dialog>
