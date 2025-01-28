@@ -4,12 +4,15 @@ import App from './App';
 import reportWebVitals from './reportWebVitals';
 import { UserProvider } from './UserContext';
 import { UserProvider as JWTUserProvider } from './JWTUserContext';
+import { InstructorProvider } from './InstructorContext';
 
 const root = ReactDOM.createRoot(document.getElementById('root'));
 root.render(
   <JWTUserProvider>
     <UserProvider>
-      <App />
+      <InstructorProvider>
+        <App />
+      </InstructorProvider>
     </UserProvider>
   </JWTUserProvider>
 );

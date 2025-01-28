@@ -30,9 +30,6 @@ const QuizListRowMenu = ({ quiz, numQuestions, deleteQuiz, onUpdate }) => {
         <MenuItem onClick={() => startQuiz(quiz.id)} disableRipple>
           <PlayArrow /> Start Quiz
         </MenuItem>
-        <MenuItem onClick={() => settings(quiz.id)} disableRipple>
-          <EditNote /> Edit Settings
-        </MenuItem>
         <MenuItem onClick={() => setEditTitleOpen(true)} disableRipple>
           <Edit /> Edit Title
         </MenuItem>
