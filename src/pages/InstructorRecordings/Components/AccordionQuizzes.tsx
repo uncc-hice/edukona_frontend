@@ -1,13 +1,5 @@
 import { FC, useEffect, useState } from 'react';
-import {
-  Accordion,
-  AccordionSummary,
-  AccordionDetails,
-  CircularProgress,
-  Typography,
-  Table,
-  TableBody,
-} from '@mui/material';
+import { Accordion, AccordionDetails, CircularProgress, Typography, Table, TableBody } from '@mui/material';
 import QuizListRow from '../../../blocks/QuizListRow';
 // Import your API helper that handles auth internally (e.g., via interceptors or default headers)
 import { fetchQuizzesByRecording } from '../../../services/apiService';
@@ -51,12 +43,6 @@ const AccordionQuizzes: FC<AccordionQuizzesProps> = ({ recordingId, expanded }) 
 
   return (
     <Accordion expanded={expanded} sx={{ boxShadow: 'none' }}>
-      <AccordionSummary sx={{ padding: 0 }}>
-        <Typography variant="subtitle1" sx={{ ml: 1 }}>
-          Quizzes
-        </Typography>
-      </AccordionSummary>
-
       <AccordionDetails>
         {loading ? (
           <CircularProgress />
