@@ -1,5 +1,5 @@
 // Topbar.js
-import React, { useContext } from 'react';
+import { useContext } from 'react';
 import PropTypes from 'prop-types';
 import { Box, Button, useMediaQuery } from '@mui/material';
 import { alpha, useTheme } from '@mui/material/styles';
@@ -7,10 +7,14 @@ import MenuIcon from '@mui/icons-material/Menu';
 import ThemeModeToggler from '../../../../components/ThemeModeToggler';
 import { UserContext } from '../../../../UserContext';
 import { UserContext as JWTUserContext } from '../../../../JWTUserContext';
+import { useLocation } from 'react-router-dom';
+import CourseDropdown from '../../../../components/CourseDropdown';
 
 const Topbar = ({ onSidebarOpen }) => {
   const theme = useTheme();
   const isMd = useMediaQuery(theme.breakpoints.up('md'));
+  const { pathname } = useLocation();
+  console.log(pathname);
 
   const { isLoggedIn: isLoggedInToken, logout: logoutToken } = useContext(UserContext);
   const { isLoggedIn: isLoggedInJWT, logout: logoutJWT } = useContext(JWTUserContext);
@@ -58,28 +62,20 @@ const Topbar = ({ onSidebarOpen }) => {
 
           {isLoggedIn ? (
             <>
-              {/* I believe this is what issue KAN-85 wants me to do. If I am wrong, please let me know */}
-              <Button
-                variant="text"
-                color="primary"
-                component="a"
-                href="/dashboard"
-                size="large"
-                sx={{ marginLeft: 4 }}
-              >
-                Quizzes
-              </Button>
-              <Button
-                variant="text"
-                color="primary"
-                component="a"
-                href="/recordings"
-                size="large"
-                sx={{ marginLeft: 4 }}
-              >
-                Recordings
-              </Button>
-
+              {pathname === '/dashboard' ? (
+                <CourseDropdown boxStyle={{ marginLeft: 4 }} />
+              ) : (
+                <Button
+                  variant="text"
+                  color="primary"
+                  component="a"
+                  href="/dashboard"
+                  size="large"
+                  sx={{ marginLeft: 4 }}
+                >
+                  Dashboard
+                </Button>
+              )}
               <Button variant="text" color="primary" component="a" href="/team" size="large" sx={{ marginLeft: 4 }}>
                 Team
               </Button>

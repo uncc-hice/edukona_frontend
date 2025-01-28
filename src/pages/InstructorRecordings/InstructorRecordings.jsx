@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react';
+import { useContext, useEffect, useState } from 'react';
 import {
   Container,
   Table,
@@ -15,20 +15,25 @@ import RecordButton from '../../blocks/RecordButton';
 import { toast } from 'react-toastify';
 import { Main } from '../../layouts';
 import { useNavigate } from 'react-router-dom';
-import { fetchRecordings, startQuizSession } from '../../services/apiService';
+import { fetchRecordings, fetchRecordingsByCourse, startQuizSession } from '../../services/apiService';
 import { useRecordingWebSocket } from '../../services/apiService';
 import RecordingListRow from './Components/RecordingListRow';
+import { InstructorContext } from '../../InstructorContext';
 
 const InstructorRecordings = () => {
-  const [loading, setLoading] = useState(true);
-  const [recordings, setRecordings] = useState([]);
+  const [recordings, setRecordings] = useState(null);
+  const { activeCourse } = useContext(InstructorContext);
   const navigate = useNavigate();
 
   // Fetch recordings
-  const handleFetchRecordings = () =>
-    fetchRecordings()
-      .then((res) => setRecordings(res.data.recordings))
-      .finally(() => setLoading(false));
+  const handleFetchRecordings = () => {
+    setRecordings(null);
+    if (activeCourse === null) {
+      fetchRecordings().then((res) => setRecordings(res.data.recordings));
+    } else {
+      fetchRecordingsByCourse(activeCourse.id).then((res) => setRecordings(res.data));
+    }
+  };
 
   // WebSocket events
   const handleIncomingMessage = (event) => {
@@ -65,7 +70,7 @@ const InstructorRecordings = () => {
   // On mount, fetch the recordings
   useEffect(() => {
     handleFetchRecordings();
-  }, []);
+  }, [activeCourse]);
 
   return (
     <Main>
@@ -98,7 +103,7 @@ const InstructorRecordings = () => {
               </TableRow>
             </TableHead>
             <TableBody>
-              {loading ? (
+              {recordings === null ? (
                 <TableRow>
                   <TableCell colSpan={4} align={'center'}>
                     <CircularProgress />
