@@ -1,6 +1,7 @@
-import { useEffect, useState } from 'react';
+import { useCallback, useEffect, useState } from 'react';
 import useWebSocket from 'react-use-websocket';
-import { refreshAccessToken } from '../services/apiService';
+import { useContext } from 'react';
+import { UserContext } from '../JWTUserContext';
 
 interface WebSocketOptions {
   onOpen?: (event: Event) => void;
@@ -13,71 +14,71 @@ interface WebSocketOptions {
 
 const useWebSocketWithTokenRefresh = (url: string, options: WebSocketOptions = {}) => {
   const { onOpen, onClose, onError, onMessage, shouldReconnect, ...restOptions } = options;
-  const [shouldStop, setShouldStop] = useState(false);
+  const [tokenType, setTokenType] = useState<string>('');
+  const [tokenVerified, setTokenVerified] = useState<boolean>(false);
+  const { refreshTokens, timeUntilRefresh, validateToken } = useContext(UserContext);
+
+  const conditionalRefresh = useCallback(() => {
+    if (tokenType === 'jwt') {
+      // Verify the token is not malformed and is still valid
+      const is_valid = validateToken();
+      if (!is_valid) {
+        refreshTokens();
+        return;
+      }
+
+      // Refresh the token if it is about to expire
+      const refreshThreshold = 60; // seconds
+      if (timeUntilRefresh() < refreshThreshold) {
+        refreshTokens();
+      }
+    }
+    setTokenVerified(true);
+  }, [tokenType, refreshTokens, timeUntilRefresh, validateToken]);
 
   useEffect(() => {
-    let refreshTimer: ReturnType<typeof setTimeout> | null = null;
+    if (localStorage.getItem('accessToken') !== null) {
+      setTokenType('jwt');
+    } else if (localStorage.getItem('token') !== null) {
+      setTokenType('token');
+    } else {
+      setTokenType('');
+    }
 
-    const scheduleRefresh = async () => {
-      const accessToken = localStorage.getItem('accessToken');
-      const refreshToken = localStorage.getItem('refreshToken');
-      if (!accessToken || !refreshToken || shouldStop) return;
+    conditionalRefresh();
+  }, [conditionalRefresh]);
 
-      try {
-        const [, base64Url] = accessToken.split('.');
-        const tokenPayload = JSON.parse(atob(base64Url));
-        const expiresInMs = tokenPayload.exp * 1000 - Date.now();
-        const buffer = 30 * 1000; // 30 seconds
-        const refreshDelay = Math.max(expiresInMs - buffer, 0);
+  const getWebSocketAuth = () => {
+    if (tokenType === 'jwt') {
+      return `?jwt=${localStorage.getItem('accessToken')}`;
+    } else if (tokenType === 'token') {
+      return `?token=${localStorage.getItem('token')}`;
+    } else {
+      return '';
+    }
+  };
 
-        refreshTimer = setTimeout(async () => {
-          try {
-            await refreshAccessToken(refreshToken);
-            console.log('Token refreshed');
-            scheduleRefresh();
-          } catch (refreshError) {
-            console.error('Token refresh failed:', refreshError);
-            // You may decide to stop further attempts
-            setShouldStop(true);
-          }
-        }, refreshDelay);
-      } catch (decodeError) {
-        console.error('Token decode failed:', decodeError);
-        try {
-          await refreshAccessToken(refreshToken);
-          scheduleRefresh();
-        } catch (refreshError) {
-          console.error('Token refresh failed:', refreshError);
-          setShouldStop(true);
-        }
-      }
-    };
+  const composeURL = () => {
+    return url + getWebSocketAuth();
+  };
 
-    scheduleRefresh();
-
-    return () => {
-      if (refreshTimer) clearTimeout(refreshTimer);
-      setShouldStop(true);
-    };
-  }, [shouldStop]);
-
-  return useWebSocket(url, {
+  return useWebSocket(tokenVerified ? composeURL() : null, {
     onOpen: (event) => {
       console.log('WebSocket connected');
       if (onOpen) onOpen(event);
     },
     onClose: (event) => {
       console.log('WebSocket disconnected');
+      conditionalRefresh();
       if (onClose) onClose(event);
     },
     onError: (event) => {
       console.error('WebSocket error', event);
+      conditionalRefresh();
       if (onError) onError(event);
     },
     onMessage,
     shouldReconnect,
-    // If you want a default reconnection logic
-    // shouldReconnect: (closeEvent) => !shouldStop,
     ...restOptions,
   });
 };
