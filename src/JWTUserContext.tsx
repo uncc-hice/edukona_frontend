@@ -204,18 +204,18 @@ export const UserProvider = ({ children }: { children: React.ReactNode }) => {
   return (
     <UserContext.Provider
       value={{
-      accessToken,
-      googleLogin,
-      isLoggedIn,
-      login,
-      logout,
-      refreshToken,
-      refreshTokens,
-      setAccessToken,
-      signUp,
-      timeUntilRefresh,
-      user,
-      validateToken,
+        accessToken,
+        googleLogin,
+        isLoggedIn,
+        login,
+        logout,
+        refreshToken,
+        refreshTokens,
+        setAccessToken,
+        signUp,
+        timeUntilRefresh,
+        user,
+        validateToken,
       }}
     >
       {children}
