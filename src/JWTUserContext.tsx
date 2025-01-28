@@ -4,6 +4,8 @@ import { logout as apiLogout } from './services/apiService';
 import { googleAuth } from './services/apiService';
 import { JWTSignUpInstructor as apiSignUp } from './services/apiService';
 import { toast } from 'react-toastify';
+import { refreshAccessToken } from './services/apiService';
+import { verifyToken as apiVerifyToken } from './services/apiService';
 
 interface SetErrorFunction {
   (message: string): void;
@@ -21,6 +23,9 @@ interface UserContextType {
   signUp: (data: SignUpFormData, navigate: NavigateFunction) => void;
   setAccessToken: (accessToken: string | null) => void;
   googleLogin: (token: string, setError: SetErrorFunction, navigate: NavigateFunction) => void;
+  refreshTokens: () => void;
+  timeUntilRefresh: () => number;
+  validateToken: () => Promise<boolean>;
   isLoggedIn: boolean;
   user: number | null;
 }
@@ -48,6 +53,9 @@ const defaultUserContext: UserContextType = {
   signUp: async () => {},
   setAccessToken: () => {},
   googleLogin: async () => {},
+  refreshTokens: async () => {},
+  timeUntilRefresh: () => 0,
+  validateToken: () => Promise.resolve(false),
   isLoggedIn: false,
   user: null,
 };
@@ -149,9 +157,66 @@ export const UserProvider = ({ children }: { children: React.ReactNode }) => {
       window.location.reload();
     });
 
+  const loadTokensFromStorage = () => {
+    const storedAccessToken = localStorage.getItem('accessToken');
+    const storedRefreshToken = localStorage.getItem('refreshToken');
+    if (storedAccessToken && storedRefreshToken) {
+      setAccessToken(storedAccessToken);
+      setRefreshToken(storedRefreshToken);
+    }
+  };
+
+  const refreshTokens = async () => {
+    if (!refreshToken) {
+      console.error('No refresh token available');
+      reset();
+      return;
+    }
+
+    try {
+      await refreshAccessToken(refreshToken);
+      loadTokensFromStorage();
+    } catch (error) {
+      console.error('Failed to refresh access token', error);
+      reset();
+    }
+  };
+
+  const timeUntilRefresh = () => {
+    if (!accessToken) return 0;
+    const jwt = accessToken.split('.')[1];
+    const jwtPayload = JSON.parse(atob(jwt));
+    const now = new Date().getTime() / 1000;
+    return jwtPayload.exp - now; // seconds
+  };
+
+  const validateToken = async (): Promise<boolean> => {
+    if (!accessToken) return false;
+    try {
+      await apiVerifyToken(accessToken);
+      return true;
+    } catch (error) {
+      console.error('Failed to verify access token', error);
+      return false;
+    }
+  };
+
   return (
     <UserContext.Provider
-      value={{ accessToken, googleLogin, isLoggedIn, login, logout, signUp, refreshToken, setAccessToken, user }}
+      value={{
+      accessToken,
+      googleLogin,
+      isLoggedIn,
+      login,
+      logout,
+      refreshToken,
+      refreshTokens,
+      setAccessToken,
+      signUp,
+      timeUntilRefresh,
+      user,
+      validateToken,
+      }}
     >
       {children}
     </UserContext.Provider>
