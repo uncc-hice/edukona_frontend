@@ -29,7 +29,7 @@ const InstructorRecordings = () => {
   const handleFetchRecordings = () => {
     setRecordings(null);
     if (activeCourse === null) {
-      fetchRecordings().then((res) => setRecordings(res.data.recordings));
+      fetchRecordings().then((res) => setRecordings(res.data.recordings.filter((rec) => rec.course === null)));
     } else {
       fetchRecordingsByCourse(activeCourse.id).then((res) => setRecordings(res.data));
     }
