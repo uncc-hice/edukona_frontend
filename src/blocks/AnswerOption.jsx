@@ -62,7 +62,7 @@ const AnswerOption = ({ answer, index, count, totalResponses, highlight, feedbac
     <StyledButtonBase index={index} bgcolor={bgcolor} highlight={highlight}>
       <ResponseLine width={width} />
       <Typography variant="h4">{answer}</Typography>
-      {highlight === 'incorrect' && <Typography variant="body2">{feedback}</Typography>}
+      {highlight === 'incorrect' && <Typography variant="h5">{feedback}</Typography>}
     </StyledButtonBase>
   );
 };
