@@ -23,7 +23,7 @@ const verifyAccessToken = async () => {
  * @returns {Promise<string>} The value to use for the Authorization header.
  */
 const getAuthHeader = async () => {
-  if (jwtAccessToken !== null && (await verifyAccessToken())) {
+  if (jwtAccessToken !== null) {
     return `Bearer ${jwtAccessToken}`;
   } else if (token !== null) {
     return `Token ${token}`;
