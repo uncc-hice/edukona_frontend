@@ -78,6 +78,8 @@ export const deleteQuizSession = (sessionCode) => api.delete(`quiz-session-delet
 export const deleteQuiz = (quizId) => api.delete(`quiz/${quizId}`);
 export const deleteQuestion = (questionId) => api.delete(`question/${questionId}`);
 export const editQuestion = (questionId, data) => api.put(`question/${questionId}/`, data);
+export const requestScoring = (student_id, session_id) => api.post(`score/`, { student_id, session_id });
+export const getScore = (student_id, session_id) => api.get(`get-score/${student_id}/${session_id}/`);
 
 const getWebSocketAuth = () => {
   if (jwtAccessToken !== null) {
