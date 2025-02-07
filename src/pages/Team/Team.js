@@ -1,4 +1,3 @@
-import React from 'react';
 import Main from '../../layouts/Main';
 import Overview from './components/Overview';
 
@@ -27,6 +26,14 @@ const mock = [
     desc: '',
     linkedIn: 'https://www.linkedin.com/in/austinfhunter/',
     github: 'https://github.com/AustinfHunter',
+  },
+  {
+    name: 'Bruh Lemma Yadecha',
+    title: 'Research Assistant and Software Engineer',
+    avatar: 'https://elasticbeanstalk-us-west-2-730335402099.s3.us-west-2.amazonaws.com/hice_frontend/Bruh_Lemma.jpg',
+    desc: '',
+    linkedIn: 'https://www.linkedin.com/in/blyadecha/',
+    github: 'https://github.com/BruhLemma-Yadecha',
   },
 ];
 
