@@ -107,6 +107,8 @@ export const deleteQuizSession = (sessionCode) => api.delete(`quiz-session-delet
 export const deleteQuiz = (quizId) => api.delete(`quiz/${quizId}`);
 export const deleteQuestion = (questionId) => api.delete(`question/${questionId}`);
 export const editQuestion = (questionId, data) => api.put(`question/${questionId}/`, data);
+export const requestScoring = (student_id, session_id) => api.post(`score/`, { student_id, session_id });
+export const getScore = (student_id, session_id) => api.get(`get-score/${student_id}/${session_id}/`);
 export const verifyToken = (token) => api.post('jwt-token/verify/', { token });
 
 const getWebSocketUrl = (path) => {
@@ -124,6 +126,10 @@ export const useRecordingWebSocket = (websocketError, handleIncomingMessage) => 
 export const useStudentAnswerWebSocket = (code, handleIncomingMessage) => {
   return useWebSocketWithTokenRefresh(getWebSocketUrl(`student/join/${code}/`), {
     onMessage: handleIncomingMessage,
+    onOpen: () => console.log('WebSocket connected'),
+    onClose: () => console.log('WebSocket disconnected'),
+    onError: (event) => console.error('WebSocket error', event),
+    shouldReconnect: (event) => true,
   });
 };
 
