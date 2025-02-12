@@ -112,6 +112,7 @@ export const useStudentAnswerWebSocket = (code, handleIncomingMessage) => {
     onOpen: () => console.log('WebSocket connected'),
     onClose: () => console.log('WebSocket disconnected'),
     onError: (event) => console.error('WebSocket error', event),
+    shouldReconnect: (event) => true,
   });
 };
 

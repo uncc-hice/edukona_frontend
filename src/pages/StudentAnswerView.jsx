@@ -19,12 +19,15 @@ const StudentAnswerView = () => {
   const [skipPowerUp, setSkipPowerUp] = useState(false);
   const [selectedAnswer, setSelectedAnswer] = useState('');
   const [skipped, setSkipped] = useState([]);
+  const [grading, setGrading] = useState('not started');
+  const [score, setScore] = useState(-1);
 
   const sid = localStorage.getItem('sid');
 
   const handleIncomingMessage = (event) => {
     const theme = localStorage.getItem('themeMode');
     const receivedData = JSON.parse(event.data);
+    console.log('Received WebSocket message:', receivedData);
     if (receivedData.type === 'next_question') {
       setIsSubmitted(false);
       setQuestion(receivedData.question);
@@ -34,7 +37,7 @@ const StudentAnswerView = () => {
       setSelectedAnswer('');
     } else if (receivedData.type === 'quiz_ended') {
       setQuizEnded(true);
-      setLoading(false);
+      setLoading(true);
     } else if (receivedData.type === 'quiz_started') {
       setLoading(true);
     } else if (receivedData.type === 'skip_power_up_granted') {
@@ -74,7 +77,25 @@ const StudentAnswerView = () => {
     } else if (receivedData.message === 'User response created successfully') {
       setIsSubmitted(true);
       setSelectedAnswer(receivedData.selected_answer);
+    } else if (receivedData.type === 'grading_started') {
+      setGrading('started');
+      setLoading(false);
+    } else if (receivedData.type === 'grading_completed') {
+      setGrading('completed');
+      requestGrades();
+    } else if (receivedData.type === 'grade') {
+      console.log(receivedData);
+      setScore(receivedData.grade);
     }
+  };
+
+  const requestGrades = () => {
+    sendMessage(
+      JSON.stringify({
+        type: 'request_grade',
+        id: sid,
+      })
+    );
   };
 
   const { sendMessage } = useStudentAnswerWebSocket(code, handleIncomingMessage);
@@ -113,7 +134,7 @@ const StudentAnswerView = () => {
           <Typography variant="h6">Waiting for instructor to start the quiz.</Typography>
         </Box>
       ) : quizEnded ? (
-        <QuizEndView />
+        <QuizEndView grading={grading} score={score} />
       ) : question && quizSession ? (
         <>
           <StudentAnswersGrid
