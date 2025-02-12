@@ -8,12 +8,14 @@ interface InstructorContextType {
   courses: Course[] | null;
   activeCourse: Course | null;
   setActiveCourse: (course: Course | null) => void;
+  updateCourses: () => void;
 }
 
 export const InstructorContext = createContext<InstructorContextType>({
   courses: null,
   activeCourse: null,
   setActiveCourse: () => {},
+  updateCourses: () => {},
 });
 
 export const InstructorProvider = ({ children }: { children: ReactNode }) => {
@@ -31,7 +33,7 @@ export const InstructorProvider = ({ children }: { children: ReactNode }) => {
   }, []);
 
   return (
-    <InstructorContext.Provider value={{ courses, activeCourse, setActiveCourse }}>
+    <InstructorContext.Provider value={{ courses, activeCourse, setActiveCourse, updateCourses: fetchCourses }}>
       {children}
     </InstructorContext.Provider>
   );
