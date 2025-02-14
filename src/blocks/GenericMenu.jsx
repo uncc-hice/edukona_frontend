@@ -44,16 +44,18 @@ const StyledMenu = styled((props) => (
   },
 }));
 
-export default function GenericMenu({ children, title }) {
+export default function GenericMenu({ children, title, isOpen, setIsOpen }) {
   const [anchorEl, setAnchorEl] = useState(null);
-  const open = Boolean(anchorEl);
+  const open = Boolean(anchorEl) && isOpen;
 
   const handleClick = (event) => {
+    setIsOpen(true);
     event.stopPropagation(); // Prevent accordion from toggling
     setAnchorEl(event.currentTarget);
   };
 
   const handleClose = (event) => {
+    setIsOpen(false);
     event.stopPropagation(); // Prevent accordion from toggling
     setAnchorEl(null);
   };
