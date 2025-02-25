@@ -1,11 +1,18 @@
-import { Typography, Box, Divider } from '@mui/material';
+import { Typography, Box, Divider, CircularProgress, Fade } from '@mui/material';
 
-interface QuizEndViewProps {
-  grading: string;
-  score: number;
+interface GradingResponse {
+  grade: number;
+  question_count: number;
+  skipped: number;
 }
 
-const QuizEndView = ({ grading, score }: QuizEndViewProps) => {
+interface QuizEndViewProps {
+  gradingStatus: string;
+  gradingResponse: GradingResponse;
+}
+
+const QuizEndView = ({ gradingStatus, gradingResponse }: QuizEndViewProps) => {
+  const { grade, question_count, skipped } = gradingResponse;
   return (
     <Box
       display="flex"
@@ -18,19 +25,31 @@ const QuizEndView = ({ grading, score }: QuizEndViewProps) => {
       <Typography variant="h2" component="h1" align="center" color="text.primary" gutterBottom>
         🎉 Quiz Ended 🎉
       </Typography>
-      <Typography variant="h6" component="h2" align="center" color="text.secondary" fontStyle="italic">
-        {grading === 'started'
-          ? 'Grading in progress...'
-          : grading === 'completed'
-            ? 'Grading complete!'
-            : 'Quiz ended.'}
-      </Typography>
+      <Fade in={gradingStatus === 'started'} unmountOnExit>
+        <Box display="flex" alignItems="center" justifyContent="center">
+          <CircularProgress size={24} />
+        </Box>
+      </Fade>
       <Divider sx={{ width: '50%', marginY: 2 }} />
-      {score !== -1 && (
-        <Typography variant="h4" component="h2" align="center" color="text.secondary" marginTop={2}>
-          Your Score: {score}
-        </Typography>
-      )}
+      <Fade in={gradingStatus === 'completed'} unmountOnExit>
+        <Box display="flex" flexDirection="column" alignItems="center">
+          {grade !== -1 && (
+            <Typography variant="h4" component="h2" align="center" color="text.secondary" marginTop={2}>
+              Your Score: {grade} / {question_count - skipped}
+            </Typography>
+          )}
+          {skipped > 0 && (
+            <Typography variant="body1" component="p" align="center" color="text.secondary" marginTop={1}>
+              Skipped: {skipped}
+            </Typography>
+          )}
+          <Box marginTop={2}>
+            <Typography variant="body1" component="p" align="center" color="text.secondary" fontStyle={'italic'}>
+              Thank you for participating!
+            </Typography>
+          </Box>
+        </Box>
+      </Fade>
     </Box>
   );
 };
