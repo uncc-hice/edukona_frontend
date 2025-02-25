@@ -18,6 +18,7 @@ const RecordingListRowMenu = (props: RecordingListRowMenuProps) => {
   const [editTitleOpen, setEditTitleOpen] = useState(false);
   const [createQuizOpen, setCreateQuizOpen] = useState(false);
   const [deleteOpen, setDeleteOpen] = useState(false);
+  const [openMenu, setOpenMenu] = useState(false);
 
   const handleGenerateSummary = () => {
     toast
@@ -38,18 +39,42 @@ const RecordingListRowMenu = (props: RecordingListRowMenuProps) => {
 
   return (
     <Fragment>
-      <GenericMenu title="Actions">
-        <MenuItem onClick={() => setCreateQuizOpen(true)} disableRipple>
+      <GenericMenu isOpen={openMenu} setIsOpen={setOpenMenu} title="Actions">
+        <MenuItem
+          onClick={() => {
+            setCreateQuizOpen(true);
+            setOpenMenu(false);
+          }}
+          disableRipple
+        >
           <Quiz /> Create and Start Quiz
         </MenuItem>
-        <MenuItem onClick={() => handleGenerateSummary()} disableRipple>
+        <MenuItem
+          onClick={() => {
+            handleGenerateSummary();
+            setOpenMenu(false);
+          }}
+          disableRipple
+        >
           <Summarize /> Generate Summary
         </MenuItem>
         <Divider sx={{ my: 0.5 }} />
-        <MenuItem onClick={() => setEditTitleOpen(true)} disableRipple>
+        <MenuItem
+          onClick={() => {
+            setEditTitleOpen(true);
+            setOpenMenu(false);
+          }}
+          disableRipple
+        >
           <Edit /> Edit Title
         </MenuItem>
-        <MenuItem onClick={() => setDeleteOpen(true)} disableRipple>
+        <MenuItem
+          onClick={() => {
+            setDeleteOpen(true);
+            setOpenMenu(false);
+          }}
+          disableRipple
+        >
           <Delete /> Delete Recording
         </MenuItem>
       </GenericMenu>
