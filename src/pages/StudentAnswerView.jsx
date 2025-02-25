@@ -19,8 +19,8 @@ const StudentAnswerView = () => {
   const [skipPowerUp, setSkipPowerUp] = useState(false);
   const [selectedAnswer, setSelectedAnswer] = useState('');
   const [skipped, setSkipped] = useState([]);
-  const [grading, setGrading] = useState('not started');
-  const [score, setScore] = useState(-1);
+  const [gradingStatus, setGradingStatus] = useState('not started');
+  const [gradingResponse, setGradingResponse] = useState({});
 
   const sid = localStorage.getItem('sid');
 
@@ -78,14 +78,14 @@ const StudentAnswerView = () => {
       setIsSubmitted(true);
       setSelectedAnswer(receivedData.selected_answer);
     } else if (receivedData.type === 'grading_started') {
-      setGrading('started');
+      setGradingStatus('started');
       setLoading(false);
     } else if (receivedData.type === 'grading_completed') {
-      setGrading('completed');
+      setGradingStatus('completed');
       requestGrades();
     } else if (receivedData.type === 'grade') {
       console.log(receivedData);
-      setScore(receivedData.grade);
+      setGradingResponse(receivedData);
     }
   };
 
@@ -134,7 +134,7 @@ const StudentAnswerView = () => {
           <Typography variant="h6">Waiting for instructor to start the quiz.</Typography>
         </Box>
       ) : quizEnded ? (
-        <QuizEndView grading={grading} score={score} />
+        <QuizEndView gradingStatus={gradingStatus} gradingResponse={gradingResponse} />
       ) : question && quizSession ? (
         <>
           <StudentAnswersGrid
