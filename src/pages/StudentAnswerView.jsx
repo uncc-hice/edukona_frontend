@@ -27,7 +27,6 @@ const StudentAnswerView = () => {
   const handleIncomingMessage = (event) => {
     const theme = localStorage.getItem('themeMode');
     const receivedData = JSON.parse(event.data);
-    console.log('Received WebSocket message:', receivedData);
     if (receivedData.type === 'next_question') {
       setIsSubmitted(false);
       setQuestion(receivedData.question);
@@ -84,7 +83,6 @@ const StudentAnswerView = () => {
       setGradingStatus('completed');
       requestGrades();
     } else if (receivedData.type === 'grade') {
-      console.log(receivedData);
       setGradingResponse(receivedData);
     }
   };
@@ -101,16 +99,6 @@ const StudentAnswerView = () => {
   const { sendMessage } = useStudentAnswerWebSocket(code, handleIncomingMessage);
 
   const handleSkipQuestion = () => {
-    console.log('Skipping question:', question.id);
-    console.log('Data Sent', {
-      type: 'skip_question',
-      data: {
-        student: { id: sid },
-        quiz_session_code: code,
-        question_id: question.id,
-      },
-    });
-
     sendMessage(
       JSON.stringify({
         type: 'skip_question',
