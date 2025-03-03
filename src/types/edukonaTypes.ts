@@ -5,6 +5,7 @@ export interface Recording {
   uploaded_at: string;
   instructor: string;
   transcript: string;
+  duration: number;
 }
 
 export interface Course {

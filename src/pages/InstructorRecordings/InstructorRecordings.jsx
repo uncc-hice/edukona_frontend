@@ -80,22 +80,27 @@ const InstructorRecordings = () => {
           <Table>
             <TableHead>
               <TableRow>
-                <TableCell sx={{ width: '25%' }}>
+                <TableCell sx={{ width: '30%' }}>
                   <Typography variant="h6" align="center">
                     Title
                   </Typography>
                 </TableCell>
-                <TableCell sx={{ width: '25%' }}>
+                <TableCell sx={{ width: '20%' }}>
                   <Typography variant="h6" align="center">
                     Uploaded At
                   </Typography>
                 </TableCell>
-                <TableCell sx={{ width: '25%' }}>
+                <TableCell sx={{ width: '15%' }}>
+                  <Typography variant="h6" align="center">
+                    Duration
+                  </Typography>
+                </TableCell>
+                <TableCell sx={{ width: '15%' }}>
                   <Typography variant="h6" align="center">
                     Transcript Status
                   </Typography>
                 </TableCell>
-                <TableCell sx={{ width: '25%' }}>
+                <TableCell sx={{ width: '10%' }}>
                   <Typography variant="h6" align="center">
                     Actions
                   </Typography>
