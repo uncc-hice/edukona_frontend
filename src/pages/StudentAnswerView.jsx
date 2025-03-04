@@ -19,6 +19,8 @@ const StudentAnswerView = () => {
   const [skipPowerUp, setSkipPowerUp] = useState(false);
   const [selectedAnswer, setSelectedAnswer] = useState('');
   const [skipped, setSkipped] = useState([]);
+  const [gradingStatus, setGradingStatus] = useState('not started');
+  const [gradingResponse, setGradingResponse] = useState({});
 
   const sid = localStorage.getItem('sid');
 
@@ -34,7 +36,7 @@ const StudentAnswerView = () => {
       setSelectedAnswer('');
     } else if (receivedData.type === 'quiz_ended') {
       setQuizEnded(true);
-      setLoading(false);
+      setLoading(true);
     } else if (receivedData.type === 'quiz_started') {
       setLoading(true);
     } else if (receivedData.type === 'skip_power_up_granted') {
@@ -74,22 +76,29 @@ const StudentAnswerView = () => {
     } else if (receivedData.message === 'User response created successfully') {
       setIsSubmitted(true);
       setSelectedAnswer(receivedData.selected_answer);
+    } else if (receivedData.type === 'grading_started') {
+      setGradingStatus('started');
+      setLoading(false);
+    } else if (receivedData.type === 'grading_completed') {
+      setGradingStatus('completed');
+      requestGrades();
+    } else if (receivedData.type === 'grade') {
+      setGradingResponse(receivedData);
     }
+  };
+
+  const requestGrades = () => {
+    sendMessage(
+      JSON.stringify({
+        type: 'request_grade',
+        id: sid,
+      })
+    );
   };
 
   const { sendMessage } = useStudentAnswerWebSocket(code, handleIncomingMessage);
 
   const handleSkipQuestion = () => {
-    console.log('Skipping question:', question.id);
-    console.log('Data Sent', {
-      type: 'skip_question',
-      data: {
-        student: { id: sid },
-        quiz_session_code: code,
-        question_id: question.id,
-      },
-    });
-
     sendMessage(
       JSON.stringify({
         type: 'skip_question',
@@ -113,7 +122,7 @@ const StudentAnswerView = () => {
           <Typography variant="h6">Waiting for instructor to start the quiz.</Typography>
         </Box>
       ) : quizEnded ? (
-        <QuizEndView />
+        <QuizEndView gradingStatus={gradingStatus} gradingResponse={gradingResponse} />
       ) : question && quizSession ? (
         <>
           <StudentAnswersGrid

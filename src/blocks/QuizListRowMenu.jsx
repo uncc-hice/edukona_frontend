@@ -9,6 +9,7 @@ import { startQuizSession } from '../services/apiService';
 
 const QuizListRowMenu = ({ quiz, numQuestions, deleteQuiz, onUpdate }) => {
   const [editTitleOpen, setEditTitleOpen] = useState(false);
+  const [actionsMenuOpen, setActionsMenuOpen] = useState(false);
   const navigate = useNavigate();
 
   const startQuiz = async (quizId) =>
@@ -26,17 +27,41 @@ const QuizListRowMenu = ({ quiz, numQuestions, deleteQuiz, onUpdate }) => {
   };
   return (
     <>
-      <GenericMenu title="Actions">
-        <MenuItem onClick={() => startQuiz(quiz.id)} disableRipple>
+      <GenericMenu title="Actions" isOpen={actionsMenuOpen} setIsOpen={setActionsMenuOpen}>
+        <MenuItem
+          onClick={() => {
+            startQuiz(quiz.id);
+            setActionsMenuOpen(false);
+          }}
+          disableRipple
+        >
           <PlayArrow /> Start Quiz
         </MenuItem>
-        <MenuItem onClick={() => setEditTitleOpen(true)} disableRipple>
+        <MenuItem
+          onClick={() => {
+            setEditTitleOpen(true);
+            setActionsMenuOpen(false);
+          }}
+          disableRipple
+        >
           <Edit /> Edit Title
         </MenuItem>
-        <MenuItem onClick={() => viewQuestions(quiz.id)}>
+        <MenuItem
+          onClick={() => {
+            viewQuestions(quiz.id);
+            setActionsMenuOpen(false);
+          }}
+          disableRipple
+        >
           <List /> View Questions ({numQuestions})
         </MenuItem>
-        <MenuItem onClick={() => deleteQuiz(quiz.id)} disableRipple>
+        <MenuItem
+          onClick={() => {
+            deleteQuiz(quiz.id);
+            setActionsMenuOpen(false);
+          }}
+          disableRipple
+        >
           <Delete /> Delete Quiz
         </MenuItem>
       </GenericMenu>

@@ -30,10 +30,8 @@ const InstructorQuestionView = () => {
         setQuizEnded(true);
         setCurrentQuestion(null);
       } else if (data.type === 'update_answers') {
-        console.log('Response data:', data.data);
         setResponseData(data.data);
       } else if (data.type === 'quiz_details') {
-        console.log('response data: ', data.data);
         setQuiz(data.quiz);
         setUserCount(data.user_count);
       }
