@@ -184,10 +184,15 @@ export const UserProvider = ({ children }: { children: React.ReactNode }) => {
 
   const timeUntilRefresh = () => {
     if (!accessToken) return 0;
-    const jwt = accessToken.split('.')[1];
-    const jwtPayload = JSON.parse(atob(jwt));
-    const now = new Date().getTime() / 1000;
-    return jwtPayload.exp - now; // seconds
+    try {
+      const jwt = accessToken.split('.')[1];
+      const jwtPayload = JSON.parse(atob(jwt));
+      const now = new Date().getTime() / 1000;
+      return jwtPayload.exp - now; // seconds
+    } catch (error) {
+      console.error('Failed to parse JWT', error);
+      return 0;
+    }
   };
 
   const validateToken = async (): Promise<boolean> => {

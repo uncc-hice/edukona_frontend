@@ -19,21 +19,26 @@ const useWebSocketWithTokenRefresh = (url: string, options: WebSocketOptions = {
   const { refreshTokens, timeUntilRefresh, validateToken } = useContext(UserContext);
 
   const conditionalRefresh = useCallback(() => {
-    if (tokenType === 'jwt') {
-      // Verify the token is not malformed and is still valid
-      const is_valid = validateToken();
-      if (!is_valid) {
-        refreshTokens();
-        return;
-      }
+    try {
+      if (tokenType === 'jwt') {
+        // Verify the token is not malformed and is still valid
+        const is_valid = validateToken();
+        if (!is_valid) {
+          refreshTokens();
+          return;
+        }
 
-      // Refresh the token if it is about to expire
-      const refreshThreshold = 60; // seconds
-      if (timeUntilRefresh() < refreshThreshold) {
-        refreshTokens();
+        // Refresh the token if it is about to expire
+        const refreshThreshold = 60; // seconds
+        if (timeUntilRefresh() < refreshThreshold) {
+          refreshTokens();
+        }
       }
+      setTokenVerified(true);
+    } catch (error) {
+      console.error('Error during token refresh:', error);
+      setTokenVerified(false);
     }
-    setTokenVerified(true);
   }, [tokenType, refreshTokens, timeUntilRefresh, validateToken]);
 
   useEffect(() => {

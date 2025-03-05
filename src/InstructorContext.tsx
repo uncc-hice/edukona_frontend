@@ -24,7 +24,10 @@ export const InstructorProvider = ({ children }: { children: ReactNode }) => {
   const { isLoggedIn: isLoggedInJWT } = useContext(UserContext);
   const { isLoggedIn: isLoggedInToken } = useContext(UserContextToken);
   const isLoggedIn = isLoggedInJWT || isLoggedInToken;
-  const fetchCourses = () => fetchInstructorCourses().then((res) => setCourses(res.data));
+  const fetchCourses = () =>
+    fetchInstructorCourses()
+      .then((res) => setCourses(res.data))
+      .catch((err) => console.error(err));
 
   useEffect(() => {
     if (isLoggedIn && courses === null) {
