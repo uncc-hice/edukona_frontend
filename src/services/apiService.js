@@ -249,3 +249,5 @@ export const fetchInstructorCourses = () => api.get(`instructor/get-courses/`);
 export const fetchRecordingsByCourse = (course_id) => api.get(`course/${course_id}/get-recordings/`);
 
 export const createCourse = (courseData) => api.post(`instructor/create-course/`, courseData);
+
+export const getTranscript = (recordingId) => api.get(`recordings/${recordingId}/get-transcript/`);

@@ -1,8 +1,9 @@
-import { Delete, Edit, Quiz, Summarize } from '@mui/icons-material';
+import { Delete, Download, Edit, Quiz, Summarize } from '@mui/icons-material';
 import { Divider, MenuItem } from '@mui/material';
 import { Fragment, useState } from 'react';
 import { toast } from 'react-toastify';
 import EditRecordingTitleDialog from '../pages/InstructorRecordings/Components/EditRecordingTitleDialog';
+import { getTranscript } from '../services/apiService';
 import { generateSummary } from '../services/lambdaService';
 import { Recording } from '../types/edukonaTypes';
 import DeleteRecordingDialog from './DeleteRecordingDialog';
@@ -37,6 +38,29 @@ const RecordingListRowMenu = (props: RecordingListRowMenuProps) => {
       .catch((err) => console.error(err));
   };
 
+  const handleGetTranscript = async () => {
+    try {
+      const transcriptResponse = await getTranscript(props.recording.id);
+      const transcriptBlob = new Blob([transcriptResponse.data.transcript], { type: 'text/plain' });
+
+      const transcriptFilename = '[Transcript] ' + (props.recording.title || 'Recording') + '.txt';
+
+      const downloadUrl = URL.createObjectURL(transcriptBlob);
+      const downloadLink = document.createElement('a');
+      downloadLink.href = downloadUrl;
+      downloadLink.download = transcriptFilename;
+
+      document.body.appendChild(downloadLink);
+      downloadLink.click();
+      document.body.removeChild(downloadLink);
+
+      URL.revokeObjectURL(downloadUrl);
+    } catch (err) {
+      console.error('Error getting transcript:', err);
+      toast.error('Failed to get transcript.');
+    }
+  };
+
   return (
     <Fragment>
       <GenericMenu isOpen={openMenu} setIsOpen={setOpenMenu} title="Actions">
@@ -57,6 +81,15 @@ const RecordingListRowMenu = (props: RecordingListRowMenuProps) => {
           disableRipple
         >
           <Summarize /> Generate Summary
+        </MenuItem>
+        <MenuItem
+          onClick={() => {
+            handleGetTranscript();
+            setOpenMenu(false);
+          }}
+          disableRipple
+        >
+          <Download /> Download Transcript
         </MenuItem>
         <Divider sx={{ my: 0.5 }} />
         <MenuItem
