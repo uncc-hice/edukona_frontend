@@ -22,7 +22,7 @@ interface UserContextType {
   logout: () => void;
   signUp: (data: SignUpFormData, navigate: NavigateFunction) => void;
   setAccessToken: (accessToken: string | null) => void;
-  googleLogin: (token: string, setError: SetErrorFunction, navigate: NavigateFunction) => void;
+  googleLogin: (token: string, role: string, setError: SetErrorFunction, navigate: NavigateFunction) => void;
   refreshTokens: () => void;
   timeUntilRefresh: () => number;
   validateToken: () => Promise<boolean>;
@@ -119,7 +119,12 @@ export const UserProvider = ({ children }: { children: React.ReactNode }) => {
       });
   };
 
-  const googleLogin = async (credential: string, setError: SetErrorFunction, navigate: NavigateFunction) => {
+  const googleLogin = async (
+    credential: string,
+    role: string,
+    setError: SetErrorFunction,
+    navigate: NavigateFunction
+  ) => {
     googleAuth(credential)
       .then((response: LoginResponse) => {
         setAccessToken(response.data.access);
