@@ -122,7 +122,7 @@ api.interceptors.response.use(
 export const login = (email, password) =>
   api.post('jwt-login/', { email, password }, { headers: { Authorization: '' } });
 export const JWTSignUpInstructor = (formData) => api.post('jwt-sign-up-instructor/', formData);
-export const googleAuth = (token) => api.post('auth/jwt-google/', { token });
+export const googleAuth = (token, role) => api.post('auth/', role !== null ? { token, role } : { token });
 export const logout = (refreshToken) => api.post('jwt-logout/', { refresh: refreshToken });
 export const createRecording = (formData) => api.post('recordings/create-recording/', formData);
 export const generateTemporaryCredentials = () => api.post('generate-temporary-credentials/');
