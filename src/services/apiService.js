@@ -62,31 +62,59 @@ api.interceptors.request.use(
 
 // Global error handler.
 // Can be used for sending data to our logging system in the future
+const handleAuthError = () => {
+  localStorage.removeItem('accessToken');
+  localStorage.removeItem('refreshToken');
+  window.location.href = '/jwt-login';
+};
+
+const isRefreshingToken = { value: false };
+
+export const refreshAccessTokenHelper = (refreshToken) => {
+  isRefreshingToken.value = true;
+  return api
+    .post('jwt-token/refresh/', { refresh: refreshToken }, { headers: { Authorization: '' } })
+    .then((res) => {
+      localStorage.setItem('accessToken', res.data.access);
+      localStorage.setItem('refreshToken', res.data.refresh);
+      return res;
+    })
+    .finally(() => {
+      isRefreshingToken.value = false;
+    });
+};
+
 api.interceptors.response.use(
   (res) => res,
   (err) => {
-    if (err.response && err.response.status === 401) {
-      if (jwtAccessToken !== null || localStorage.getItem('refreshToken') !== null) {
-        return refreshAccessToken(localStorage.getItem('refreshToken'))
+    // Check if error is 401 and not from the refresh endpoint itself
+    const isTokenRefreshRequest = err.config && err.config.url && err.config.url.includes('jwt-token/refresh');
+
+    if (err.response?.status === 401 && !isRefreshingToken.value && !isTokenRefreshRequest) {
+      const refreshToken = localStorage.getItem('refreshToken');
+
+      if (refreshToken) {
+        return refreshAccessTokenHelper(refreshToken)
           .then(() => {
-            jwtAccessToken = localStorage.getItem('accessToken');
+            // Retry original request with new token
             const request = err.config;
             request.headers['Authorization'] = `Bearer ${localStorage.getItem('accessToken')}`;
             return api(request);
           })
-          .catch((err) => {
-            console.error(`Could not refresh token: ${err}`);
-            localStorage.removeItem('accessToken');
-            localStorage.removeItem('refreshToken');
-            window.location.href = '/jwt-login';
-            return;
+          .catch(() => {
+            // Invalid refresh token, redirect to login
+            handleAuthError();
+            return Promise.reject(err);
           });
-      } else {
-        localStorage.removeItem('token');
-        window.location.href = '/login';
-        return;
       }
+
+      // No refresh token available
+      handleAuthError();
+    } else if (err.response?.status === 401) {
+      // Catch-all for other 401 errors
+      handleAuthError();
     }
+
     return Promise.reject(err);
   }
 );
@@ -221,3 +249,5 @@ export const fetchInstructorCourses = () => api.get(`instructor/get-courses/`);
 export const fetchRecordingsByCourse = (course_id) => api.get(`course/${course_id}/get-recordings/`);
 
 export const createCourse = (courseData) => api.post(`instructor/create-course/`, courseData);
+
+export const getTranscript = (recordingId) => api.get(`recordings/${recordingId}/get-transcript/`);
