@@ -27,7 +27,7 @@ const LoginForm: React.FC<LoginFormProps> = ({ signUpRoute }) => {
   const handleGoogleSuccess = async (response: CredentialResponse) => {
     if (response.credential) {
       console.log('Google login success:', response.credential);
-      googleLogin(response.credential, 'default', setError, navigate);
+      googleLogin(response.credential, null, setError, navigate);
     } else {
       handleGoogleError();
     }

@@ -114,7 +114,13 @@ const SignUpForm = () => {
             </form>
           </CardContent>
         </Card>
-        {error !== '' && <p style={styles.error}>{error}</p>}
+        {error !== '' && (
+          <Grid item xs={12}>
+            <Box display="flex" justifyContent="center">
+              <p style={styles.error}>{error}</p>
+            </Box>
+          </Grid>
+        )}
       </Grid>
     </Container>
   );

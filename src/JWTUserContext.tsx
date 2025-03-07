@@ -22,7 +22,7 @@ interface UserContextType {
   logout: () => void;
   signUp: (data: SignUpFormData, navigate: NavigateFunction) => void;
   setAccessToken: (accessToken: string | null) => void;
-  googleLogin: (token: string, role: string, setError: SetErrorFunction, navigate: NavigateFunction) => void;
+  googleLogin: (token: string, role: string | null, setError: SetErrorFunction, navigate: NavigateFunction) => void;
   refreshTokens: () => void;
   timeUntilRefresh: () => number;
   validateToken: () => Promise<boolean>;
@@ -99,14 +99,20 @@ export const UserProvider = ({ children }: { children: React.ReactNode }) => {
     }
   }, [accessToken]);
 
+  useEffect(() => {
+    localStorage.setItem('accessToken', accessToken || '');
+  }, [accessToken]);
+
+  useEffect(() => {
+    localStorage.setItem('refreshToken', refreshToken || '');
+  }, [refreshToken]);
+
   const login = async (username: string, password: string, setError: SetErrorFunction, navigate: NavigateFunction) => {
     apiLogin(username, password)
       .then((res: LoginResponse) => {
         setAccessToken(res.data.access);
         setRefreshToken(res.data.refresh);
         setUser(res.data.user);
-        localStorage.setItem('accessToken', res.data.access);
-        localStorage.setItem('refreshToken', res.data.refresh);
         localStorage.setItem('user', res.data.user.toString());
         navigate('/');
       })
@@ -121,11 +127,11 @@ export const UserProvider = ({ children }: { children: React.ReactNode }) => {
 
   const googleLogin = async (
     credential: string,
-    role: string,
+    role: string | null,
     setError: SetErrorFunction,
     navigate: NavigateFunction
   ) => {
-    googleAuth(credential)
+    googleAuth(credential, role)
       .then((response: LoginResponse) => {
         setAccessToken(response.data.access);
         setRefreshToken(response.data.refresh);
