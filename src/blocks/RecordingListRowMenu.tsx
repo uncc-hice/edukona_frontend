@@ -1,4 +1,4 @@
-import { Delete, Download, Edit, Quiz, Summarize } from '@mui/icons-material';
+import { Delete, Download, Edit, Quiz, Summarize, AirportShuttle } from '@mui/icons-material';
 import { Divider, MenuItem } from '@mui/material';
 import { Fragment, useState } from 'react';
 import { toast } from 'react-toastify';
@@ -100,6 +100,9 @@ const RecordingListRowMenu = (props: RecordingListRowMenuProps) => {
           disableRipple
         >
           <Edit /> Edit Title
+        </MenuItem>
+        <MenuItem disableRipple>
+          <AirportShuttle /> Move Recording
         </MenuItem>
         <MenuItem
           onClick={() => {
