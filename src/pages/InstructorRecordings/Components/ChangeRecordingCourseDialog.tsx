@@ -11,10 +11,9 @@ import {
   InputLabel,
   FormHelperText,
   Typography,
-  Box,
   CircularProgress,
 } from '@mui/material';
-import { useState, useEffect, useContext } from 'react';
+import React, { useState, useEffect, useContext, useMemo } from 'react';
 import { toast } from 'react-toastify';
 import CloseIcon from '@mui/icons-material/Close';
 import { InstructorContext } from '../../../InstructorContext';
@@ -36,9 +35,11 @@ const ChangeRecordingCourseDialog: React.FC<ChangeRecordingCourseDialogProps> = 
   onUpdate,
 }) => {
   const { courses } = useContext(InstructorContext);
-  const course_titles: { id: string; title: string }[] = courses
-    ? courses.filter((course) => course.id !== course_id).map((course) => ({ id: course.id, title: course.title }))
-    : [];
+  const course_titles = useMemo(() => {
+    return courses
+      ? courses.filter((course) => course.id !== course_id).map((course) => ({ id: course.id, title: course.title }))
+      : [];
+  }, [courses, course_id]);
   const [selectedCourseId, setSelectedCourseId] = useState('');
   const [isLoading, setIsLoading] = useState(false);
   const hasAvailableCourses = course_titles.length > 0;
