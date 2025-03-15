@@ -16,7 +16,6 @@ const StudentAnswerView = () => {
   const [loading, setLoading] = useState(true);
   const [isSubmitted, setIsSubmitted] = useState(false);
   const [quizEnded, setQuizEnded] = useState(false);
-  const [skipPowerUp, setSkipPowerUp] = useState(false);
   const [selectedAnswer, setSelectedAnswer] = useState('');
   const [gradingStatus, setGradingStatus] = useState('not started');
   const [gradingResponse, setGradingResponse] = useState({});
@@ -104,7 +103,7 @@ const StudentAnswerView = () => {
             setSelectedAnswer={setSelectedAnswer}
           />
           <Box textAlign="right" p={2}>
-            {skipPowerUp && !isSubmitted && (
+            {!isSubmitted && (
               <Button
                 variant="contained"
                 color="secondary"
