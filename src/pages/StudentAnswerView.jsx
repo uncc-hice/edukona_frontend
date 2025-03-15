@@ -102,18 +102,6 @@ const StudentAnswerView = () => {
             selectedAnswer={selectedAnswer}
             setSelectedAnswer={setSelectedAnswer}
           />
-          <Box textAlign="right" p={2}>
-            {!isSubmitted && (
-              <Button
-                variant="contained"
-                color="secondary"
-                onClick={handleSkipQuestion}
-                style={{ marginRight: '10px' }}
-              >
-                Skip Question
-              </Button>
-            )}
-          </Box>
         </>
       ) : (
         <>
