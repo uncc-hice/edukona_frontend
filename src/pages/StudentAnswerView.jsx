@@ -39,7 +39,9 @@ const StudentAnswerView = () => {
       setLoading(true);
     } else if (receivedData.type === 'quiz_started') {
       setLoading(true);
-    } else if (receivedData.type === 'skip_power_up_granted') {
+    }
+    // TODO: Remove the next two else ifs.
+    else if (receivedData.type === 'skip_power_up_granted') {
       setSkipPowerUp(true);
       Store.addNotification({
         title: 'Power Up Granted',
