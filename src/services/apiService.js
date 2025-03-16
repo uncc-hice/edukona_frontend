@@ -251,3 +251,6 @@ export const fetchRecordingsByCourse = (course_id) => api.get(`course/${course_i
 export const createCourse = (courseData) => api.post(`instructor/create-course/`, courseData);
 
 export const getTranscript = (recordingId) => api.get(`recordings/${recordingId}/get-transcript/`);
+
+export const moveRecordingToCourse = (recording_id, course_id) =>
+  api.patch(`recordings/${recording_id}/move-recording-to-course/`, { course_id: course_id });
