@@ -16,9 +16,7 @@ const StudentAnswerView = () => {
   const [loading, setLoading] = useState(true);
   const [isSubmitted, setIsSubmitted] = useState(false);
   const [quizEnded, setQuizEnded] = useState(false);
-  const [skipPowerUp, setSkipPowerUp] = useState(false);
   const [selectedAnswer, setSelectedAnswer] = useState('');
-  const [skipped, setSkipped] = useState([]);
   const [gradingStatus, setGradingStatus] = useState('not started');
   const [gradingResponse, setGradingResponse] = useState({});
 
@@ -39,38 +37,6 @@ const StudentAnswerView = () => {
       setLoading(true);
     } else if (receivedData.type === 'quiz_started') {
       setLoading(true);
-    } else if (receivedData.type === 'skip_power_up_granted') {
-      setSkipPowerUp(true);
-      Store.addNotification({
-        title: 'Power Up Granted',
-        message: "You've been granted the SKIP power up.",
-        type: 'success',
-        insert: 'top',
-        container: 'top-right',
-        animationIn: ['animate__animated', 'animate__fadeIn'],
-        animationOut: ['animate__animated', 'animate__fadeOut'],
-        dismiss: {
-          duration: 5000,
-          onScreen: true,
-        },
-      });
-    } else if (receivedData.type === 'skip_power_up_used') {
-      setSkipped([...skipped, question.id]);
-      setSkipPowerUp(false);
-      setIsSubmitted(true);
-      Store.addNotification({
-        title: 'Question Skipped',
-        message: 'You have skipped the current question.',
-        type: 'success',
-        insert: 'top',
-        container: 'top-right',
-        animationIn: ['animate__animated', 'animate__fadeIn'],
-        animationOut: ['animate__animated', 'animate__fadeOut'],
-        dismiss: {
-          duration: 5000,
-          onScreen: true,
-        },
-      });
     } else if (receivedData.type === 'question_locked') {
       toast.error('Could not submit answer: Question locked.', { theme });
     } else if (receivedData.message === 'User response created successfully') {
@@ -136,18 +102,6 @@ const StudentAnswerView = () => {
             selectedAnswer={selectedAnswer}
             setSelectedAnswer={setSelectedAnswer}
           />
-          <Box textAlign="right" p={2}>
-            {skipPowerUp && !isSubmitted && (
-              <Button
-                variant="contained"
-                color="secondary"
-                onClick={handleSkipQuestion}
-                style={{ marginRight: '10px' }}
-              >
-                Skip Question
-              </Button>
-            )}
-          </Box>
         </>
       ) : (
         <>
