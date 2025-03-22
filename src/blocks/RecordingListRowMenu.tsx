@@ -1,7 +1,8 @@
-import { Delete, Download, Edit, Quiz, Summarize } from '@mui/icons-material';
+import { Delete, Download, Edit, Quiz, Summarize, SwapHoriz } from '@mui/icons-material';
 import { Divider, MenuItem } from '@mui/material';
 import { Fragment, useState } from 'react';
 import { toast } from 'react-toastify';
+import ChangeRecordingCourseDialog from '../pages/InstructorRecordings/Components/ChangeRecordingCourseDialog';
 import EditRecordingTitleDialog from '../pages/InstructorRecordings/Components/EditRecordingTitleDialog';
 import { getTranscript } from '../services/apiService';
 import { generateSummary } from '../services/lambdaService';
@@ -20,6 +21,7 @@ const RecordingListRowMenu = (props: RecordingListRowMenuProps) => {
   const [createQuizOpen, setCreateQuizOpen] = useState(false);
   const [deleteOpen, setDeleteOpen] = useState(false);
   const [openMenu, setOpenMenu] = useState(false);
+  const [changeCourseOpen, setChangeCourseOpen] = useState(false);
 
   const handleGenerateSummary = () => {
     toast
@@ -103,6 +105,15 @@ const RecordingListRowMenu = (props: RecordingListRowMenuProps) => {
         </MenuItem>
         <MenuItem
           onClick={() => {
+            setChangeCourseOpen(true);
+            setOpenMenu(false);
+          }}
+          disableRipple
+        >
+          <SwapHoriz /> Change Course
+        </MenuItem>
+        <MenuItem
+          onClick={() => {
             setDeleteOpen(true);
             setOpenMenu(false);
           }}
@@ -124,6 +135,13 @@ const RecordingListRowMenu = (props: RecordingListRowMenuProps) => {
         recordingId={props.recording.id}
         onUpdate={props.onUpdate}
         currentTitle={props.recording.title}
+      />
+      <ChangeRecordingCourseDialog
+        open={changeCourseOpen}
+        setOpen={setChangeCourseOpen}
+        recording_id={props.recording.id}
+        course_id={props.recording.course_id}
+        onUpdate={props.onUpdate}
       />
     </Fragment>
   );

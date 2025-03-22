@@ -6,6 +6,7 @@ export interface Recording {
   instructor: string;
   transcript: string;
   duration: number;
+  course_id: string;
 }
 
 export interface Course {
