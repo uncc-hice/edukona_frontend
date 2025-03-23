@@ -6,7 +6,6 @@ import { alpha, useTheme } from '@mui/material/styles';
 import MenuIcon from '@mui/icons-material/Menu';
 import ThemeModeToggler from '../../../../components/ThemeModeToggler';
 import { UserContext } from '../../../../UserContext';
-import { UserContext as JWTUserContext } from '../../../../JWTUserContext';
 import { useLocation } from 'react-router-dom';
 import CourseDropdown from '../../../../components/CourseDropdown';
 
@@ -16,17 +15,10 @@ const Topbar = ({ onSidebarOpen }) => {
   const { pathname } = useLocation();
   console.log(pathname);
 
-  const { isLoggedIn: isLoggedInToken, logout: logoutToken } = useContext(UserContext);
-  const { isLoggedIn: isLoggedInJWT, logout: logoutJWT } = useContext(JWTUserContext);
-
-  const isLoggedIn = isLoggedInJWT || isLoggedInToken;
+  const { isLoggedIn, logout } = useContext(UserContext);
 
   const handleLogout = () => {
-    if (isLoggedInJWT) {
-      logoutJWT();
-    } else {
-      logoutToken();
-    }
+    logout();
   };
 
   return (

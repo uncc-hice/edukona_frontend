@@ -3,18 +3,15 @@ import './index.css';
 import App from './App';
 import reportWebVitals from './reportWebVitals';
 import { UserProvider } from './UserContext';
-import { UserProvider as JWTUserProvider } from './JWTUserContext';
 import { InstructorProvider } from './InstructorContext';
 
 const root = ReactDOM.createRoot(document.getElementById('root'));
 root.render(
-  <JWTUserProvider>
-    <UserProvider>
-      <InstructorProvider>
-        <App />
-      </InstructorProvider>
-    </UserProvider>
-  </JWTUserProvider>
+  <UserProvider>
+    <InstructorProvider>
+      <App />
+    </InstructorProvider>
+  </UserProvider>
 );
 
 // If you want to start measuring performance in your app, pass a function

@@ -1,17 +1,11 @@
 import axios from 'axios';
 import { refreshAccessToken } from './apiService';
 
-const token = localStorage.getItem('token');
-const jwtAccessToken = localStorage.getItem('accessToken');
+const accessToken = localStorage.getItem('accessToken');
 
 const getAuthHeader = () => {
-  if (jwtAccessToken !== null) {
-    return `Bearer ${jwtAccessToken}`;
-  } else if (token !== null) {
-    return `Token ${token}`;
-  } else {
-    return '';
-  }
+  if (accessToken !== null) return `Bearer ${accessToken}`;
+  return '';
 };
 
 const topupTokenAndRun = (promise) => {

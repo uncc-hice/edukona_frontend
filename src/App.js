@@ -10,7 +10,6 @@ import LoginForm from './blocks/LoginForm';
 import SignUpForm from './blocks/SignUpForm';
 import QuizSession from './pages/QuizSession';
 import StudentDashboard from './pages/StudentDashboard';
-import InstructorDashboard from './pages/InstructorDashboard';
 import QuizSessionResults from './pages/QuizSessionResults';
 import CreateQuiz from './pages/CreateQuiz';
 import EditQuizView from './pages/EditQuizView';
@@ -31,15 +30,9 @@ import Team from './pages/Team/Team';
 import General from './pages/ProfilePage/General';
 import Security from './pages/ProfilePage/Security';
 import Summary from './pages/Summary';
-import JWTLoginForm from './blocks/JWTLoginForm';
-import { UserContext as JWTUserContext } from './JWTUserContext';
-import JWTSignUpForm from './blocks/JWTSignUpForm';
 
 function App() {
-  const { isLoggedIn: isLoggedInToken } = useContext(UserContext);
-  const { isLoggedIn: isLoggedInJWT } = useContext(JWTUserContext);
-  // This is temporary to allow for testing until we have moved to using JWT based auth across the app.
-  const isLoggedIn = isLoggedInToken || isLoggedInJWT;
+  const { isLoggedIn } = useContext(UserContext);
 
   useEffect(() => {
     const gaMeasurementId = process.env.REACT_APP_GA_MEASUREMENT_ID;
@@ -65,15 +58,10 @@ function App() {
           <Route path="/student-dashboard" element={isLoggedIn ? <StudentDashboard /> : <Navigate to="/login" />} />
           <Route path="/join" element={<JoinQuiz />} />
           <Route path="/" element={<Landing />} />
+          <Route path="/signup" element={isLoggedIn ? <Navigate to="/dashboard" /> : <SignUpForm />} />
           <Route
             path="/login"
-            element={isLoggedIn ? <Navigate to="/dashboard" /> : <LoginForm signUpRoute={'/signup'} />}
-          />
-          <Route path="/signup" element={isLoggedIn ? <Navigate to="/" /> : <SignUpForm />} />
-          <Route path="/jwt-signup" element={isLoggedIn ? <Navigate to="/" /> : <JWTSignUpForm />} />
-          <Route
-            path="/jwt-login"
-            element={isLoggedIn ? <Navigate to="/" /> : <JWTLoginForm signUpRoute={'/jwt-signup'} />}
+            element={isLoggedIn ? <Navigate to="/login" /> : <LoginForm signUpRoute={'/signup'} />}
           />
           <Route path="/session/:code" element={isLoggedIn ? <QuizSession /> : <Navigate to="/" />} />
           <Route path="/results/:code" element={isLoggedIn ? <QuizSessionResults /> : <Navigate to="/" />} />

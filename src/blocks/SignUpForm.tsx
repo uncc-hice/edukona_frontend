@@ -1,5 +1,5 @@
 import React, { useState, ChangeEvent, FormEvent, useContext } from 'react';
-import { UserContext } from '../JWTUserContext';
+import { UserContext } from '../UserContext';
 import { TextField, Button, Typography, Container, Grid, Tabs, Tab } from '@mui/material';
 import { Link, useNavigate } from 'react-router-dom';
 import { Footer } from '../layouts/Main/components';
