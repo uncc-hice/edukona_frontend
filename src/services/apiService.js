@@ -1,6 +1,5 @@
 import axios from 'axios';
 import useWebSocketWithTokenRefresh from '../hooks/useWebSocketWithTokenRefresh';
-const token = localStorage.getItem('token');
 let jwtAccessToken = localStorage.getItem('accessToken');
 const base = 'https://api.edukona.com/';
 
@@ -23,13 +22,8 @@ const verifyAccessToken = async () => {
  * @returns {Promise<string>} The value to use for the Authorization header.
  */
 const getAuthHeader = async () => {
-  if (jwtAccessToken !== null) {
-    return `Bearer ${jwtAccessToken}`;
-  } else if (token !== null) {
-    return `Token ${token}`;
-  } else {
-    return '';
-  }
+  if (jwtAccessToken !== null) return `Bearer ${jwtAccessToken}`;
+  return '';
 };
 
 const api = axios.create({
@@ -50,8 +44,6 @@ api.interceptors.request.use(
     const latestAccessToken = localStorage.getItem('accessToken');
     if (latestAccessToken) {
       config.headers['Authorization'] = `Bearer ${latestAccessToken}`;
-    } else if (token) {
-      config.headers['Authorization'] = `Token ${token}`;
     }
     return config;
   },
@@ -65,7 +57,7 @@ api.interceptors.request.use(
 const handleAuthError = () => {
   localStorage.removeItem('accessToken');
   localStorage.removeItem('refreshToken');
-  window.location.href = '/jwt-login';
+  window.location.href = '/login';
 };
 
 const isRefreshingToken = { value: false };
@@ -188,7 +180,7 @@ export const updateQuizTitle = (quizId, title) =>
     { title: title },
     {
       headers: {
-        Authorization: `Token ${token}`,
+        Authorization: `Bearer ${localStorage.getItem('accessToken')}`,
       },
     }
   );
