@@ -1,5 +1,5 @@
 import { Delete, EditNote, Save, Undo } from '@mui/icons-material';
-import { Box, Button, FormControl, Grid, Paper, TextField } from '@mui/material';
+import { Box, Button, FormControl, Grid, Paper, TextField, Divider } from '@mui/material';
 import { useEffect, useState } from 'react';
 import { toast } from 'react-toastify';
 import DeleteQuestionDialog from './DeleteQuestionDialog';
@@ -44,7 +44,7 @@ const EditableQuestion = ({ question, token, onUpdate }) => {
       <Paper style={{ padding: '20px', margin: '15px' }} component={'form'} onSubmit={(e) => handleSave(e)}>
         <Grid container spacing={2}>
           <Grid item xs={10}>
-            <FormControl>
+            <FormControl fullWidth>
               <TextField
                 id={'question_text'}
                 name={'question_text'}
@@ -73,7 +73,7 @@ const EditableQuestion = ({ question, token, onUpdate }) => {
             </FormControl>
           </Grid>
           <Grid item xs={12}>
-            <FormControl>
+            <FormControl fullWidth>
               <TextField
                 id={'correct_answer'}
                 name={'correct_answer'}
@@ -88,10 +88,12 @@ const EditableQuestion = ({ question, token, onUpdate }) => {
           </Grid>
           {questionData.incorrect_answer_list.map((incorrectAnswer, idx) => (
             <Grid item container key={idx} xs={12} spacing={2}>
-              <Grid item xs={6}>
-                <FormControl>
+              <Grid item xs={12}>
+                <Divider />
+              </Grid>
+              <Grid item xs={12} md={6}>
+                <FormControl fullWidth>
                   <TextField
-                    key={`answer-${idx}`}
                     id={`answer-${idx}`}
                     label={'Answer'}
                     name={`answer-${idx}`}
@@ -103,10 +105,9 @@ const EditableQuestion = ({ question, token, onUpdate }) => {
                   />
                 </FormControl>
               </Grid>
-              <Grid item xs={6}>
-                <FormControl>
+              <Grid item xs={12} md={6}>
+                <FormControl fullWidth>
                   <TextField
-                    key={`feedback-${idx}`}
                     id={`feedback-${idx}`}
                     label={'Feedback'}
                     name={`feedback-${idx}`}
