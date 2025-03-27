@@ -78,7 +78,7 @@ export const UserProvider = ({ children }: { children: React.ReactNode }) => {
   const [accessToken, setAccessToken] = useState<string | null>(localStorage.getItem('accessToken'));
   const [refreshToken, setRefreshToken] = useState<string | null>(localStorage.getItem('refreshToken'));
 
-  const [isLoggedIn, setIsLoggedIn] = useState(!(accessToken === null));
+  const [isLoggedIn, setIsLoggedIn] = useState(!!accessToken);
   const [user, setUser] = useState<number | null>(getUserLocalStorage());
 
   const reset = () => {
@@ -92,19 +92,20 @@ export const UserProvider = ({ children }: { children: React.ReactNode }) => {
   };
 
   useEffect(() => {
-    if (accessToken === null) {
-      reset();
-    } else {
+    if (accessToken) {
+      localStorage.setItem('accessToken', accessToken);
       setIsLoggedIn(true);
+    } else {
+      reset();
     }
   }, [accessToken]);
 
   useEffect(() => {
-    localStorage.setItem('accessToken', accessToken || '');
-  }, [accessToken]);
-
-  useEffect(() => {
-    localStorage.setItem('refreshToken', refreshToken || '');
+    if (refreshToken) {
+      localStorage.setItem('refreshToken', refreshToken);
+    } else {
+      localStorage.removeItem('refreshToken');
+    }
   }, [refreshToken]);
 
   const login = async (username: string, password: string, setError: SetErrorFunction, navigate: NavigateFunction) => {
