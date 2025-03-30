@@ -254,3 +254,11 @@ export const getTranscript = (recordingId) => api.get(`recordings/${recordingId}
 
 export const moveRecordingToCourse = (recording_id, course_id) =>
   api.patch(`recordings/${recording_id}/move-recording-to-course/`, { course_id: course_id });
+
+const downloadApi = axios.create({
+  baseURL: base,
+  headers: { Authorization: await getAuthHeader() },
+});
+
+export const downloadRecording = (recordingId) =>
+  downloadApi.get(`recordings/${recordingId}/download-recording/`, { responseType: 'blob' });
