@@ -1,10 +1,11 @@
 import { Delete, Download, Edit, Quiz, Summarize, SwapHoriz } from '@mui/icons-material';
+import MusicVideoIcon from '@mui/icons-material/MusicVideo';
 import { Divider, MenuItem } from '@mui/material';
-import { Fragment, useState } from 'react';
+import { Fragment, useEffect, useState } from 'react';
 import { toast } from 'react-toastify';
 import ChangeRecordingCourseDialog from '../pages/InstructorRecordings/Components/ChangeRecordingCourseDialog';
 import EditRecordingTitleDialog from '../pages/InstructorRecordings/Components/EditRecordingTitleDialog';
-import { getTranscript } from '../services/apiService';
+import { getTranscript, downloadRecording } from '../services/apiService';
 import { generateSummary } from '../services/lambdaService';
 import { Recording } from '../types/edukonaTypes';
 import DeleteRecordingDialog from './DeleteRecordingDialog';
@@ -63,6 +64,35 @@ const RecordingListRowMenu = (props: RecordingListRowMenuProps) => {
     }
   };
 
+  const handleDownloadRecording = async () => {
+    const theme = localStorage.getItem('themeMode') || 'light';
+    try {
+      toast.loading('Downloading...', { autoClose: false, toastId: 'download-toast', theme });
+
+      const recordingResponse = await downloadRecording(props.recording.id);
+      const recordingBlob = recordingResponse.data;
+      const extension = recordingResponse.headers?.['content-type']?.split('/')[1] || 'webm';
+      const recordingFilename = '[Recording] ' + (props.recording.title || 'Recording') + '.' + extension;
+
+      const downloadUrl = URL.createObjectURL(recordingBlob);
+      const downloadLink = document.createElement('a');
+      downloadLink.href = downloadUrl;
+      downloadLink.download = recordingFilename;
+
+      document.body.appendChild(downloadLink);
+      downloadLink.click();
+      document.body.removeChild(downloadLink);
+
+      URL.revokeObjectURL(downloadUrl);
+      toast.dismiss('download-toast');
+      toast.success('Download complete!', { theme });
+    } catch (err) {
+      console.error('Error downloading recording:', err);
+      toast.dismiss('download-toast');
+      toast.error('Failed to download recording.', { theme });
+    }
+  };
+
   return (
     <Fragment>
       <GenericMenu isOpen={openMenu} setIsOpen={setOpenMenu} title="Actions">
@@ -92,6 +122,15 @@ const RecordingListRowMenu = (props: RecordingListRowMenuProps) => {
           disableRipple
         >
           <Download /> Download Transcript
+        </MenuItem>
+        <MenuItem
+          onClick={() => {
+            handleDownloadRecording();
+            setOpenMenu(false);
+          }}
+          disableRipple
+        >
+          <MusicVideoIcon /> Download Recording
         </MenuItem>
         <Divider sx={{ my: 0.5 }} />
         <MenuItem
