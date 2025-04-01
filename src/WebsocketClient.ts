@@ -15,6 +15,21 @@ interface WebsocketClientOptions {
   errorHandler?: (error: Error) => void;
   reconnect?: boolean;
   debug?: boolean;
+  maxReconnectAttempts?: number;
+  reconnectBackoffFactor?: number;
+  reconnectDelay?: number;
+}
+
+class WebSocketError extends Error {
+  public event: Event;
+  public connectionState: ConnectionState;
+
+  constructor(message: string, event: Event, connectionState: ConnectionState) {
+    super(message);
+    this.event = event;
+    this.connectionState = connectionState;
+    Object.setPrototypeOf(this, WebSocketError.prototype);
+  }
 }
 
 class WebSocketClient {
@@ -46,9 +61,9 @@ class WebSocketClient {
     this.reconnect = options.reconnect ?? false;
     this.debug = options.debug ?? false;
 
-    this.maxReconnectAttempts = 5;
-    this.reconnectBackoffFactor = 1.5;
-    this.reconnectDelay = 100;
+    this.maxReconnectAttempts = options.maxReconnectAttempts ?? 5;
+    this.reconnectBackoffFactor = options.reconnectBackoffFactor ?? 1.5;
+    this.reconnectDelay = options.reconnectDelay ?? 100;
   }
 
   private attemptReconnect(): void {
@@ -98,8 +113,8 @@ class WebSocketClient {
   }
 
   private handleError(event: Event): void {
-    this.log('WebSocket error occurred', event);
-    this.errorHandler(new Error('WebSocket error'));
+    const error = new WebSocketError(`WebSocket error (state: ${this.connectionState})`, event, this.connectionState);
+    this.errorHandler(error);
   }
 
   private handleMessage(event: MessageEvent): void {
