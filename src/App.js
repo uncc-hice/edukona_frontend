@@ -32,12 +32,13 @@ import General from './pages/ProfilePage/General';
 import Security from './pages/ProfilePage/Security';
 import Summary from './pages/Summary';
 import JWTLoginForm from './blocks/JWTLoginForm';
-import { UserContext as JWTUserContext } from './JWTUserContext';
+import { UserContext as JWTUserContext, Role } from './JWTUserContext';
 import JWTSignUpForm from './blocks/JWTSignUpForm';
+import JoinQuizStudent from './pages/JoinQuizStudent';
 
 function App() {
   const { isLoggedIn: isLoggedInToken } = useContext(UserContext);
-  const { isLoggedIn: isLoggedInJWT } = useContext(JWTUserContext);
+  const { isLoggedIn: isLoggedInJWT, getRole } = useContext(JWTUserContext);
   // This is temporary to allow for testing until we have moved to using JWT based auth across the app.
   const isLoggedIn = isLoggedInToken || isLoggedInJWT;
 
@@ -63,7 +64,7 @@ function App() {
         <ReactNotifications />
         <Routes>
           <Route path="/student-dashboard" element={isLoggedIn ? <StudentDashboard /> : <Navigate to="/login" />} />
-          <Route path="/join" element={<JoinQuiz />} />
+          <Route path="/join" element={getRole() === Role.STUDENT ? <JoinQuizStudent /> : <JoinQuiz />} />
           <Route path="/" element={<Landing />} />
           <Route
             path="/login"
