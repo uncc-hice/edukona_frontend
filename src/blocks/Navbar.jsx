@@ -1,12 +1,12 @@
 import React from 'react';
 import { AppBar, Toolbar, Typography, Button } from '@mui/material';
 import { useNavigate } from 'react-router-dom';
-import { UserContext as JWTUserContext } from '../JWTUserContext';
+import { UserContext } from '../UserContext';
 import { useContext } from 'react';
 
 const Navbar = () => {
   const navigate = useNavigate();
-  const { logout: JWTLogout } = useContext(JWTUserContext);
+  const { logout: contextLogout } = useContext(UserContext);
 
   const home = () => {
     navigate('/');
@@ -15,7 +15,7 @@ const Navbar = () => {
     localStorage.removeItem('token');
     localStorage.removeItem('user');
     localStorage.removeItem('instructor');
-    JWTLogout();
+    contextLogout();
     window.location.reload();
   };
 
