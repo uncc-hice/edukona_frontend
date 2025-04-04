@@ -1,7 +1,7 @@
 import { useCallback, useEffect, useState } from 'react';
 import useWebSocket from 'react-use-websocket';
 import { useContext } from 'react';
-import { UserContext } from '../JWTUserContext';
+import { UserContext } from '../UserContext';
 
 interface WebSocketOptions {
   onOpen?: (event: Event) => void;
@@ -14,53 +14,39 @@ interface WebSocketOptions {
 
 const useWebSocketWithTokenRefresh = (url: string, options: WebSocketOptions = {}) => {
   const { onOpen, onClose, onError, onMessage, shouldReconnect, ...restOptions } = options;
-  const [tokenType, setTokenType] = useState<string>('');
   const [tokenVerified, setTokenVerified] = useState<boolean>(false);
   const { refreshTokens, timeUntilRefresh, validateToken } = useContext(UserContext);
 
   const conditionalRefresh = useCallback(() => {
     try {
-      if (tokenType === 'jwt') {
-        // Verify the token is not malformed and is still valid
-        const is_valid = validateToken();
-        if (!is_valid) {
-          refreshTokens();
-          return;
-        }
+      // Verify the token is not malformed and is still valid
+      const is_valid = validateToken();
+      if (!is_valid) {
+        refreshTokens();
+        return;
+      }
 
-        // Refresh the token if it is about to expire
-        const refreshThreshold = 60; // seconds
-        if (timeUntilRefresh() < refreshThreshold) {
-          refreshTokens();
-        }
+      // Refresh the token if it is about to expire
+      const refreshThreshold = 60; // seconds
+      if (timeUntilRefresh() < refreshThreshold) {
+        refreshTokens();
       }
       setTokenVerified(true);
     } catch (error) {
       console.error('Error during token refresh:', error);
       setTokenVerified(false);
     }
-  }, [tokenType, refreshTokens, timeUntilRefresh, validateToken]);
+  }, [refreshTokens, timeUntilRefresh, validateToken]);
 
   useEffect(() => {
-    if (localStorage.getItem('accessToken') !== null) {
-      setTokenType('jwt');
-    } else if (localStorage.getItem('token') !== null) {
-      setTokenType('token');
-    } else {
-      setTokenType('');
-    }
-
     conditionalRefresh();
   }, [conditionalRefresh]);
 
   const getWebSocketAuth = () => {
-    if (tokenType === 'jwt') {
-      return `?jwt=${localStorage.getItem('accessToken')}`;
-    } else if (tokenType === 'token') {
-      return `?token=${localStorage.getItem('token')}`;
-    } else {
+    if (!localStorage.getItem('accessToken')) {
       return '';
     }
+    return `?jwt=${localStorage.getItem('accessToken')}`;
   };
 
   const composeURL = () => {

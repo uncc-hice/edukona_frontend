@@ -14,7 +14,7 @@ import { Box } from '@mui/system';
 import { CredentialResponse, GoogleLogin, GoogleOAuthProvider } from '@react-oauth/google';
 import React, { useContext, useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { UserContext } from '../JWTUserContext';
+import { UserContext } from '../UserContext';
 
 const SignUpForm = () => {
   const [role, setRole] = useState('');
