@@ -22,7 +22,7 @@ interface UserContextType {
   logout: () => void;
   signUp: (data: SignUpFormData, navigate: NavigateFunction) => void;
   setAccessToken: (accessToken: string | null) => void;
-  googleLogin: (token: string, setError: SetErrorFunction, navigate: NavigateFunction) => void;
+  googleLogin: (token: string, role: string | null, setError: SetErrorFunction, navigate: NavigateFunction) => void;
   refreshTokens: () => void;
   timeUntilRefresh: () => number;
   validateToken: () => Promise<boolean>;
@@ -78,7 +78,7 @@ export const UserProvider = ({ children }: { children: React.ReactNode }) => {
   const [accessToken, setAccessToken] = useState<string | null>(localStorage.getItem('accessToken'));
   const [refreshToken, setRefreshToken] = useState<string | null>(localStorage.getItem('refreshToken'));
 
-  const [isLoggedIn, setIsLoggedIn] = useState(!(accessToken === null));
+  const [isLoggedIn, setIsLoggedIn] = useState(!!accessToken);
   const [user, setUser] = useState<number | null>(getUserLocalStorage());
 
   const reset = () => {
@@ -92,12 +92,21 @@ export const UserProvider = ({ children }: { children: React.ReactNode }) => {
   };
 
   useEffect(() => {
-    if (accessToken === null) {
-      reset();
-    } else {
+    if (accessToken) {
+      localStorage.setItem('accessToken', accessToken);
       setIsLoggedIn(true);
+    } else {
+      reset();
     }
   }, [accessToken]);
+
+  useEffect(() => {
+    if (refreshToken) {
+      localStorage.setItem('refreshToken', refreshToken);
+    } else {
+      localStorage.removeItem('refreshToken');
+    }
+  }, [refreshToken]);
 
   const login = async (username: string, password: string, setError: SetErrorFunction, navigate: NavigateFunction) => {
     apiLogin(username, password)
@@ -105,8 +114,6 @@ export const UserProvider = ({ children }: { children: React.ReactNode }) => {
         setAccessToken(res.data.access);
         setRefreshToken(res.data.refresh);
         setUser(res.data.user);
-        localStorage.setItem('accessToken', res.data.access);
-        localStorage.setItem('refreshToken', res.data.refresh);
         localStorage.setItem('user', res.data.user.toString());
         navigate('/');
       })
@@ -119,8 +126,13 @@ export const UserProvider = ({ children }: { children: React.ReactNode }) => {
       });
   };
 
-  const googleLogin = async (credential: string, setError: SetErrorFunction, navigate: NavigateFunction) => {
-    googleAuth(credential)
+  const googleLogin = async (
+    credential: string,
+    role: string | null,
+    setError: SetErrorFunction,
+    navigate: NavigateFunction
+  ) => {
+    googleAuth(credential, role)
       .then((response: LoginResponse) => {
         setAccessToken(response.data.access);
         setRefreshToken(response.data.refresh);
