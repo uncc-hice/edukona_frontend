@@ -2,7 +2,7 @@ import React, { useContext, useState, FormEvent, ChangeEvent } from 'react';
 import { TextField, Button, Typography, Container, Grid } from '@mui/material';
 import { GoogleOAuthProvider, GoogleLogin, CredentialResponse } from '@react-oauth/google';
 import { useNavigate } from 'react-router-dom';
-import { UserContext } from '../JWTUserContext';
+import { UserContext } from '../UserContext';
 import { Box } from '@mui/system';
 
 interface LoginFormProps {

@@ -1,6 +1,5 @@
 import { createContext, ReactNode, useContext, useEffect, useState } from 'react';
-import { UserContext } from './JWTUserContext';
-import { UserContext as UserContextToken } from './UserContext';
+import { UserContext } from './UserContext';
 import { Course } from './types/edukonaTypes';
 import { fetchInstructorCourses } from './services/apiService';
 
@@ -21,9 +20,7 @@ export const InstructorContext = createContext<InstructorContextType>({
 export const InstructorProvider = ({ children }: { children: ReactNode }) => {
   const [courses, setCourses] = useState<Course[] | null>(null);
   const [activeCourse, setActiveCourse] = useState<Course | null>(null);
-  const { isLoggedIn: isLoggedInJWT } = useContext(UserContext);
-  const { isLoggedIn: isLoggedInToken } = useContext(UserContextToken);
-  const isLoggedIn = isLoggedInJWT || isLoggedInToken;
+  const { isLoggedIn } = useContext(UserContext);
   const fetchCourses = () =>
     fetchInstructorCourses()
       .then((res) => setCourses(res.data))
