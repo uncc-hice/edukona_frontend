@@ -46,10 +46,6 @@ const QuizSession = () => {
   const options = { reconnect: true, debug: true };
   const client = new WebSocketClient(`quiz-session-instructor/${code}/`, handleIncomingMessage, options);
 
-  useEffect(() => {
-    console.log(client.connectionState);
-  }, [client.connectionState]);
-
   const onDelete = (username) => {
     console.log(`Sending delete for username: ${username}`);
     client.send({ type: 'delete_student', username: username });

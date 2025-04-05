@@ -37,7 +37,6 @@ class WebSocketError extends Error {
 export class WebSocketClient {
   private url: string;
   private ws: WebSocket | null = null;
-
   private errorHandler: (error: Error) => void;
   private messageHandler: (message: Message) => void;
 
@@ -93,7 +92,6 @@ export class WebSocketClient {
       this.connectionState = ConnectionState.CONNECTING;
 
       this.ws = new WebSocket(this.url);
-
       this.ws.onopen = this.handleOpen.bind(this);
       this.ws.onmessage = this.handleMessage.bind(this);
       this.ws.onerror = this.handleError.bind(this);
@@ -107,12 +105,8 @@ export class WebSocketClient {
   private handleClose(event: CloseEvent): void {
     this.log(`Connection closed: ${event.code} ${event.reason}`);
     this.connectionState = ConnectionState.CLOSED;
-
     this.onCloseCallbacks.forEach((callback) => callback(event));
-
-    if (this.reconnect) {
-      this.attemptReconnect();
-    }
+    if (this.reconnect) this.attemptReconnect();
   }
 
   private handleError(event: Event): void {
@@ -123,9 +117,7 @@ export class WebSocketClient {
   private handleMessage(event: MessageEvent): void {
     try {
       const message = typeof event.data === 'string' ? JSON.parse(event.data) : event.data;
-
       if (!message.type) throw new Error('Invalid message format: missing type');
-
       // temporary fix as existing handlers expect the event itself.
       this.messageHandler(event);
     } catch (error) {
@@ -137,7 +129,6 @@ export class WebSocketClient {
     this.log('Connection established');
     this.connectionState = ConnectionState.OPEN;
     this.reconnectAttempts = 0;
-
     this.onOpenCallbacks.forEach((callback) => callback());
   }
 
