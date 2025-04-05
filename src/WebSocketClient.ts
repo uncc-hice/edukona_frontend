@@ -1,3 +1,5 @@
+import { getWebSocketUrl } from './services/apiService';
+
 enum ConnectionState {
   CONNECTING = 'connecting',
   OPEN = 'open',
@@ -8,7 +10,7 @@ enum ConnectionState {
 
 interface Message {
   type: string;
-  data: any;
+  [key: string]: any;
 }
 
 interface WebsocketClientOptions {
@@ -32,7 +34,7 @@ class WebSocketError extends Error {
   }
 }
 
-class WebSocketClient {
+export class WebSocketClient {
   private url: string;
   private ws: WebSocket | null = null;
 
@@ -47,14 +49,14 @@ class WebSocketClient {
   private reconnectDelay: number;
 
   // State
-  private connectionState: ConnectionState = ConnectionState.CLOSED;
+  public connectionState: ConnectionState = ConnectionState.CLOSED;
   private reconnectAttempts = 0;
 
   private onOpenCallbacks: (() => void)[] = [];
   private onCloseCallbacks: ((event: CloseEvent) => void)[] = [];
 
   constructor(url: string, messageHandler: (message: Message) => void, options: WebsocketClientOptions = {}) {
-    this.url = url;
+    this.url = getWebSocketUrl(url);
     this.messageHandler = messageHandler;
 
     this.errorHandler = options.errorHandler || ((err: Error) => console.error('WebSocket error:', err));
@@ -64,6 +66,7 @@ class WebSocketClient {
     this.maxReconnectAttempts = options.maxReconnectAttempts ?? 5;
     this.reconnectBackoffFactor = options.reconnectBackoffFactor ?? 1.5;
     this.reconnectDelay = options.reconnectDelay ?? 100;
+    this.connect();
   }
 
   private attemptReconnect(): void {
@@ -123,7 +126,8 @@ class WebSocketClient {
 
       if (!message.type) throw new Error('Invalid message format: missing type');
 
-      this.messageHandler(message);
+      // temporary fix as existing handlers expect the event itself.
+      this.messageHandler(event);
     } catch (error) {
       this.errorHandler(error instanceof Error ? error : new Error(String(error)));
     }
@@ -141,5 +145,45 @@ class WebSocketClient {
     if (this.debug) {
       console.log(`[WebSocketClient][${new Date().toISOString()}]`, ...args);
     }
+  }
+
+  public send(message: Message): boolean {
+    if (this.connectionState !== ConnectionState.OPEN || !this.ws) {
+      this.log('Cannot send message - connection not open');
+      return false;
+    }
+
+    try {
+      this.ws.send(JSON.stringify(message));
+      return true;
+    } catch (error) {
+      this.errorHandler(error instanceof Error ? error : new Error(String(error)));
+      return false;
+    }
+  }
+
+  public close(code: number = 1000, reason: string = 'Normal closure'): void {
+    if (!this.ws || this.connectionState === ConnectionState.CLOSED) {
+      this.log('Connection already closed');
+      return;
+    }
+
+    this.reconnect = false;
+    this.connectionState = ConnectionState.CLOSING;
+    this.log(`Closing connection: ${code} ${reason}`);
+
+    try {
+      this.ws.close(code, reason);
+    } catch (error) {
+      this.errorHandler(error instanceof Error ? error : new Error(String(error)));
+
+      // Force cleanup if there was an error
+      this.ws = null;
+      this.connectionState = ConnectionState.CLOSED;
+    }
+  }
+
+  public getState(): ConnectionState {
+    return this.connectionState;
   }
 }
