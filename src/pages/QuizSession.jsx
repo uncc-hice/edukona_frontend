@@ -5,8 +5,9 @@ import { useNavigate, useParams } from 'react-router-dom';
 import StudentGrid from '../blocks/StudentGrid.jsx';
 import Main from '../layouts/Main';
 import { getStudentsForQuizSession, useQuizSessionWebSocket } from '../services/apiService.js';
+import { WebSocketClient } from '../WebSocketClient';
 
-const fetchStudents = async (code, token) => {
+const fetchStudents = async (code) => {
   const response = await getStudentsForQuizSession(code);
   if (!response.ok) {
     throw new Error('Failed to fetch');
@@ -20,10 +21,9 @@ const QuizSession = () => {
   const [students, setStudents] = useState([]);
 
   useEffect(() => {
-    const token = localStorage.getItem('token');
     const fetchData = async () => {
       try {
-        const data = await fetchStudents(code, token);
+        const data = await fetchStudents(code);
         setStudents(data['students']);
       } catch (error) {
         console.error(error);
@@ -43,15 +43,16 @@ const QuizSession = () => {
     }
   };
 
-  const { sendMessage } = useQuizSessionWebSocket(code, handleIncomingMessage);
+  const options = { reconnect: true, debug: true };
+  const client = new WebSocketClient(`quiz-session-instructor/${code}/`, handleIncomingMessage, options);
 
   const onDelete = (username) => {
     console.log(`Sending delete for username: ${username}`);
-    sendMessage(JSON.stringify({ type: 'delete_student', username: username }));
+    client.send({ type: 'delete_student', username: username });
   };
 
   const startQuiz = () => {
-    sendMessage(JSON.stringify({ type: 'start' }));
+    client.send({ type: 'start' });
     navigate(`/quiz/${code}`);
   };
 

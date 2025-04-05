@@ -131,7 +131,7 @@ export const requestScoring = (student_id, session_id) => api.post(`score/`, { s
 export const getScore = (student_id, session_id) => api.get(`get-score/${student_id}/${session_id}/`);
 export const verifyToken = (token) => api.post('jwt-token/verify/', { token });
 
-const getWebSocketUrl = (path) => {
+export const getWebSocketUrl = (path) => {
   const baseUrl = 'wss://api.edukona.com/ws/';
   return baseUrl + path;
 };
