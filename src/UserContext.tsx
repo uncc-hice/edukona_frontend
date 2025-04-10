@@ -15,6 +15,12 @@ interface NavigateFunction {
   (path: string): void;
 }
 
+export enum Role {
+  INSTRUCTOR = 'instructor',
+  STUDENT = 'student',
+  NONE = 'none',
+}
+
 interface UserContextType {
   accessToken: string | null;
   refreshToken: string | null;
@@ -22,12 +28,13 @@ interface UserContextType {
   logout: () => void;
   signUp: (data: SignUpFormData, navigate: NavigateFunction) => void;
   setAccessToken: (accessToken: string | null) => void;
-  googleLogin: (token: string, role: string | null, setError: SetErrorFunction, navigate: NavigateFunction) => void;
+  googleLogin: (token: string, role: string | null, setError: SetErrorFunction) => Promise<GoogleLoginResponse>;
   refreshTokens: () => void;
   timeUntilRefresh: () => number;
   validateToken: () => Promise<boolean>;
   isLoggedIn: boolean;
   user: number | null;
+  getRole: () => Role;
 }
 
 interface LoginResponse {
@@ -35,7 +42,14 @@ interface LoginResponse {
     access: string;
     refresh: string;
     user: number;
+    instructor?: number;
+    student?: number;
   };
+}
+
+interface GoogleLoginResponse {
+  success: boolean;
+  role: Role;
 }
 
 interface SignUpFormData {
@@ -52,12 +66,13 @@ const defaultUserContext: UserContextType = {
   logout: () => {},
   signUp: async () => {},
   setAccessToken: () => {},
-  googleLogin: async () => {},
+  googleLogin: async () => Promise.resolve({ success: false, role: Role.NONE }),
   refreshTokens: async () => {},
   timeUntilRefresh: () => 0,
   validateToken: () => Promise.resolve(false),
   isLoggedIn: false,
   user: null,
+  getRole: () => Role.NONE,
 };
 
 /**
@@ -80,6 +95,8 @@ export const UserProvider = ({ children }: { children: React.ReactNode }) => {
 
   const [isLoggedIn, setIsLoggedIn] = useState(!!accessToken);
   const [user, setUser] = useState<number | null>(getUserLocalStorage());
+  const [role, setRole] = useState<Role>(Role.NONE);
+  const [roleId, setRoleId] = useState<number | null>(null);
 
   const reset = () => {
     setIsLoggedIn(false);
@@ -89,6 +106,8 @@ export const UserProvider = ({ children }: { children: React.ReactNode }) => {
     localStorage.removeItem('refreshToken');
     localStorage.removeItem('user');
     setUser(null);
+    setRole(Role.NONE);
+    setRoleId(null);
   };
 
   useEffect(() => {
@@ -107,6 +126,13 @@ export const UserProvider = ({ children }: { children: React.ReactNode }) => {
       localStorage.removeItem('refreshToken');
     }
   }, [refreshToken]);
+
+  useEffect(() => {
+    if (role) {
+      localStorage.setItem('role', role);
+      localStorage.setItem('roleId', roleId?.toString() || '');
+    }
+  }, [role, roleId]);
 
   const login = async (username: string, password: string, setError: SetErrorFunction, navigate: NavigateFunction) => {
     apiLogin(username, password)
@@ -129,24 +155,33 @@ export const UserProvider = ({ children }: { children: React.ReactNode }) => {
   const googleLogin = async (
     credential: string,
     role: string | null,
-    setError: SetErrorFunction,
-    navigate: NavigateFunction
-  ) => {
-    googleAuth(credential, role)
-      .then((response: LoginResponse) => {
-        setAccessToken(response.data.access);
-        setRefreshToken(response.data.refresh);
-        setUser(response.data.user);
-        navigate('/');
-      })
-      .catch((error) => {
-        console.error(error);
-        if (error.response && error.response.data && error.response.data.message) {
-          setError(error.response.data.message);
-        } else {
-          setError('Google Login failed. Please try again.');
-        }
-      });
+    setError: SetErrorFunction
+  ): Promise<GoogleLoginResponse> => {
+    try {
+      const response = await googleAuth(credential, role);
+
+      setAccessToken(response.data.access);
+      setRefreshToken(response.data.refresh);
+      setUser(response.data.user);
+
+      const userRole = response.data.instructor ? Role.INSTRUCTOR : Role.STUDENT;
+
+      let roleId = null;
+      if (userRole === Role.INSTRUCTOR) {
+        roleId = response.data.instructor;
+      } else if (userRole === Role.STUDENT) {
+        roleId = response.data.student;
+      }
+
+      setRole(userRole);
+      setRoleId(roleId ?? null);
+
+      return { success: true, role: userRole };
+    } catch (error) {
+      console.error(error);
+      setError('Google Login failed. Please try again.');
+      return { success: false, role: Role.NONE };
+    }
   };
 
   const signUp = async (data: SignUpFormData, navigate: NavigateFunction) => {
@@ -218,6 +253,10 @@ export const UserProvider = ({ children }: { children: React.ReactNode }) => {
     }
   };
 
+  const getRole = () => {
+    return localStorage.getItem('role') as Role;
+  };
+
   return (
     <UserContext.Provider
       value={{
@@ -233,6 +272,7 @@ export const UserProvider = ({ children }: { children: React.ReactNode }) => {
         timeUntilRefresh,
         user,
         validateToken,
+        getRole,
       }}
     >
       {children}

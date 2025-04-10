@@ -12,7 +12,7 @@ import {
 } from '@mui/material';
 import { Box } from '@mui/system';
 import { CredentialResponse, GoogleLogin, GoogleOAuthProvider } from '@react-oauth/google';
-import React, { useContext, useState } from 'react';
+import React, { useContext, useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { UserContext } from '../UserContext';
 
@@ -34,7 +34,16 @@ const SignUpForm = () => {
   const handleGoogleSuccess = async (response: CredentialResponse) => {
     if (response.credential) {
       console.log('Google login success:', response.credential);
-      googleLogin(response.credential, role, setError, navigate);
+      const googleLoginResult = await googleLogin(response.credential, role, setError);
+      if (googleLoginResult.success) {
+        if (role === 'student') {
+          navigate('/join');
+        } else {
+          navigate('/dashboard');
+        }
+      } else {
+        setError('Google Login failed. Please try again.');
+      }
     } else {
       handleGoogleError();
     }
@@ -47,6 +56,10 @@ const SignUpForm = () => {
       textAlign: 'center',
     } as React.CSSProperties,
   };
+
+  useEffect(() => {
+    console.log('Role changed:', role);
+  }, [role]);
 
   return (
     <Container

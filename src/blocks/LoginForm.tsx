@@ -27,7 +27,17 @@ const LoginForm: React.FC<LoginFormProps> = ({ signUpRoute }) => {
   const handleGoogleSuccess = async (response: CredentialResponse) => {
     if (response.credential) {
       console.log('Google login success:', response.credential);
-      googleLogin(response.credential, null, setError, navigate);
+      const googleLoginResult = await googleLogin(response.credential, null, setError);
+      if (googleLoginResult.success) {
+        if (googleLoginResult.role === 'student') {
+          navigate('/join');
+        }
+        if (googleLoginResult.role === 'instructor') {
+          navigate('/dashboard');
+        }
+      } else {
+        setError('Google Login failed. Please try again.');
+      }
     } else {
       handleGoogleError();
     }
