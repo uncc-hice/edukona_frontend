@@ -15,7 +15,7 @@ interface WebSocketHookReturn {
   readyState: number;
 }
 
-const JoinQuiz = (): JSX.Element => {
+const JoinQuiz = () => {
   const [quizCode, setQuizCode] = useState<string>('');
   const navigate = useNavigate();
 
