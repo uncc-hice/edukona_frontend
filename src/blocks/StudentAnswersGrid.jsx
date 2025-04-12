@@ -12,21 +12,21 @@ const StudentAnswersGrid = ({
   setSelectedAnswer,
 }) => {
   const { id: questionId } = question;
-  const sid = localStorage.getItem('sid');
+  const student_id = localStorage.getItem('student_id');
 
   const handleSubmitAnswer = async (answer) => {
     if (answer === selectedAnswer) {
       return;
     }
 
-    if (!sid) {
+    if (!student_id) {
       console.error('No student ID found');
       return;
     }
 
     console.log('Submitting answer for questionId: ', questionId);
     const postData = {
-      student: { id: sid },
+      student: { id: student_id },
       question_id: questionId,
       quiz_session_code: code,
       selected_answer: answer,

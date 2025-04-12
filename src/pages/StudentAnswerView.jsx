@@ -1,11 +1,10 @@
 import { Box, Button, CircularProgress, Container, Typography } from '@mui/material';
-import { useState } from 'react';
-import { Store } from 'react-notifications-component';
+import { useState, useEffect, useRef } from 'react';
 import { useParams } from 'react-router-dom';
 import { toast } from 'react-toastify';
 import StudentAnswersGrid from '../blocks/StudentAnswersGrid';
 import { Topbar } from '../layouts/Main/components';
-import { useStudentAnswerWebSocket } from '../services/apiService';
+import { WebSocketClient } from '../WebSocketClient';
 import QuizEndView from './QuizEndView';
 
 const StudentAnswerView = () => {
@@ -19,63 +18,62 @@ const StudentAnswerView = () => {
   const [selectedAnswer, setSelectedAnswer] = useState('');
   const [gradingStatus, setGradingStatus] = useState('not started');
   const [gradingResponse, setGradingResponse] = useState({});
+  const webSocketRef = useRef(null);
 
-  const sid = localStorage.getItem('sid');
+  const student_id = localStorage.getItem('student_id');
 
-  const handleIncomingMessage = (event) => {
-    const theme = localStorage.getItem('themeMode');
-    const receivedData = JSON.parse(event.data);
-    if (receivedData.type === 'next_question') {
-      setIsSubmitted(false);
-      setQuestion(receivedData.question);
-      setAnswers(receivedData.order);
-      setQuizSession(receivedData.quiz_session);
-      setLoading(false); // Stop loading when the question is received
-      setSelectedAnswer('');
-    } else if (receivedData.type === 'quiz_ended') {
-      setQuizEnded(true);
-      setLoading(true);
-    } else if (receivedData.type === 'quiz_started') {
-      setLoading(true);
-    } else if (receivedData.type === 'question_locked') {
-      toast.error('Could not submit answer: Question locked.', { theme });
-    } else if (receivedData.message === 'User response created successfully') {
-      setIsSubmitted(true);
-      setSelectedAnswer(receivedData.selected_answer);
-    } else if (receivedData.type === 'grading_started') {
-      setGradingStatus('started');
-      setLoading(false);
-    } else if (receivedData.type === 'grading_completed') {
-      setGradingStatus('completed');
-      requestGrades();
-    } else if (receivedData.type === 'grade') {
-      setGradingResponse(receivedData);
-    }
-  };
-
-  const requestGrades = () => {
-    sendMessage(
-      JSON.stringify({
+  useEffect(() => {
+    const requestGrades = () => {
+      webSocketRef.current.send({
         type: 'request_grade',
-        id: sid,
-      })
-    );
-  };
+        id: student_id,
+      });
+    };
 
-  const { sendMessage } = useStudentAnswerWebSocket(code, handleIncomingMessage);
+    const handleIncomingMessage = (event) => {
+      const theme = localStorage.getItem('themeMode');
+      const receivedData = JSON.parse(event.data);
+      if (receivedData.type === 'next_question') {
+        setIsSubmitted(false);
+        setQuestion(receivedData.question);
+        setAnswers(receivedData.order);
+        setQuizSession(receivedData.quiz_session);
+        setLoading(false); // Stop loading when the question is received
+        setSelectedAnswer('');
+      } else if (receivedData.type === 'quiz_ended') {
+        setQuizEnded(true);
+        setLoading(true);
+      } else if (receivedData.type === 'quiz_started') {
+        setLoading(true);
+      } else if (receivedData.type === 'question_locked') {
+        toast.error('Could not submit answer: Question locked.', { theme });
+      } else if (receivedData.message === 'User response created successfully') {
+        setIsSubmitted(true);
+        setSelectedAnswer(receivedData.selected_answer);
+      } else if (receivedData.type === 'grading_started') {
+        setGradingStatus('started');
+        setLoading(false);
+      } else if (receivedData.type === 'grading_completed') {
+        setGradingStatus('completed');
+        requestGrades();
+      } else if (receivedData.type === 'grade') {
+        setGradingResponse(receivedData);
+      }
+    };
 
-  const handleSkipQuestion = () => {
-    sendMessage(
-      JSON.stringify({
-        type: 'skip_question',
-        data: {
-          student: { id: sid },
-          quiz_session_code: code,
-          question_id: question.id,
-        },
-      })
-    );
-  };
+    const options = {
+      reconnect: true,
+      debug: true,
+    };
+    webSocketRef.current = new WebSocketClient(`student/join/${code}/`, handleIncomingMessage, options);
+
+    // Close connection on unmount
+    return () => {
+      if (webSocketRef.current) {
+        webSocketRef.current.close();
+      }
+    };
+  }, [code, student_id]);
 
   return (
     <Box marginX={'5px'}>
@@ -93,7 +91,7 @@ const StudentAnswerView = () => {
         <>
           <StudentAnswersGrid
             question={question}
-            sendMessage={sendMessage}
+            sendMessage={webSocketRef.current.send}
             answers={answers}
             code={code}
             isSubmitted={isSubmitted}
@@ -109,7 +107,7 @@ const StudentAnswerView = () => {
           <Button
             variant="contained"
             color="primary"
-            onClick={() => sendMessage(JSON.stringify({ type: 'next_question' }))}
+            onClick={() => webSocketRef.current.send({ type: 'next_question' })}
           >
             Refresh
           </Button>

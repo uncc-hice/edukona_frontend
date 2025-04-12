@@ -17,7 +17,7 @@ const JoinQuiz = () => {
     const data = JSON.parse(event.data);
     if (data.type === 'success') {
       console.log('Quiz joined successfully', data);
-      localStorage.setItem('sid', data.student_id);
+      localStorage.setItem('student_id', data.student_id);
       localStorage.setItem('username', username);
       navigate(`/student/${quizCode}`);
     } else {
