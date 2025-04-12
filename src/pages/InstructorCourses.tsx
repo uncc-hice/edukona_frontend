@@ -80,7 +80,7 @@ const InstructorCourses = () => {
         ) : courses.length === 0 ? (
           <Box sx={{ textAlign: 'center', py: 12 }}>
             <Typography variant="h6" gutterBottom>
-              You don't have any courses yet
+              You don&apos;t have any courses yet
             </Typography>
             <Button variant="outlined" color="primary" startIcon={<AddIcon />}>
               Create Your First Course
