@@ -19,8 +19,13 @@ const StudentAnswerView = () => {
   const [gradingStatus, setGradingStatus] = useState('not started');
   const [gradingResponse, setGradingResponse] = useState({});
   const webSocketRef = useRef(null);
+  const shouldAttemptReconnect = useRef(false);
 
   const student_id = localStorage.getItem('student_id');
+
+  useEffect(() => {
+    shouldAttemptReconnect.current = !!student_id;
+  }, [student_id]);
 
   useEffect(() => {
     const requestGrades = () => {
@@ -36,7 +41,15 @@ const StudentAnswerView = () => {
       if (receivedData.type === 'next_question') {
         setIsSubmitted(false);
         setQuestion(receivedData.question);
-        setAnswers(receivedData.order);
+
+        // Temporary measure: if there is no order, use an ordering created here
+        if (!receivedData.order) {
+          const answers = [...receivedData.question['incorrect_answer_list'], receivedData.question['correct_answer']];
+          const shuffled = answers.sort(() => 0.5 - Math.random());
+          setAnswers(shuffled);
+        } else {
+          setAnswers(receivedData.order);
+        }
         setQuizSession(receivedData.quiz_session);
         setLoading(false); // Stop loading when the question is received
         setSelectedAnswer('');
@@ -58,14 +71,50 @@ const StudentAnswerView = () => {
         requestGrades();
       } else if (receivedData.type === 'grade') {
         setGradingResponse(receivedData);
+      } else if (receivedData.type === 'reconnect_success') {
+        setLoading(true);
+      } else if (receivedData.type === 'reconnect_failed') {
+        toast.error('Could not reconnect, please try again.', { theme });
+        console.error('Reconnect Failure:', receivedData.message);
+      } else if (receivedData.type === 'no_active_question') {
+        toast.error('No more questions remaining.');
+        console.error('Reconnect Failure: No more questions remaining.');
       }
     };
+
+    const onReconnect = () => {
+      webSocketRef.current.send({
+        type: 'reconnect',
+        student_id: student_id,
+      });
+    };
+
+    const onInitialOpen = () => {
+      if (shouldAttemptReconnect.current) {
+        console.log('Attempting to recover session on initial connection');
+        webSocketRef.current.send({
+          type: 'reconnect',
+          student_id: student_id,
+        });
+        shouldAttemptReconnect.current = false;
+      }
+    };
+
+    // Use code from URL params or fallback to localStorage
+    const quizCode = code || localStorage.getItem('quiz_code');
+
+    if (!quizCode) {
+      console.error('No quiz code available from URL or localStorage');
+      return;
+    }
 
     const options = {
       reconnect: true,
       debug: true,
+      onOpenCallbacks: [onInitialOpen],
+      onReconnectCallbacks: [onReconnect],
     };
-    webSocketRef.current = new WebSocketClient(`student/join/${code}/`, handleIncomingMessage, options);
+    webSocketRef.current = new WebSocketClient(`student/join/${quizCode}/`, handleIncomingMessage, options);
 
     // Close connection on unmount
     return () => {
@@ -83,7 +132,6 @@ const StudentAnswerView = () => {
       {loading ? (
         <Box display="flex" flexDirection={'column'} justifyContent="center" alignItems="center" height="100vh">
           <CircularProgress />
-          <Typography variant="h6">Waiting for instructor to start the quiz.</Typography>
         </Box>
       ) : quizEnded ? (
         <QuizEndView gradingStatus={gradingStatus} gradingResponse={gradingResponse} />
