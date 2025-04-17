@@ -20,6 +20,8 @@ interface WebsocketClientOptions {
   maxReconnectAttempts?: number;
   reconnectBackoffFactor?: number;
   reconnectDelay?: number;
+  onOpenCallbacks?: (() => void)[];
+  onReconnectCallbacks?: (() => void)[];
 }
 
 class WebSocketError extends Error {
@@ -46,13 +48,12 @@ export class WebSocketClient {
   private reconnect: boolean;
   private reconnectBackoffFactor: number;
   private reconnectDelay: number;
+  private onOpenCallbacks: (() => void)[] = [];
+  private onReconnectCallbacks: (() => void)[] = [];
 
   // State
   public connectionState: ConnectionState = ConnectionState.CLOSED;
   private reconnectAttempts = 0;
-
-  private onOpenCallbacks: (() => void)[] = [];
-  private onCloseCallbacks: ((event: CloseEvent) => void)[] = [];
 
   constructor(url: string, messageHandler: (message: Message) => void, options: WebsocketClientOptions = {}) {
     this.url = getWebSocketUrl(url);
@@ -65,6 +66,11 @@ export class WebSocketClient {
     this.maxReconnectAttempts = options.maxReconnectAttempts ?? 5;
     this.reconnectBackoffFactor = options.reconnectBackoffFactor ?? 1.5;
     this.reconnectDelay = options.reconnectDelay ?? 100;
+    this.onReconnectCallbacks = options.onReconnectCallbacks || [];
+    this.onOpenCallbacks = options.onOpenCallbacks || [];
+
+    this.send = this.send.bind(this);
+
     this.connect();
   }
 
@@ -105,7 +111,6 @@ export class WebSocketClient {
   private handleClose(event: CloseEvent): void {
     this.log(`Connection closed: ${event.code} ${event.reason}`);
     this.connectionState = ConnectionState.CLOSED;
-    this.onCloseCallbacks.forEach((callback) => callback(event));
     if (this.reconnect) this.attemptReconnect();
   }
 
@@ -126,10 +131,16 @@ export class WebSocketClient {
   }
 
   private handleOpen(event: Event): void {
-    this.log('Connection established');
+    this.log('Connection established to', this.url);
     this.connectionState = ConnectionState.OPEN;
+
+    if (this.reconnectAttempts > 0) {
+      this.log(`Reconnected after ${this.reconnectAttempts} attempts`);
+      this.onReconnectCallbacks.forEach((callback) => callback());
+    } else {
+      this.onOpenCallbacks.forEach((callback) => callback());
+    }
     this.reconnectAttempts = 0;
-    this.onOpenCallbacks.forEach((callback) => callback());
   }
 
   private log(...args: any[]): void {

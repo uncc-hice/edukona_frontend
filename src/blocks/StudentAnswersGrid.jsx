@@ -12,21 +12,21 @@ const StudentAnswersGrid = ({
   setSelectedAnswer,
 }) => {
   const { id: questionId } = question;
-  const sid = localStorage.getItem('sid');
+  const student_id = localStorage.getItem('student_id');
 
   const handleSubmitAnswer = async (answer) => {
     if (answer === selectedAnswer) {
       return;
     }
 
-    if (!sid) {
+    if (!student_id) {
       console.error('No student ID found');
       return;
     }
 
     console.log('Submitting answer for questionId: ', questionId);
     const postData = {
-      student: { id: sid },
+      student: { id: student_id },
       question_id: questionId,
       quiz_session_code: code,
       selected_answer: answer,
@@ -34,12 +34,10 @@ const StudentAnswersGrid = ({
 
     try {
       console.log('response data:', postData);
-      sendMessage(
-        JSON.stringify({
-          type: 'response',
-          data: postData,
-        })
-      );
+      sendMessage({
+        type: 'response',
+        data: postData,
+      });
     } catch (error) {
       console.error('An error occurred:', error.response ? error.response.data : error.message);
       if (error.response && error.response.status === 404) {
