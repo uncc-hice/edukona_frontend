@@ -1,121 +1,165 @@
 import axios from 'axios';
 import useWebSocketWithTokenRefresh from '../hooks/useWebSocketWithTokenRefresh';
-let jwtAccessToken = localStorage.getItem('accessToken');
+
 const base = 'https://api.edukona.com/';
-
-const verifyAccessToken = async () => {
-  if (jwtAccessToken !== null) {
-    try {
-      await api.post('jwt-token/verify/', { token: jwtAccessToken });
-      return true;
-    } catch (error) {
-      return false;
-    }
-  } else {
-    return false;
-  }
-};
-
-/**
- * This helper function enables us to use the JWT if available or fallback on the session token otherwise.
- * This function should be removed once we have finished migrating to JWT authentication.
- * @returns {Promise<string>} The value to use for the Authorization header.
- */
-const getAuthHeader = async () => {
-  if (jwtAccessToken !== null) return `Bearer ${jwtAccessToken}`;
-  return '';
-};
-
-const api = axios.create({
-  baseURL: base,
-  timeout: 1500,
-  headers: { Authorization: await getAuthHeader() },
-});
-
-export const refreshAccessToken = (refreshToken) =>
-  api.post('jwt-token/refresh/', { refresh: refreshToken }, { headers: { Authorization: '' } }).then((res) => {
-    localStorage.setItem('accessToken', res.data.access);
-    localStorage.setItem('refreshToken', res.data.refresh);
-  });
-
-// Ensures the latest access token is used for all requests.
-api.interceptors.request.use(
-  async (config) => {
-    const latestAccessToken = localStorage.getItem('accessToken');
-    if (latestAccessToken) {
-      config.headers['Authorization'] = `Bearer ${latestAccessToken}`;
-    }
-    return config;
-  },
-  (error) => {
-    return Promise.reject(error);
-  }
-);
+let isRefreshing = false;
+let failedQueue = [];
 
 // Global error handler.
-// Can be used for sending data to our logging system in the future
-const handleAuthError = () => {
+const handleAuthError = (error = 'Unknown error') => {
+  console.error(`Authentication error: ${error}. Invalid or expired token, or refresh failed. Redirecting to login.`);
   localStorage.removeItem('accessToken');
   localStorage.removeItem('refreshToken');
+  failedQueue = [];
+  isRefreshing = false;
   window.location.href = '/login';
 };
 
-const isRefreshingToken = { value: false };
+export const api = axios.create({
+  baseURL: base,
+  timeout: 1500,
+});
 
-export const refreshAccessTokenHelper = (refreshToken) => {
-  isRefreshingToken.value = true;
-  return api
-    .post('jwt-token/refresh/', { refresh: refreshToken }, { headers: { Authorization: '' } })
-    .then((res) => {
-      localStorage.setItem('accessToken', res.data.access);
-      localStorage.setItem('refreshToken', res.data.refresh);
-      return res;
-    })
-    .finally(() => {
-      isRefreshingToken.value = false;
-    });
-};
+api.interceptors.request.use(
+  (config) => {
+    const token = localStorage.getItem('accessToken');
+    if (token && ![null, ''].includes(config.headers.Authorization)) {
+      config.headers['Authorization'] = `Bearer ${token}`;
+    }
+    return config;
+  },
+  (error) => Promise.reject(error)
+);
 
 api.interceptors.response.use(
   (res) => res,
-  (err) => {
-    // Check if error is 401 and not from the refresh endpoint itself
-    const isTokenRefreshRequest = err.config && err.config.url && err.config.url.includes('jwt-token/refresh');
+  async (err) => {
+    const originalRequest = err.config;
+    const status = err.response?.status;
+    const isTokenRefreshUrl = originalRequest.url.includes('jwt-token/refresh');
 
-    if (err.response?.status === 401 && !isRefreshingToken.value && !isTokenRefreshRequest) {
-      const refreshToken = localStorage.getItem('refreshToken');
+    if (status !== 401) return Promise.reject(err);
 
-      if (refreshToken) {
-        return refreshAccessTokenHelper(refreshToken)
-          .then(() => {
-            // Retry original request with new token
-            const request = err.config;
-            request.headers['Authorization'] = `Bearer ${localStorage.getItem('accessToken')}`;
-            return api(request);
-          })
-          .catch(() => {
-            // Invalid refresh token, redirect to login
-            handleAuthError();
-            return Promise.reject(err);
-          });
-      }
-
-      // No refresh token available
-      handleAuthError();
-    } else if (err.response?.status === 401) {
-      // Catch-all for other 401 errors
-      handleAuthError();
+    // Case 1: Refresh endpoint itself returned 401 - we need to log out
+    if (isTokenRefreshUrl) {
+      !isRefreshing && handleAuthError('Refresh token endpoint returned 401');
+      return Promise.reject(err);
     }
 
-    return Promise.reject(err);
+    // Case 2: Request already retried after refresh - don't retry again
+    if (originalRequest._retry) {
+      console.error(`Request failed after refresh: ${originalRequest.url}`);
+      return Promise.reject(err);
+    }
+
+    // Case 3: Initial 401 - needs token refresh
+    originalRequest._retry = true;
+
+    if (isRefreshing) {
+      return new Promise((resolve, reject) => {
+        failedQueue.push({ resolve, reject });
+      })
+        .then((token) => {
+          originalRequest.headers['Authorization'] = `Bearer ${token}`;
+          return api(originalRequest);
+        })
+        .catch((error) => Promise.reject(error));
+    }
+
+    try {
+      isRefreshing = true;
+      const token = await refreshTokenFlow();
+
+      originalRequest.headers['Authorization'] = `Bearer ${token}`;
+      failedQueue.forEach((promise) => promise.resolve(token));
+      failedQueue = [];
+
+      return api(originalRequest);
+    } catch (error) {
+      failedQueue.forEach((promise) => promise.reject(error));
+      failedQueue = [];
+
+      // Only logout on 401 refresh errors
+      if (error.response?.status === 401) {
+        handleAuthError('Token refresh failed');
+      }
+
+      return Promise.reject(error);
+    } finally {
+      isRefreshing = false;
+    }
   }
 );
 
+// Centralized token refresh function to reduce duplication
+const refreshTokenFlow = async () => {
+  const refreshToken = localStorage.getItem('refreshToken');
+  if (!refreshToken) {
+    throw new Error('No refresh token available');
+  }
+
+  const response = await axios.post(
+    `${base}jwt-token/refresh/`,
+    { refresh: refreshToken },
+    { headers: { Authorization: '' } }
+  );
+
+  const { access, refresh } = response.data;
+  localStorage.setItem('accessToken', access);
+  if (refresh) localStorage.setItem('refreshToken', refresh);
+
+  api.defaults.headers.common['Authorization'] = `Bearer ${access}`;
+  return access;
+};
+
+export const forceTokenRefresh = async () => {
+  if (isRefreshing) {
+    return new Promise((resolve, reject) => {
+      failedQueue.push({ resolve, reject });
+    });
+  }
+
+  try {
+    isRefreshing = true;
+    console.log('Attempting token refresh...');
+
+    const newToken = await refreshTokenFlow();
+
+    failedQueue.forEach((promise) => promise.resolve(newToken));
+    failedQueue = [];
+
+    return newToken;
+  } catch (error) {
+    console.error('Token refresh failed:', error.message);
+    failedQueue.forEach((promise) => promise.reject(error));
+    failedQueue = [];
+
+    handleAuthError('Token refresh failed');
+    throw error;
+  } finally {
+    isRefreshing = false;
+  }
+};
+
+export const callWithFreshToken = async (apiCallFunction) => {
+  try {
+    await forceTokenRefresh();
+    return await apiCallFunction();
+  } catch (error) {
+    console.error('API call failed:', error);
+    throw error;
+  }
+};
+
 export const login = (email, password) =>
   api.post('jwt-login/', { email, password }, { headers: { Authorization: '' } });
-export const JWTSignUpInstructor = (formData) => api.post('jwt-sign-up-instructor/', formData);
-export const googleAuth = (token, role) => api.post('auth/', role !== null ? { token, role } : { token });
-export const logout = (refreshToken) => api.post('jwt-logout/', { refresh: refreshToken });
+export const JWTSignUpInstructor = (formData) =>
+  api.post('jwt-sign-up-instructor/', formData, { headers: { Authorization: '' } });
+export const googleAuth = (token, role) =>
+  api.post('auth/', role !== null ? { token, role } : { token }, { headers: { Authorization: '' } });
+export const logout = (refreshToken) =>
+  api.post('jwt-logout/', { refresh: refreshToken }, { headers: { Authorization: '' } });
+
 export const createRecording = (formData) => api.post('recordings/create-recording/', formData);
 export const generateTemporaryCredentials = () => api.post('generate-temporary-credentials/');
 export const getQuizSessionResponsesCount = (code) => api.get(`quiz-session-responses-count/${code}/`);
@@ -167,38 +211,13 @@ export const useJoinQuizWebSocket = (code, handleIncomingMessage) => {
   });
 };
 
-export const fetchQuizzes = () =>
-  api.get('instructor/quizzes/', {
-    headers: {
-      'Content-Type': 'application/json',
-    },
-  });
+export const fetchQuizzes = () => api.get('instructor/quizzes/');
 
-export const updateQuizTitle = (quizId, title) =>
-  api.patch(
-    `quiz/${quizId}/update-title/`,
-    { title: title },
-    {
-      headers: {
-        Authorization: `Bearer ${localStorage.getItem('accessToken')}`,
-      },
-    }
-  );
+export const updateQuizTitle = (quizId, title) => api.patch(`quiz/${quizId}/update-title/`, { title: title });
 
 export const getSummary = (summaryId) => api.get(`summary/${summaryId}/get-summary`);
 
-export const startQuizSession = (quizId) =>
-  api.post(
-    'quiz-session/',
-    {
-      quiz_id: quizId,
-    },
-    {
-      headers: {
-        'Content-Type': 'application/json',
-      },
-    }
-  );
+export const startQuizSession = (quizId) => api.post('quiz-session/', { quiz_id: quizId });
 
 export const deleteRecording = (recording) => api.delete(`recordings/${recording}/delete-recording`);
 
@@ -221,12 +240,7 @@ export const signUpInstructor = (formData) =>
 
 export const deleteUser = () => api.delete('delete-user');
 
-export const fetchProfile = () =>
-  api.get('profile', {
-    headers: {
-      'Content-Type': 'application/json',
-    },
-  });
+export const fetchProfile = () => api.get('profile');
 
 export const fetchQuiz = (id) => api.get(`quiz/${id}`);
 
@@ -234,7 +248,7 @@ export const updateQuiz = (id, data) => api.put(`quiz/${id}`, data);
 
 export const createQuiz = (quizData) => api.post('quiz/create/', quizData);
 
-export const submitContactForm = (formData) => api.post('contact-us/', formData);
+export const submitContactForm = (formData) => api.post('contact-us/', formData, { headers: { Authorization: '' } });
 
 export const fetchInstructorCourses = () => api.get(`instructor/get-courses/`);
 
@@ -247,10 +261,5 @@ export const getTranscript = (recordingId) => api.get(`recordings/${recordingId}
 export const moveRecordingToCourse = (recording_id, course_id) =>
   api.patch(`recordings/${recording_id}/move-recording-to-course/`, { course_id: course_id });
 
-const downloadApi = axios.create({
-  baseURL: base,
-  headers: { Authorization: await getAuthHeader() },
-});
-
 export const downloadRecording = (recordingId) =>
-  downloadApi.get(`recordings/${recordingId}/download-recording/`, { responseType: 'blob' });
+  api.get(`recordings/${recordingId}/download-recording/`, { responseType: 'blob', timeout: 0 });
