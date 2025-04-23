@@ -7,8 +7,8 @@ const StudentGrid = ({ students, onDelete }) => {
   return (
     <Grid container spacing={2}>
       {students.length > 0 ? (
-        students.map((student, index) => (
-          <Grid item xs={12} sm={6} md={4} key={index}>
+        students.map((student) => (
+          <Grid item xs={12} sm={6} md={4} key={student.id}>
             <Paper
               elevation={3}
               style={{
@@ -23,7 +23,7 @@ const StudentGrid = ({ students, onDelete }) => {
                 <Typography variant="h6">{student.username}</Typography>
                 <Typography>{student.class}</Typography>
               </div>
-              <IconButton onClick={() => onDelete(student.username)} style={{ color: red[500] }}>
+              <IconButton onClick={() => onDelete(student.id)} style={{ color: red[500] }}>
                 <DeleteIcon />
               </IconButton>
             </Paper>

@@ -1,5 +1,5 @@
 import { Button, Container, Grid, Paper, Typography } from '@mui/material';
-import { useEffect, useState } from 'react';
+import { useEffect, useState, useRef } from 'react';
 import { QRCode } from 'react-qr-code';
 import { useNavigate, useParams } from 'react-router-dom';
 import StudentGrid from '../blocks/StudentGrid.jsx';
@@ -19,12 +19,13 @@ const QuizSession = () => {
   const { code } = useParams();
   const navigate = useNavigate();
   const [students, setStudents] = useState([]);
+  const clientRef = useRef(null);
 
   useEffect(() => {
     const fetchData = async () => {
       try {
         const data = await fetchStudents(code);
-        setStudents(data['students']);
+        setStudents(data['students'] || []);
       } catch (error) {
         console.error(error);
       }
@@ -34,25 +35,37 @@ const QuizSession = () => {
   }, [code]);
 
   const handleIncomingMessage = (event) => {
-    const receivedData = JSON.parse(event.data);
-    if (receivedData.type === 'student_joined') {
-      setStudents((prevStudents) => [...prevStudents, { username: receivedData.username }]);
-    } else if (receivedData.type === 'student_deleted') {
-      setStudents((prevStudents) => prevStudents.filter((student) => student.username !== receivedData.username));
-      console.log(`Deleted student (here): ${receivedData.username}`);
+    const { type, student_id, username } = JSON.parse(event.data);
+
+    if (type === 'student_joined' && student_id) {
+      setStudents((prev) => (prev.some((s) => s.id === student_id) ? prev : [...prev, { id: student_id, username }]));
+    } else if (type === 'student_deleted') {
+      setStudents((prev) => prev.filter((s) => s.id !== student_id));
     }
   };
 
-  const options = { reconnect: true, debug: true };
-  const client = new WebSocketClient(`quiz-session-instructor/${code}/`, handleIncomingMessage, options);
+  useEffect(() => {
+    const options = { reconnect: true, debug: true };
+    clientRef.current = new WebSocketClient(`quiz-session-instructor/${code}/`, handleIncomingMessage, options);
 
-  const onDelete = (username) => {
-    console.log(`Sending delete for username: ${username}`);
-    client.send({ type: 'delete_student', username: username });
+    return () => {
+      if (clientRef.current) {
+        clientRef.current.close();
+      }
+    };
+  }, [code]);
+
+  const onDelete = (studentId) => {
+    console.log(`Sending delete for student ID: ${studentId}`);
+    if (clientRef.current) {
+      clientRef.current.send({ type: 'delete_student', student_id: studentId });
+    }
   };
 
   const startQuiz = () => {
-    client.send({ type: 'start' });
+    if (clientRef.current) {
+      clientRef.current.send({ type: 'start' });
+    }
     navigate(`/quiz/${code}`);
   };
 

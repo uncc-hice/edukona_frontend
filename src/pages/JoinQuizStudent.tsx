@@ -30,7 +30,7 @@ const JoinQuiz = () => {
     if (data.type === 'success') {
       console.log('Quiz joined successfully', data);
       if (data.student_id) {
-        localStorage.setItem('sid', data.student_id);
+        localStorage.setItem('student_id', data.student_id);
         navigate(`/student/${quizCode}`);
       }
     } else {
