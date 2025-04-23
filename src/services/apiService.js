@@ -157,8 +157,7 @@ export const JWTSignUpInstructor = (formData) =>
   api.post('jwt-sign-up-instructor/', formData, { headers: { Authorization: '' } });
 export const googleAuth = (token, role) =>
   api.post('auth/', role !== null ? { token, role } : { token }, { headers: { Authorization: '' } });
-export const logout = (refreshToken) =>
-  api.post('jwt-logout/', { refresh: refreshToken }, { headers: { Authorization: '' } });
+export const logout = (refreshToken) => api.post('jwt-logout/', { refresh: refreshToken });
 
 export const createRecording = (formData) => api.post('recordings/create-recording/', formData);
 export const generateTemporaryCredentials = () => api.post('generate-temporary-credentials/');

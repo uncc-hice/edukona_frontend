@@ -198,11 +198,16 @@ export const UserProvider = ({ children }: { children: React.ReactNode }) => {
       });
   };
 
-  const logout = () =>
-    apiLogout(refreshToken).then(() => {
-      reset();
-      window.location.reload();
-    });
+  const logout = () => {
+    apiLogout(refreshToken)
+      .catch((error) => {
+        console.error('Logout API call failed, proceeding with client cleanup:', error);
+      })
+      .finally(() => {
+        reset();
+        window.location.reload();
+      });
+  };
 
   const refreshTokens = async () => {
     try {
