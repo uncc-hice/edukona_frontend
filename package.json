@@ -1,6 +1,6 @@
 {
-  "name": "hice",
-  "version": "0.1.0",
+  "name": "edukona",
+  "version": "0.1",
   "private": true,
   "dependencies": {
     "@date-io/dayjs": "^3.2.0",
@@ -28,7 +28,7 @@
     "fs": "^0.0.1-security",
     "globals": "^15.12.0",
     "jest": "^27.5.1",
-    "lint": "^0.8.19",
+    "lint": "^1.1.2",
     "msw-storybook-addon": "^2.0.4",
     "prop-types": "^15.8.1",
     "react": "^18.2.0",
@@ -41,7 +41,6 @@
     "react-notifications-component": "^4.0.1",
     "react-qr-code": "^2.0.15",
     "react-router-dom": "^6.21.0",
-    "react-scripts": "5.0.1",
     "react-scroll": "^1.9.0",
     "react-slick": "^0.30.2",
     "react-toastify": "^10.0.5",
@@ -51,8 +50,10 @@
     "web-vitals": "^2.1.4"
   },
   "scripts": {
-    "start": "react-scripts start",
-    "build": "node inject-env.js && react-scripts build",
+    "start": "vite",
+    "dev": "vite",
+    "build": "vite build",
+    "serve": "vite preview",
     "test": "react-scripts test",
     "eject": "react-scripts eject",
     "prettier": "prettier --write \"src/**/*.{js,jsx,ts,tsx,css,scss,md}\"",
@@ -62,8 +63,6 @@
   },
   "eslintConfig": {
     "extends": [
-      "react-app",
-      "react-app/jest",
       "plugin:storybook/recommended"
     ]
   },
@@ -86,10 +85,10 @@
     "@storybook/addon-interactions": "^8.5.1",
     "@storybook/addon-onboarding": "^8.5.1",
     "@storybook/blocks": "^8.5.1",
-    "@storybook/preset-create-react-app": "^8.5.1",
     "@storybook/react": "^8.5.1",
     "@storybook/react-webpack5": "^8.5.1",
     "@storybook/test": "^8.5.1",
+    "@vitejs/plugin-react": "^4.4.1",
     "eslint": "^8.57.1",
     "eslint-plugin-react": "^7.37.2",
     "msw": "^2.7.0",
@@ -97,6 +96,8 @@
     "storybook": "^8.5.1",
     "typescript": "^4.9.5",
     "typescript-eslint": "^8.15.0",
+    "vite": "^6.3.2",
+    "vite-plugin-svgr": "^4.3.0",
     "webpack": "^5.97.1"
   },
   "msw": {
