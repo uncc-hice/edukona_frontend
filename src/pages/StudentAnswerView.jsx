@@ -19,13 +19,8 @@ const StudentAnswerView = () => {
   const [gradingStatus, setGradingStatus] = useState('not started');
   const [gradingResponse, setGradingResponse] = useState({});
   const webSocketRef = useRef(null);
-  const shouldAttemptReconnect = useRef(false);
 
   const student_id = localStorage.getItem('student_id');
-
-  useEffect(() => {
-    shouldAttemptReconnect.current = !!student_id;
-  }, [student_id]);
 
   useEffect(() => {
     const requestGrades = () => {
@@ -58,6 +53,7 @@ const StudentAnswerView = () => {
         setLoading(true);
       } else if (receivedData.type === 'quiz_started') {
         setLoading(true);
+        localStorage.setItem(`quiz_started`, 'true');
       } else if (receivedData.type === 'question_locked') {
         toast.error('Could not submit answer: Question locked.', { theme });
       } else if (receivedData.message === 'User response created successfully') {
@@ -71,6 +67,7 @@ const StudentAnswerView = () => {
         requestGrades();
       } else if (receivedData.type === 'grade') {
         setGradingResponse(receivedData);
+        cleanupLocalStorage();
       } else if (receivedData.type === 'reconnect_success') {
         setLoading(true);
       } else if (receivedData.type === 'reconnect_failed') {
@@ -82,25 +79,29 @@ const StudentAnswerView = () => {
       }
     };
 
-    const onReconnect = () => {
-      webSocketRef.current.send({
-        type: 'reconnect',
-        student_id: student_id,
-      });
+    const cleanupLocalStorage = () => {
+      localStorage.removeItem('quiz_code');
+      localStorage.removeItem('quiz_started');
+      localStorage.removeItem('student_id');
+      localStorage.removeItem('username');
     };
 
-    const onInitialOpen = () => {
-      if (shouldAttemptReconnect.current) {
-        console.log('Attempting to recover session on initial connection');
+    const sendReconnect = () => {
+      if (!student_id) return;
+
+      // Only send reconnect if the quiz has started at least once
+      if (localStorage.getItem(`quiz_started`) === 'true') {
         webSocketRef.current.send({
           type: 'reconnect',
-          student_id: student_id,
+          student_id,
         });
-        shouldAttemptReconnect.current = false;
       }
     };
 
-    // Use code from URL params or fallback to localStorage
+    const handleOpen = () => {
+      if (localStorage.getItem(`quiz_started`) === 'true') sendReconnect();
+    };
+
     const quizCode = code || localStorage.getItem('quiz_code');
 
     if (!quizCode) {
@@ -108,11 +109,15 @@ const StudentAnswerView = () => {
       return;
     }
 
+    if (code) {
+      localStorage.setItem('quiz_code', code);
+    }
+
     const options = {
       reconnect: true,
       debug: true,
-      onOpenCallbacks: [onInitialOpen],
-      onReconnectCallbacks: [onReconnect],
+      onOpenCallbacks: [handleOpen],
+      onReconnectCallbacks: [sendReconnect],
     };
     webSocketRef.current = new WebSocketClient(`student/join/${quizCode}/`, handleIncomingMessage, options);
 
@@ -121,6 +126,7 @@ const StudentAnswerView = () => {
       if (webSocketRef.current) {
         webSocketRef.current.close();
       }
+      cleanupLocalStorage();
     };
   }, [code, student_id]);
 
