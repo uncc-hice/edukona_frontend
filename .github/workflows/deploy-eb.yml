@@ -32,7 +32,7 @@ jobs:
 
       - name: Create production build
         env:
-          REACT_APP_GOOGLE_CLIENT_ID: ${{ secrets.REACT_APP_GOOGLE_CLIENT_ID }}
+          VITE_GOOGLE_CLIENT_ID: ${{ secrets.GOOGLE_CLIENT_ID }}
           CI: false
         run: |
           npm run build
