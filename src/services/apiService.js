@@ -1,5 +1,6 @@
 import axios from 'axios';
 import useWebSocketWithTokenRefresh from '../hooks/useWebSocketWithTokenRefresh';
+import useWebSocket from 'react-use-websocket';
 
 const base = 'https://api.edukona.com/';
 let isRefreshing = false;
@@ -204,7 +205,7 @@ export const useQuizSessionWebSocket = (code, handleIncomingMessage) => {
 };
 
 export const useJoinQuizWebSocket = (code, handleIncomingMessage) => {
-  return useWebSocketWithTokenRefresh(getWebSocketUrl(`student/join/${code}/`), {
+  return useWebSocket(getWebSocketUrl(`student/join/${code}/`), {
     onMessage: handleIncomingMessage,
     shouldReconnect: () => true,
   });
