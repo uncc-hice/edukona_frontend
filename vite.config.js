@@ -2,21 +2,19 @@ import { defineConfig } from 'vite'
 import react from '@vitejs/plugin-react'
 import svgr from 'vite-plugin-svgr'
 
-// https://vitejs.dev/config/
 export default defineConfig({
   plugins: [
     react(),
-    svgr() // Add svgr plugin to handle SVGs as components
+    svgr()
   ],
   server: {
-    port: 3000, // Optional: specify dev server port
-    open: true // Optional: automatically open browser
+    port: 3000,
+    open: true
   },
   build: {
-    outDir: 'build' // Keep output directory as 'build' to match existing setup (server.js, Procfile)
+    outDir: 'build'
   },
   define: {
-    global: '{}', // Define global as an empty object for browser compatibility
-    'process.env': {} // Define process.env as an empty object
+    global: '{}',
   }
 })
