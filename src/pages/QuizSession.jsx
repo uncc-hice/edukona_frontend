@@ -4,7 +4,7 @@ import { QRCode } from 'react-qr-code';
 import { useNavigate, useParams } from 'react-router-dom';
 import StudentGrid from '../blocks/StudentGrid.jsx';
 import Main from '../layouts/Main';
-import { getStudentsForQuizSession, useQuizSessionWebSocket } from '../services/apiService.js';
+import { getStudentsForQuizSession } from '../services/apiService.js';
 import { WebSocketClient } from '../WebSocketClient';
 
 const fetchStudents = async (code) => {
@@ -34,8 +34,8 @@ const QuizSession = () => {
     fetchData();
   }, [code]);
 
-  const handleIncomingMessage = (event) => {
-    const { type, student_id, username } = JSON.parse(event.data);
+  const handleIncomingMessage = (data) => {
+    const { type, student_id, username } = data;
 
     if (type === 'student_joined' && student_id) {
       setStudents((prev) => (prev.some((s) => s.id === student_id) ? prev : [...prev, { id: student_id, username }]));

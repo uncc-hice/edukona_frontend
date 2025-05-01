@@ -30,50 +30,49 @@ const StudentAnswerView = () => {
       });
     };
 
-    const handleIncomingMessage = (event) => {
+    const handleIncomingMessage = (data) => {
       const theme = localStorage.getItem('themeMode');
-      const receivedData = JSON.parse(event.data);
-      if (receivedData.type === 'next_question') {
+      if (data.type === 'next_question') {
         setIsSubmitted(false);
-        setQuestion(receivedData.question);
+        setQuestion(data.question);
 
         // Temporary measure: if there is no order, use an ordering created here
-        if (!receivedData.order) {
-          const answers = [...receivedData.question['incorrect_answer_list'], receivedData.question['correct_answer']];
+        if (!data.order) {
+          const answers = [...data.question['incorrect_answer_list'], data.question['correct_answer']];
           const shuffled = answers.sort(() => 0.5 - Math.random());
           setAnswers(shuffled);
         } else {
-          setAnswers(receivedData.order);
+          setAnswers(data.order);
         }
-        setQuizSession(receivedData.quiz_session);
+        setQuizSession(data.quiz_session);
         setLoading(false); // Stop loading when the question is received
         setSelectedAnswer('');
-      } else if (receivedData.type === 'quiz_ended') {
+      } else if (data.type === 'quiz_ended') {
         setQuizEnded(true);
         setLoading(true);
-      } else if (receivedData.type === 'quiz_started') {
+      } else if (data.type === 'quiz_started') {
         setLoading(true);
         localStorage.setItem(`quiz_started`, 'true');
-      } else if (receivedData.type === 'question_locked') {
+      } else if (data.type === 'question_locked') {
         toast.error('Could not submit answer: Question locked.', { theme });
-      } else if (receivedData.message === 'User response created successfully') {
+      } else if (data.message === 'User response created successfully') {
         setIsSubmitted(true);
-        setSelectedAnswer(receivedData.selected_answer);
-      } else if (receivedData.type === 'grading_started') {
+        setSelectedAnswer(data.selected_answer);
+      } else if (data.type === 'grading_started') {
         setGradingStatus('started');
         setLoading(false);
-      } else if (receivedData.type === 'grading_completed') {
+      } else if (data.type === 'grading_completed') {
         setGradingStatus('completed');
         requestGrades();
-      } else if (receivedData.type === 'grade') {
-        setGradingResponse(receivedData);
+      } else if (data.type === 'grade') {
+        setGradingResponse(data);
         cleanupLocalStorage();
-      } else if (receivedData.type === 'reconnect_success') {
+      } else if (data.type === 'reconnect_success') {
         setLoading(true);
-      } else if (receivedData.type === 'reconnect_failed') {
+      } else if (data.type === 'reconnect_failed') {
         toast.error('Could not reconnect, please try again.', { theme });
-        console.error('Reconnect Failure:', receivedData.message);
-      } else if (receivedData.type === 'no_active_question') {
+        console.error('Reconnect Failure:', data.message);
+      } else if (data.type === 'no_active_question') {
         toast.error('No more questions remaining.');
         console.error('Reconnect Failure: No more questions remaining.');
       }
