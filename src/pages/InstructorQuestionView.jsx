@@ -1,11 +1,11 @@
 import { Box, Button, Typography } from '@mui/material';
-import { useCallback, useEffect, useState } from 'react';
+import { useCallback, useEffect, useState, useRef } from 'react';
 import { useParams } from 'react-router-dom';
 import QuizComponent from '../blocks/QuizComponent';
 import Container from '../components/Container';
 import { Topbar } from '../layouts/Main/components';
-import { useQuizSessionWebSocket } from '../services/apiService';
 import Leaderboard from './Leaderboard/Leaderboard';
+import { WebSocketClient, ConnectionState } from '../WebSocketClient';
 
 const InstructorQuestionView = () => {
   const [currentQuestion, setCurrentQuestion] = useState(undefined);
@@ -18,13 +18,24 @@ const InstructorQuestionView = () => {
   const [grades, setGrades] = useState({});
   const [highlight, setHighlight] = useState(false);
 
-  const handleIncomingMessage = useCallback(
-    (event) => {
-      const data = JSON.parse(event.data);
+  const clientRef = useRef(null);
+
+  const handleNextQuestion = useCallback(() => {
+    setResponseData({});
+    if (clientRef.current && clientRef.current.getState() === ConnectionState.OPEN) {
+      clientRef.current.send({ type: 'next_question' });
+    } else {
+      console.error('Cannot send next_question: WebSocket not ready.');
+    }
+  }, []);
+
+  useEffect(() => {
+    const handleIncomingMessage = (data) => {
+      console.log(data);
       if (data.type === 'next_question' || data.type === 'current_question') {
         setHighlight(false);
         setCurrentQuestion(data.question);
-        setResetTimer((prev) => !prev); // Toggle to reset the timer
+        setResetTimer((prev) => !prev);
       } else if (data.type === 'quiz_ended') {
         setGrades(data.grades);
         setQuizEnded(true);
@@ -35,39 +46,46 @@ const InstructorQuestionView = () => {
         setQuiz(data.quiz);
         setUserCount(data.user_count);
       }
-    },
-    [setCurrentQuestion, setResetTimer, setResponseData, setQuiz, setUserCount]
-  );
+    };
 
-  const { sendMessage } = useQuizSessionWebSocket(code, handleIncomingMessage);
+    const options = {
+      reconnect: true,
+      debug: true,
+      onOpenCallbacks: [handleNextQuestion],
+    };
 
-  const handleNextQuestion = useCallback(() => {
-    setResponseData({});
-    sendMessage(JSON.stringify({ type: 'next_question' }));
-  }, [sendMessage]);
+    clientRef.current = new WebSocketClient(`quiz-session-instructor/${code}/`, handleIncomingMessage, options);
 
-  // New function to handle skipping the question
+    return () => {
+      if (clientRef.current) {
+        clientRef.current.close();
+        clientRef.current = null;
+      }
+    };
+  }, [code, handleNextQuestion]);
+
   const handleSkipQuestion = useCallback(() => {
     setResponseData({});
-    if (currentQuestion && currentQuestion.id) {
-      sendMessage(
-        JSON.stringify({
-          type: 'skip_question',
-          question_id: currentQuestion.id,
-        })
-      );
+    if (
+      currentQuestion &&
+      currentQuestion.id &&
+      clientRef.current &&
+      clientRef.current.getState() === ConnectionState.OPEN
+    ) {
+      clientRef.current.send({
+        type: 'skip_question',
+        question_id: currentQuestion.id,
+      });
+    } else {
+      console.error('Cannot send skip_question: WebSocket not ready or no current question.');
     }
-  }, [sendMessage, currentQuestion]);
+  }, [currentQuestion]);
 
   const onTimerEnd = useCallback(() => {
     setTimeout(() => {
       setHighlight(true);
     }, 500);
   }, [setHighlight]);
-
-  useEffect(() => {
-    handleNextQuestion();
-  }, [handleNextQuestion]);
 
   return (
     <Box display="flex" flexDirection="column" height="100vh">
@@ -84,7 +102,7 @@ const InstructorQuestionView = () => {
             question={currentQuestion}
             code={code}
             responseData={responseData}
-            sendMessage={sendMessage}
+            sendMessage={(message) => clientRef.current?.send(message)}
             quizEnded={quizEnded}
             timerEnabled={quiz.timer}
             timerDuration={currentQuestion.duration}
