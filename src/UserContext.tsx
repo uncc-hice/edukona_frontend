@@ -4,7 +4,7 @@ import { logout as apiLogout } from './services/apiService';
 import { googleAuth } from './services/apiService';
 import { JWTSignUpInstructor as apiSignUp } from './services/apiService';
 import { toast } from 'react-toastify';
-import { refreshAccessToken } from './services/apiService';
+import { forceTokenRefresh } from './services/apiService';
 import { verifyToken as apiVerifyToken } from './services/apiService';
 
 interface SetErrorFunction {
@@ -198,33 +198,29 @@ export const UserProvider = ({ children }: { children: React.ReactNode }) => {
       });
   };
 
-  const logout = () =>
-    apiLogout(refreshToken).then(() => {
-      reset();
-      window.location.reload();
-    });
-
-  const loadTokensFromStorage = () => {
-    const storedAccessToken = localStorage.getItem('accessToken');
-    const storedRefreshToken = localStorage.getItem('refreshToken');
-    if (storedAccessToken && storedRefreshToken) {
-      setAccessToken(storedAccessToken);
-      setRefreshToken(storedRefreshToken);
-    }
+  const logout = () => {
+    apiLogout(refreshToken)
+      .catch((error) => {
+        console.error('Logout API call failed, proceeding with client cleanup:', error);
+      })
+      .finally(() => {
+        reset();
+        window.location.reload();
+      });
   };
 
   const refreshTokens = async () => {
-    if (!refreshToken) {
-      console.error('No refresh token available');
-      reset();
-      return;
-    }
-
     try {
-      await refreshAccessToken(refreshToken);
-      loadTokensFromStorage();
+      const refreshed = await forceTokenRefresh();
+      if (!refreshed) {
+        console.error('Token refresh failed in UserContext');
+        reset();
+      } else {
+        setAccessToken(localStorage.getItem('accessToken'));
+        setRefreshToken(localStorage.getItem('refreshToken'));
+      }
     } catch (error) {
-      console.error('Failed to refresh access token', error);
+      console.error('Error during token refresh in UserContext', error);
       reset();
     }
   };

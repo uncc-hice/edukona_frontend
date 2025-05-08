@@ -12,11 +12,7 @@ const Navbar = () => {
     navigate('/');
   };
   const logout = () => {
-    localStorage.removeItem('token');
-    localStorage.removeItem('user');
-    localStorage.removeItem('instructor');
     contextLogout();
-    window.location.reload();
   };
 
   return (

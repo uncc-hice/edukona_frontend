@@ -58,7 +58,7 @@ function App() {
         <ReactNotifications />
         <Routes>
           <Route path="/student-dashboard" element={isLoggedIn ? <StudentDashboard /> : <Navigate to="/login" />} />
-          <Route path="/join" element={getRole() === Role.STUDENT ? <JoinQuizStudent /> : <JoinQuiz />} />
+          <Route path="/join" element={isLoggedIn && getRole() === Role.STUDENT ? <JoinQuizStudent /> : <JoinQuiz />} />
           <Route path="/" element={<Landing />} />
           <Route path="/signup" element={isLoggedIn ? <Navigate to="/dashboard" /> : <SignUpForm />} />
           <Route path="/courses" element={isLoggedIn ? <InstructorCourses /> : <Navigate to="/" />} />
