@@ -30,6 +30,7 @@ import Team from './pages/Team/Team';
 import General from './pages/ProfilePage/General';
 import Security from './pages/ProfilePage/Security';
 import Summary from './pages/Summary';
+import InstructorCourses from './pages/InstructorCourses';
 import JoinQuizStudent from './pages/JoinQuizStudent';
 
 function App() {
@@ -60,6 +61,7 @@ function App() {
           <Route path="/join" element={getRole() === Role.STUDENT ? <JoinQuizStudent /> : <JoinQuiz />} />
           <Route path="/" element={<Landing />} />
           <Route path="/signup" element={isLoggedIn ? <Navigate to="/dashboard" /> : <SignUpForm />} />
+          <Route path="/courses" element={isLoggedIn ? <InstructorCourses /> : <Navigate to="/" />} />
           <Route
             path="/login"
             element={isLoggedIn ? <Navigate to="/login" /> : <LoginForm signUpRoute={'/signup'} />}
