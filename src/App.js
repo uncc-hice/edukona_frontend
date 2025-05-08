@@ -25,15 +25,16 @@ import 'aos/dist/aos.css';
 import InstructorRecordings from './pages/InstructorRecordings/InstructorRecordings';
 import { ToastContainer } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
-import { UserContext } from './UserContext';
+import { Role, UserContext } from './UserContext';
 import Team from './pages/Team/Team';
 import General from './pages/ProfilePage/General';
 import Security from './pages/ProfilePage/Security';
 import Summary from './pages/Summary';
 import InstructorCourses from './pages/InstructorCourses';
+import JoinQuizStudent from './pages/JoinQuizStudent';
 
 function App() {
-  const { isLoggedIn } = useContext(UserContext);
+  const { getRole, isLoggedIn } = useContext(UserContext);
 
   useEffect(() => {
     const gaMeasurementId = process.env.REACT_APP_GA_MEASUREMENT_ID;
@@ -57,7 +58,7 @@ function App() {
         <ReactNotifications />
         <Routes>
           <Route path="/student-dashboard" element={isLoggedIn ? <StudentDashboard /> : <Navigate to="/login" />} />
-          <Route path="/join" element={<JoinQuiz />} />
+          <Route path="/join" element={getRole() === Role.STUDENT ? <JoinQuizStudent /> : <JoinQuiz />} />
           <Route path="/" element={<Landing />} />
           <Route path="/signup" element={isLoggedIn ? <Navigate to="/dashboard" /> : <SignUpForm />} />
           <Route path="/courses" element={isLoggedIn ? <InstructorCourses /> : <Navigate to="/" />} />

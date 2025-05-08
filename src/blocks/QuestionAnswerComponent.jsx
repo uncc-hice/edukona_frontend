@@ -21,14 +21,14 @@ const QuestionAnswerComponent = ({ question, quizSessionId }) => {
   const handleSubmitAnswer = async (answer) => {
     if (isSubmitted) return; // Prevents re-submitting
 
-    let sid = localStorage.getItem('sid');
-    if (!sid) {
+    let student_id = localStorage.getItem('student_id');
+    if (!student_id) {
       console.error('No student ID found');
       return;
     }
 
     const postData = {
-      student: { id: sid }, // Example static ID, adjust as needed
+      student: { id: student_id }, // Example static ID, adjust as needed
       question_id: questionId,
       quiz_session_id: quizSessionId, // Use passed quizSessionId prop
       selected_answer: answer,
