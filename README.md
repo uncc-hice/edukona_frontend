@@ -46,6 +46,15 @@ npm install
 
 npm start
 
+### Environment Variables
+
+After cloning the repo, create a `.env` file in the project root and set the following:
+```
+VITE_API_BASE_URL=<your API base URL>
+VITE_GOOGLE_CLIENT_ID=<your Google OAuth client ID>
+VITE_GA_MEASUREMENT_ID=<your Google Analytics measurement ID>
+```
+
 ## Contributing
 
 Visit our [Backend Repository](https://github.com/amhajja/hice_backend) to view the server code!

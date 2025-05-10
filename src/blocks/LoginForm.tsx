@@ -104,7 +104,7 @@ const LoginForm: React.FC<LoginFormProps> = ({ signUpRoute }) => {
               </Grid>
             </Grid>
           </form>
-          <GoogleOAuthProvider clientId={process.env.REACT_APP_GOOGLE_CLIENT_ID || ''}>
+          <GoogleOAuthProvider clientId={import.meta.env.VITE_GOOGLE_CLIENT_ID || ''}>
             <Box display="flex" justifyContent="center">
               <GoogleLogin onSuccess={handleGoogleSuccess} onError={handleGoogleError} />
             </Box>

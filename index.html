@@ -2,7 +2,7 @@
 <html lang="en" dir="ltr">
   <head>
     <!-- Google tag (gtag.js) -->
-    <script async src="https://www.googletagmanager.com/gtag/js?id=__GOOGLE_TAG_ID__"></script>
+    <script async src="https://www.googletagmanager.com/gtag/js?id=%VITE_GOOGLE_TAG_ID%"></script>
     <script>
       window.dataLayer = window.dataLayer || [];
       function gtag() {
@@ -10,10 +10,10 @@
       }
       gtag('js', new Date());
 
-      gtag('config', '__GOOGLE_TAG_ID__');
+      gtag('config', '%VITE_GOOGLE_TAG_ID%');
     </script>
     <meta charset="utf-8" />
-    <link rel="shortcut icon" href="./edukona.ico" />
+    <link rel="shortcut icon" href="/edukona.ico" />
     <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no" />
     <meta name="theme-color" content="#ffffff" />
     <meta name="description" content="Bridging Technology and Pedagogy with Adaptive Educational Games." />
@@ -31,5 +31,6 @@
   <body>
     <noscript>You need to enable JavaScript to run this app.</noscript>
     <div id="root"></div>
+    <script type="module" src="/src/index.jsx"></script>
   </body>
 </html>

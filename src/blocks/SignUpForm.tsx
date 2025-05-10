@@ -86,7 +86,7 @@ const SignUpForm = () => {
                 {role && (
                   <Grid item xs={12}>
                     <Grid container justifyContent="center">
-                      <GoogleOAuthProvider clientId={process.env.REACT_APP_GOOGLE_CLIENT_ID || ''}>
+                      <GoogleOAuthProvider clientId={import.meta.env.VITE_GOOGLE_CLIENT_ID || ''}>
                         <Box display="flex" justifyContent="center">
                           <GoogleLogin onSuccess={handleGoogleSuccess} onError={handleGoogleError} />
                         </Box>

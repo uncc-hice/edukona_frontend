@@ -37,7 +37,7 @@ function App() {
   const { getRole, isLoggedIn } = useContext(UserContext);
 
   useEffect(() => {
-    const gaMeasurementId = process.env.REACT_APP_GA_MEASUREMENT_ID;
+    const gaMeasurementId = import.meta.env.VITE_GA_MEASUREMENT_ID;
     //console.log('GA_MEASUREMENT_ID', gaMeasurementId);
     if (gaMeasurementId) {
       ReactGA.initialize(gaMeasurementId);
