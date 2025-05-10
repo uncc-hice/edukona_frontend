@@ -4,12 +4,14 @@ import { MouseEvent, useContext, useState } from 'react';
 import { InstructorContext } from '../../InstructorContext';
 import { Course } from '../../types/edukonaTypes';
 import CreateCourseDialog from './CreateCourseDialog';
+import { useNavigate } from 'react-router-dom';
 
 const CourseDropdown = ({ boxStyle }: { boxStyle: SxProps | null }) => {
   const [open, setOpen] = useState<boolean>(false);
   const [createCourseOpen, setCreateCourseOpen] = useState<boolean>(false);
   const [anchor, setAnchor] = useState<HTMLButtonElement | null>(null);
   const { courses, activeCourse, setActiveCourse } = useContext(InstructorContext);
+  const navigate = useNavigate();
 
   const handleClick = (e: MouseEvent<HTMLButtonElement>) => {
     setAnchor(e.currentTarget);
@@ -19,6 +21,11 @@ const CourseDropdown = ({ boxStyle }: { boxStyle: SxProps | null }) => {
   const handleSelectCourse = (course: Course | null) => {
     setActiveCourse(course);
     setOpen(false);
+    if (course) {
+      navigate(`/dashboard/courses/${course.id}`);
+    } else {
+      navigate('/dashboard');
+    }
   };
 
   return (

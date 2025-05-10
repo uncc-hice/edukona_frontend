@@ -54,7 +54,7 @@ const Topbar = ({ onSidebarOpen }) => {
 
           {isLoggedIn ? (
             <>
-              {pathname === '/dashboard' ? (
+              {pathname.startsWith('/dashboard') ? (
                 <CourseDropdown boxStyle={{ marginLeft: 4 }} />
               ) : (
                 <Button
