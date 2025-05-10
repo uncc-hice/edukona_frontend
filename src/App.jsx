@@ -78,6 +78,10 @@ function App() {
           {/*<Route path="/create-landing" element={<DevRoute element={<Landing />} />} />*/}
           <Route path="/unauthorized" element={<Unauthorized />} />
           <Route path="/dashboard" element={isLoggedIn ? <InstructorRecordings /> : <Navigate to="/" />} />
+          <Route
+            path="/dashboard/courses/:courseId"
+            element={isLoggedIn ? <InstructorRecordings /> : <Navigate to="/" />}
+          />
           <Route path="/summary/:summaryId" element={isLoggedIn ? <Summary /> : <Navigate to="/" />} />
         </Routes>
       </Router>
