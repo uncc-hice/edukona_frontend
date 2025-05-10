@@ -14,7 +14,7 @@ import {
 import RecordButton from '../../blocks/RecordButton';
 import { toast } from 'react-toastify';
 import { Main } from '../../layouts';
-import { useNavigate } from 'react-router-dom';
+import { useNavigate, useParams } from 'react-router-dom';
 import { fetchRecordings, fetchRecordingsByCourse, startQuizSession } from '../../services/apiService';
 import { useRecordingWebSocket } from '../../services/apiService';
 import RecordingListRow from './Components/RecordingListRow';
@@ -22,8 +22,19 @@ import { InstructorContext } from '../../InstructorContext';
 
 const InstructorRecordings = () => {
   const [recordings, setRecordings] = useState(null);
-  const { activeCourse } = useContext(InstructorContext);
+  const { courses, activeCourse, setActiveCourse, isLoadingCourses } = useContext(InstructorContext);
   const navigate = useNavigate();
+  const { courseId } = useParams();
+
+  useEffect(() => {
+    if (isLoadingCourses || !courses) return;
+
+    const foundCourse = courseId ? courses.find((c) => c.id === courseId) || null : null;
+
+    if (activeCourse?.id !== foundCourse?.id) {
+      setActiveCourse(foundCourse);
+    }
+  }, [courseId, courses, activeCourse, setActiveCourse, isLoadingCourses]);
 
   // Fetch recordings
   const handleFetchRecordings = () => {
@@ -73,8 +84,10 @@ const InstructorRecordings = () => {
 
   // On mount, fetch the recordings
   useEffect(() => {
+    if (isLoadingCourses) return;
+
     handleFetchRecordings();
-  }, [activeCourse]);
+  }, [activeCourse, isLoadingCourses]);
 
   return (
     <Main>
