@@ -1,45 +1,39 @@
 import { Button, Container, Grid, TextField } from '@mui/material';
-import { useEffect, useState, FormEvent, ChangeEvent } from 'react';
+import { useEffect, useState, FormEvent, ChangeEvent, useRef } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { useJoinQuizWebSocket } from '../services/apiService';
-
-// Define interfaces for our data types
-interface WebSocketMessage {
-  type: string;
-  message?: string;
-  student_id?: string;
-}
-
-interface WebSocketHookReturn {
-  sendMessage: (message: string) => void;
-  readyState: number;
-}
+import { ConnectionState, Message, WebSocketClient } from '../WebSocketClient';
 
 const JoinQuiz = () => {
   const [quizCode, setQuizCode] = useState<string>('');
   const navigate = useNavigate();
+  const clientRef = useRef<WebSocketClient | null>(null);
 
   useEffect(() => {
     const params = new URLSearchParams(window.location.search);
     const code = params.get('code');
     if (code) setQuizCode(code);
-  }, []);
 
-  const handleIncomingMessage = (event: MessageEvent): void => {
-    const data: WebSocketMessage = JSON.parse(event.data);
-    if (data.type === 'success') {
-      console.log('Quiz joined successfully', data);
-      if (data.student_id) {
-        localStorage.setItem('student_id', data.student_id);
-        navigate(`/student/${quizCode}`);
+    const handleIncomingMessage = (data: Message): void => {
+      if (data.type === 'success') {
+        console.log('Quiz joined successfully', data);
+        if (data.student_id) {
+          localStorage.setItem('student_id', data.student_id);
+          navigate(`/student/${quizCode}`);
+        }
+      } else {
+        alert('Failed to join quiz: ' + (data.message || 'Unknown error'));
       }
-    } else {
-      alert('Failed to join quiz: ' + (data.message || 'Unknown error'));
-    }
-  };
+    };
 
-  // Setup WebSocket connection
-  const { sendMessage, readyState }: WebSocketHookReturn = useJoinQuizWebSocket(quizCode, handleIncomingMessage);
+    const options = {
+      reconnect: true,
+    };
+    clientRef.current = new WebSocketClient(`student/join/${code}/`, handleIncomingMessage, options);
+
+    return () => {
+      if (clientRef.current) clientRef.current.close();
+    };
+  }, []);
 
   const handleSubmit = (e: FormEvent<HTMLFormElement>): void => {
     e.preventDefault();
@@ -47,10 +41,10 @@ const JoinQuiz = () => {
       alert('Please enter a quiz code.');
       return;
     }
-    if (readyState === WebSocket.OPEN) {
-      sendMessage(JSON.stringify({ type: 'join_as_user' }));
+    if (clientRef.current?.getState() === ConnectionState.OPEN) {
+      clientRef.current.send({ type: 'join_as_user' });
     } else {
-      console.log('WebSocket is not open. ReadyState:', readyState);
+      console.log('WebSocket is not open. ReadyState:', clientRef.current?.getState());
       alert('Connection problem: Unable to join quiz.');
     }
   };
@@ -75,6 +69,7 @@ const JoinQuiz = () => {
               value={quizCode}
               onChange={(e: ChangeEvent<HTMLInputElement>) => setQuizCode(e.target.value)}
               margin="normal"
+              InputLabelProps={{ shrink: !!quizCode }}
             />
             <Button type="submit" fullWidth variant="contained" color="primary" sx={{ mt: 2 }}>
               Join Quiz

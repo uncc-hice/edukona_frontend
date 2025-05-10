@@ -187,30 +187,6 @@ export const useRecordingWebSocket = (websocketError, handleIncomingMessage) => 
   });
 };
 
-export const useStudentAnswerWebSocket = (code, handleIncomingMessage) => {
-  return useWebSocketWithTokenRefresh(getWebSocketUrl(`student/join/${code}/`), {
-    onMessage: handleIncomingMessage,
-    onOpen: () => console.log('WebSocket connected'),
-    onClose: () => console.log('WebSocket disconnected'),
-    onError: (event) => console.error('WebSocket error', event),
-    shouldReconnect: (event) => true,
-  });
-};
-
-export const useQuizSessionWebSocket = (code, handleIncomingMessage) => {
-  return useWebSocketWithTokenRefresh(getWebSocketUrl(`quiz-session-instructor/${code}/`), {
-    onMessage: handleIncomingMessage,
-    shouldReconnect: () => true,
-  });
-};
-
-export const useJoinQuizWebSocket = (code, handleIncomingMessage) => {
-  return useWebSocket(getWebSocketUrl(`student/join/${code}/`), {
-    onMessage: handleIncomingMessage,
-    shouldReconnect: () => true,
-  });
-};
-
 export const fetchQuizzes = () => api.get('instructor/quizzes/');
 
 export const updateQuizTitle = (quizId, title) => api.patch(`quiz/${quizId}/update-title/`, { title: title });

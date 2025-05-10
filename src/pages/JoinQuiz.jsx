@@ -1,32 +1,55 @@
 import { Button, Container, Grid, TextField } from '@mui/material';
-import { useEffect, useState } from 'react';
+import { useEffect, useState, useRef } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { useJoinQuizWebSocket } from '../services/apiService';
+import { ConnectionState, WebSocketClient } from '../WebSocketClient';
 
 const JoinQuiz = () => {
   const [quizCode, setQuizCode] = useState('');
   const [username, setUsername] = useState('');
   const navigate = useNavigate();
+  const clientRef = useRef(null);
 
-  useEffect(() => {
-    const params = new URLSearchParams(window.location.search);
-    setQuizCode(params.get('code'));
-  }, []);
-
-  const handleIncomingMessage = (event) => {
-    const data = JSON.parse(event.data);
+  const handleIncomingMessage = (data) => {
+    console.log(data);
     if (data.type === 'success') {
       console.log('Quiz joined successfully', data);
       localStorage.setItem('student_id', data.student_id);
       localStorage.setItem('username', username);
       navigate(`/student/${quizCode}`);
     } else {
-      alert('Failed to join quiz: ' + data.message);
+      alert('Failed to join quiz: ' + (data.message || 'Unknown error'));
     }
   };
 
-  // Setup WebSocket connection
-  const { sendMessage, readyState } = useJoinQuizWebSocket(quizCode, handleIncomingMessage);
+  const establishConnection = (code) => {
+    if (clientRef.current) {
+      clientRef.current.close();
+    }
+
+    const options = {
+      reconnect: true,
+      debug: true,
+    };
+    const newClient = new WebSocketClient(`student/join/${code}/`, handleIncomingMessage, options);
+
+    clientRef.current = newClient;
+
+    return newClient;
+  };
+
+  useEffect(() => {
+    const params = new URLSearchParams(window.location.search);
+    const code = params.get('code');
+
+    if (code) {
+      setQuizCode(code);
+      establishConnection(code);
+    }
+
+    return () => {
+      if (clientRef.current) clientRef.current.close();
+    };
+  }, [navigate]);
 
   const handleSubmit = (e) => {
     e.preventDefault();
@@ -34,11 +57,22 @@ const JoinQuiz = () => {
       alert('Please enter both a quiz code and a name.');
       return;
     }
-    if (readyState === WebSocket.OPEN) {
-      sendMessage(JSON.stringify({ type: 'join', username: username }));
-    } else {
-      console.log('WebSocket is not open. ReadyState:', readyState);
-      alert('Connection problem: Unable to join quiz.');
+
+    try {
+      if (!clientRef.current || clientRef.current.getState() !== ConnectionState.OPEN) {
+        const client = establishConnection(quizCode);
+        setTimeout(() => {
+          if (client.getState() === ConnectionState.OPEN) {
+            client.send({ type: 'join', username });
+          } else {
+            alert('Connection failed. Please try again.');
+          }
+        }, 500);
+      } else {
+        clientRef.current.send({ type: 'join', username });
+      }
+    } catch (error) {
+      alert('Failed to connect. Check your quiz code.');
     }
   };
 
@@ -62,6 +96,7 @@ const JoinQuiz = () => {
               value={quizCode}
               onChange={(e) => setQuizCode(e.target.value)}
               margin="normal"
+              InputLabelProps={{ shrink: !!quizCode }}
             />
             <TextField
               fullWidth

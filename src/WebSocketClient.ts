@@ -1,6 +1,6 @@
 import { getWebSocketUrl } from './services/apiService';
 
-enum ConnectionState {
+export enum ConnectionState {
   CONNECTING = 'connecting',
   OPEN = 'open',
   CLOSING = 'closing',
@@ -8,7 +8,7 @@ enum ConnectionState {
   RECONNECTING = 'reconnecting',
 }
 
-interface Message {
+export interface Message {
   type: string;
   [key: string]: any;
 }
@@ -123,8 +123,7 @@ export class WebSocketClient {
     try {
       const message = typeof event.data === 'string' ? JSON.parse(event.data) : event.data;
       if (!message.type) throw new Error('Invalid message format: missing type');
-      // temporary fix as existing handlers expect the event itself.
-      this.messageHandler(event);
+      this.messageHandler(message);
     } catch (error) {
       this.errorHandler(error instanceof Error ? error : new Error(String(error)));
     }

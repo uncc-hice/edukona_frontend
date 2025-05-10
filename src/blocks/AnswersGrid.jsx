@@ -28,12 +28,10 @@ const AnswersGrid = ({
 
   useEffect(() => {
     // Send an update order message when answers or their order changes
-    sendMessage(
-      JSON.stringify({
-        type: 'update_order',
-        order: answers,
-      })
-    );
+    sendMessage({
+      type: 'update_order',
+      order: answers,
+    });
   }, [answers, sendMessage]);
 
   return (

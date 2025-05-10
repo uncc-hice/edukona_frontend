@@ -32,7 +32,7 @@ const Timer = React.memo(({ initialTime, onTimerEnd, sendMessage, questionId }) 
 
   const addTime = (seconds) => {
     if (timeLeft > 0) {
-      sendMessage(JSON.stringify({ type: 'increase_duration', question_id: questionId, extension: seconds }));
+      sendMessage({ type: 'increase_duration', question_id: questionId, extension: seconds });
       setTimeLeft((prevTime) => {
         return prevTime + seconds;
       });
